@@ -1,0 +1,80 @@
+# Tabs コンポーネント
+
+## 目的
+- ページ内のコンテンツを同一領域で切り替えるためのタブ UI を提供する
+- 「全部一度に見せたいわけではないが、近接して切り替えたい」情報の表示に使う
+
+## API
+```js
+Tabs({
+  items: Array<{
+    key: string,
+    label: string,
+    content: string,    // HTML 文字列
+    icon?: string       // Lucide アイコン名（任意）
+  }>,
+  active?: string,      // アクティブにする key（未指定時は先頭）
+  size?: 'sm'|'md'|'lg',// 既定: 'md'
+  gap?: number          // タブ間の間隔（独自カスタム時のみ。通常は既定値を使う）
+})
+```
+
+## 使用例
+```js
+// 基本
+Tabs({
+  items: [
+    { key: 'overview', label: '概要', content: '<p>ここに概要</p>' },
+    { key: 'detail', label: '詳細', content: '<p>ここに詳細</p>' },
+    { key: 'history', label: '履歴', content: '<p>ここに履歴</p>' }
+  ],
+  active: 'overview'
+})
+
+// アイコン付き
+Tabs({
+  items: [
+    { key: 'edit', label: '編集', icon: 'pencil', content: '...' },
+    { key: 'preview', label: 'プレビュー', icon: 'eye', content: '...' }
+  ],
+  size: 'md'
+})
+```
+
+## デザイン仕様（トークン）
+- リスト: `.ds-tabs__list`（下端に `var(--border-width-thin-light/dark) solid var(--color-semantic-divider-middle-light/dark)`）
+- タブ: `.ds-tabs__tab`
+  - 既定 padding: `var(--spacing-padding-8) var(--spacing-padding-12)`
+  - 既定の文字色: text-middle、アクティブ時: text-high
+  - hover（非アクティブ）: 背景 `var(--color-semantic-neutral-100-light/dark)`、角丸 `var(--radius-md)`、下線色は変更しない（透明のまま）
+  - アクティブ: 下線は既存のborder-widthトークンで `var(--color-semantic-primary-500-light/dark)`
+  - 下ボーダーとの間隔: `margin-bottom: var(--spacing-padding-2)`（アクティブ時は `0` で重ねる）
+  - フォーカス: `outline: var(--spacing-padding-2) solid var(--color-semantic-primary-100-light/dark)`、`outline-offset: var(--spacing-padding-2)`
+- アイコン: 本文サイズと揃え、`with-icon` クラスで gap 調整
+- パネル: `.ds-tabs__panel`（上側に `var(--spacing-padding-12)` の余白）
+
+## ふるまい
+- `active` で指定された key のパネルだけ `display: block`、他は `display: none`
+- 切替ロジック自体はアプリ側 / Storybook 側で実装（クリックハンドラを別途追加）
+- `gap` で独自タブ間隔を指定可（通常は不要）
+
+## アクセシビリティ（現行実装）
+- `.ds-tabs__list` に `role="tablist"` を付与
+- 各タブの `role="tab"` / `aria-selected` / `aria-controls`、パネルの `role="tabpanel"` / `aria-labelledby`、キーボード操作（← → / Home / End）は、実装状況を確認して不足があれば補う
+- 切替時のフォーカス管理: 「自動切替」（フォーカス移動だけで切り替わる）と「手動切替」（Enter/Space で切り替わる）の2方式があり、本実装は手動切替を想定
+
+## サイズ選択指針
+- **sm**: ツールバー / カード内など、補助的な切替
+- **md**: 標準（既定）。一般的なページ内タブ
+- **lg**: ヘッダー直下のメインタブ。視認性を優先
+
+## Tabs / Segmented Button の使い分け
+- **Tabs**: コンテンツが大きく異なる切替（概要 / 詳細 / 履歴 等）
+- **Segmented Button**: 同種データのフィルタ / 表示切替（並び順、表示密度など）。本DSでは個別コンポーネントは無く、`List + selection` か `Button` の outline ペアで代替
+
+## アンチパターン
+- タブの数が多すぎる（5つ以上は見落としが発生する。`Dropdown` や階層メニューを検討）
+- ラベルが長すぎて折り返す（短い動詞 / 名詞に整理する）
+- アクティブの視覚差が弱い（下線とテキスト色の両方で差を出す）
+- タブの中に Modal 開閉ボタンを並べてフォーカスが行き来する
+- 切替ごとに URL が変わるべき場面で Tabs を使う（その場合はリンク + 別ページが正解）

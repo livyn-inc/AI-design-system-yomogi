@@ -1,0 +1,41 @@
+@import '../../../build/css/tokens.css';
+
+.tpl-area {
+  display: grid;
+  row-gap: var(--spacing-padding-16);
+}
+
+.tpl-block {
+  background: var(--color-semantic-neutral-50-light);
+  color: var(--color-semantic-text-high-light);
+  border: 1px solid var(--color-semantic-divider-high-light);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-padding-16);
+}
+
+[data-theme="dark"] .tpl-block {
+  background: var(--color-semantic-neutral-100-dark);
+  color: var(--color-semantic-text-high-dark);
+  border-color: var(--color-semantic-divider-high-dark);
+}
+
+.tpl-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--spacing-padding-16);
+}
+
+.tpl-card {
+  background: var(--color-semantic-neutral-50-light);
+  color: var(--color-semantic-text-high-light);
+  border: 1px solid var(--color-semantic-divider-high-light);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-padding-16);
+}
+
+[data-theme="dark"] .tpl-card {
+  background: var(--color-semantic-neutral-50-dark);
+  color: var(--color-semantic-text-high-dark);
+  border-color: var(--color-semantic-divider-high-dark);
+}
+

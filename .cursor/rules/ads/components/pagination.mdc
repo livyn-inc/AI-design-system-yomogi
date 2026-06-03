@@ -1,0 +1,62 @@
+# Pagination コンポーネント
+
+## 目的
+- リスト・テーブル・検索結果などの「ページ単位で区切ったコンテンツ」の遷移操作を提供する
+- 1ページの量が多すぎず、無限スクロールに切り替える理由が無い場合に使う
+
+## API
+```js
+Pagination({
+  currentPage: number,        // 現在ページ（1始まり）
+  totalPages: number,         // 総ページ数
+  onPageChange: (page) => void, // 関数を渡すと該当のグローバル関数名で onclick が組まれる
+  showPrevNext: boolean,      // 既定: true
+  maxVisible: number,         // ページ番号の最大表示数（既定: 7、省略記号 ... を含む）
+  prevLabel: string,          // 既定: '前へ'
+  nextLabel: string,          // 既定: '次へ'
+  ariaLabel: string           // 既定: 'ページネーション'
+})
+```
+
+返り値は `<nav class="ds-pagination" role="navigation">…</nav>` の HTML 文字列。
+
+## 使用例
+```js
+Pagination({
+  currentPage: 3,
+  totalPages: 24,
+  onPageChange: window.handlePage  // function handlePage(page) { … } を事前に定義
+})
+```
+
+`onPageChange` は関数オブジェクトを受け取り、レンダリング時に `onclick="handlePage(2)"` のように展開される（関数名が `name` で参照可能であること）。フレームワーク連携が必要なら、コンポーネント呼び出し後に `addEventListener` で差し替えてもよい。
+
+## デザイン仕様（トークン）
+- ボタンの基盤は `ds-button-base` を共有（Button / IconButton と統一）
+- 配置: `nav` 内に「前へ / 数字 / 次へ」を行内 flex で並べる。gap は `var(--spacing-padding-4)` 〜 `var(--spacing-padding-8)`
+- 現在ページ: `is-current` クラスで強調（背景は `var(--color-semantic-primary-100-light/dark)` 相当の控えめな塗り、文字色 `text-high`）
+- 省略記号 `...`: `aria-hidden="true"` 付き、操作不可の表示専用
+- 無効化: 先頭/末尾で前へ/次へが `disabled` 化（`is-disabled` クラスも付与）
+- アイコン: `chevron-left` / `chevron-right`（16px、SVGを直接埋め込み）
+
+## 表示量の指針
+- `maxVisible` は奇数推奨（左右対称になる）
+- 既定 7 で「先頭1 + ... + 中央5 + ... + 末尾1」相当のレイアウトに自動整形
+- スマホで詰まる場合は `showPrevNext: true` のまま `maxVisible: 5` 程度に絞る
+
+## Pagination / 無限スクロール / 「もっと見る」の使い分け
+- **Pagination**: 総量が把握できる / 任意のページへジャンプしたい場合（検索結果・テーブル・記事一覧）
+- **無限スクロール**: コンテンツが連続的でランキング不要、回遊を促したい場合（SNSフィード等）。本DSでは未提供
+- **もっと見る（Load More）ボタン**: 上記2つの中間。ユーザーが明示的に取得を選びたい場合
+
+## アクセシビリティ
+- ラッパーに `role="navigation"` と `aria-label`
+- 現在ページに `aria-current="page"`
+- 各ボタンに「ページ N」「前のページへ」「次のページへ」の `aria-label`
+- 先頭/末尾では disabled を必ず付ける（フォーカス飛びと無駄クリック防止）
+
+## アンチパターン
+- 1ページで完結するコンテンツに無理に挟む（情報量に対して過剰）
+- 総ページ数が 100 を大幅に超える状況で番号UIを使う（検索やページジャンプ入力を併設する）
+- 数字ボタンに直接サイズを指定する（`ds-button-base` の高さに準拠する）
+- 現在ページにフォーカスリングが見えない（`:focus-visible` を維持する）

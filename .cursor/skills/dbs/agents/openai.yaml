@@ -1,0 +1,4 @@
+interface:
+  display_name: "DBS"
+  short_description: "Turn design direction into a build brief."
+  default_prompt: "Create a Yomogi design brief from the current direction."

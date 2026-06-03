@@ -1,0 +1,95 @@
+---
+description: フォントトークン利用ガイド・API仕様
+globs: "tokens/font/**/*"
+---
+## 概要
+フォントファミリー、サイズ、ウェイト、行間、字間のトークン。一貫したタイポグラフィを提供。
+
+## API
+### Font Weight Tokens
+| Token | CSS Variable | Value | 用途 |
+|-------|-------------|-------|------|
+| weight-300 | --font-weight-300 | 300 | ライト（注釈、補助テキスト、キャプション） |
+| weight-400 | --font-weight-400 | 400 | ノーマル（本文、デフォルトテキスト） |
+| weight-500 | --font-weight-500 | 500 | ミディアム（ラベル、強調テキスト、ボタンテキスト） |
+| weight-600 | --font-weight-600 | 600 | セミボールド（見出し、重要な情報、タイトル） |
+| weight-700 | --font-weight-700 | 700 | ボールド（メインタイトル、強調見出し） |
+
+### Font Size Tokens
+| Token | CSS Variable | Value | 用途 |
+|-------|-------------|-------|------|
+| size-10 | --font-size-10 | 10px | 極小テキスト（法的注意書き等） |
+| size-12 | --font-size-12 | 12px | 小テキスト（キャプション、補助情報） |
+| size-14 | --font-size-14 | 14px | 標準テキスト（ラベル、説明文） |
+| size-16 | --font-size-16 | 16px | 本文テキスト（メインコンテンツ） |
+| size-18 | --font-size-18 | 18px | 大テキスト（小見出し） |
+| size-20 | --font-size-20 | 20px | 見出し（セクションタイトル） |
+| size-24 | --font-size-24 | 24px | 大見出し（ページタイトル） |
+
+### Font Family Tokens
+| Token | CSS Variable | Value | 用途 |
+|-------|-------------|-------|------|
+| family-pro | --font-family-pro | Yu Gothic系 | 一般テキスト用フォント |
+| family-mono | --font-family-mono | Yu Gothic系 | 等幅フォント（コード表示等） |
+| family-icon | --font-family-icon | Material Symbols | アイコンフォント |
+
+## 使用例
+### CSS
+```css
+/* 見出し */
+.heading {
+  font-size: var(--font-size-20);
+  font-weight: var(--font-weight-600);
+  font-family: var(--font-family-pro);
+}
+
+/* 本文 */
+.body-text {
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-400);
+  font-family: var(--font-family-pro);
+}
+
+/* 強調テキスト */
+.emphasis {
+  font-weight: var(--font-weight-500);
+}
+
+/* ボタンテキスト */
+.button-text {
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-500);
+}
+```
+
+### JavaScript（コンポーネント内）
+```javascript
+// Storybook等でのインラインスタイル
+style="font-size: var(--font-size-16); font-weight: var(--font-weight-400);"
+```
+
+## 命名規則
+- **weight-{数値}**: 数値ベース（300, 400, 500, 600, 700）
+- **size-{数値}**: pxベース（10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 42, 48, 54）
+- **family-{用途}**: 用途ベース（pro, mono, icon）
+
+## 注意事項・ベストプラクティス
+### 🚨 絶対禁止
+- **ハードコード**: `font-weight: 500` ❌
+- **直接数値**: `font-size: 16px` ❌
+
+### ✅ 必須実装方法
+- **トークン使用**: `font-weight: var(--font-weight-500)` ✅
+- **トークン使用**: `font-size: var(--font-size-16)` ✅
+
+### 使い分けガイド
+- **300**: 軽い印象が必要な補助テキスト
+- **400**: 通常の本文・説明文
+- **500**: ボタンやラベルなど、少し目立たせたいテキスト
+- **600**: セクション見出し、重要な情報
+- **700**: メインタイトル、最も強調したい見出し
+
+### アクセシビリティ考慮
+- 本文は16px以上（--font-size-16）を推奨
+- コントラスト比を考慮した色との組み合わせ
+- 300以下の細いウェイトは小さいサイズでは避ける

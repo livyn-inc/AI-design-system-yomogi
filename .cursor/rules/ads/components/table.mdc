@@ -1,0 +1,90 @@
+# Table コンポーネント
+
+## 目的
+- 行 × 列の二次元データを表示する。並び替え・選択・列幅調整など、業務UIで頻出するデータ表示の基盤を提供する
+- 「カードのリスト」では伝えにくい比較・走査・集計の用途で使う
+
+## API
+```js
+Table({
+  headers: HeaderCell[] | HeaderCell[][],   // 単一行 or 複数行ヘッダー
+  rows: BodyCell[][],                       // 行 × 列の配列
+  variant: 'outlined' | 'plain',            // 既定: 'outlined'
+  density: 'sm' | 'md' | 'lg',              // 既定: 'md'
+  caption: string,                          // 任意のキャプション（figcaption）
+  vLines: boolean,                          // 既定: false（縦線の表示切替）
+  resizable: boolean                        // 既定: false（列幅ドラッグ調整）
+})
+
+// HeaderCell
+type HeaderCell = string | number | {
+  content: string,
+  rowspan?: number,
+  colspan?: number,
+  cellClass?: string,
+  cellAttrs?: Record<string, string>,
+  scope?: 'col' | 'row' | 'colgroup' | 'rowgroup'
+}
+
+// BodyCell（HeaderCell に加えて asTh で行ヘッダー化可能）
+type BodyCell = string | number | (HeaderCell & {
+  asTh?: boolean   // true なら <th scope="row"> として描画
+})
+```
+
+返り値は `<figure class="ds-table__figure">…<table class="ds-table …">…</table>…</figure>` の HTML 文字列。
+
+## 使用例
+```js
+Table({
+  caption: '今月の売上トップ',
+  headers: ['順位', '名前', '部署', '売上'],
+  rows: [
+    [1, '山田 花子', '営業1部', '¥1,240,000'],
+    [2, '佐藤 健', '営業2部', '¥1,120,000'],
+    [3, { content: '小計', asTh: true }, '', '¥2,360,000']
+  ],
+  density: 'md',
+  vLines: false
+})
+
+// 複数行ヘッダー + 結合
+Table({
+  headers: [
+    [{ content: '商品', rowspan: 2 }, { content: '在庫', colspan: 2 }],
+    ['倉庫A', '倉庫B']
+  ],
+  rows: [['アイテム X', 12, 8]]
+})
+```
+
+## デザイン仕様（トークン）
+- 余白: density で内側 padding を切替（sm=`var(--spacing-padding-8)` / md=`var(--spacing-padding-12)` / lg=`var(--spacing-padding-16)`）
+- ヘッダー背景: `var(--color-semantic-neutral-100-light/dark)`
+- 罫線: 横線は常時、縦線は `vLines: true` のときのみ。色は `var(--color-semantic-divider-extra-high-light/dark)`
+- 外枠: `variant: 'outlined'` でコンテナに罫線、`'plain'` で外枠なし（カード等に内包する場合に使う）
+- 行の hover/selected はオーバーレイトークンで（`overlay-neutral-05` / `overlay-neutral-15`）
+
+## resizable について
+- 列ヘッダー右端に `var(--spacing-padding-8)` 相当のドラッグハンドルを描画
+- `mousedown → mousemove → mouseup` で `width` / `min-width` を更新
+- 最小幅は既存のlayoutトークンと表示内容に合わせて決める
+- 並び替えや選択など他のインタラクションを足す場合は、`resizable` の `<script>` と競合しないようイベント伝播に注意
+
+## アクセシビリティ
+- ヘッダーセルは `<th scope="col">` を自動付与
+- 行ヘッダー化（`asTh: true`）したセルは `<th scope="row">`
+- キャプションは `figcaption` として外側に配置（テーブル本体の `caption` 要素ではない点に注意）
+- 並び替えやフィルタを足す場合は、ヘッダーに `aria-sort` を付ける
+
+## 表示量の指針
+- 1画面で扱う列数は 5〜7 を目安に。それ以上は折りたたみ・フィルタ・横スクロールで対応する
+- 行数が 50 を超える場合はページネーションまたは仮想スクロールを併用する
+- 数値列は右揃え、テキスト列は左揃え（`cellClass` で utility クラスを付与）
+
+## アンチパターン
+- 単純な「項目: 値」の組み合わせをテーブルにする（`List` の `kv` バリアントを使う）
+- セルに長文を入れて高さがバラバラになる（要約表示にして詳細はクリックで展開する）
+- カード内の小さな表に外枠 + 縦線 + 影を全部足す（`variant: 'plain'` を選ぶ）
+- 数値と文字列を同じ列に混ぜる（揃えと意味が壊れる）
+- スクロール領域なしに `width` を強制する（resizable のロジックと競合してレイアウトが崩れる）

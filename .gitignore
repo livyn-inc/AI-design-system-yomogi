@@ -1,0 +1,47 @@
+node_modules/
+*.log
+*.cache
+/sample/
+/.claude/
+.DS_Store
+ 
+# env & secrets
+.env
+.env.*
+*.pem
+*.key
+*.crt
+*.p12
+.yarnrc*
+.pnp.*
+
+# editors
+.vscode/
+.idea/
+
+# personal task management
+tasks/
+
+# caches/outputs (必要に応じて)
+dist/
+storybook-static/
+coverage/
+.turbo/
+.parcel-cache/
+
+# generated build outputs
+build/
+pages/_assets/tokens.css
+pages/_assets/bundle.css
+pages/_templates/components.js
+
+# generated pages
+pages/generated/
+
+# generated yomogi package (npm run export-package で再生成)
+package/
+!.cursor/skills/package/
+!.cursor/skills/package/**
+
+# dcs-report --deep のスクリーンショット出力先
+tmp/

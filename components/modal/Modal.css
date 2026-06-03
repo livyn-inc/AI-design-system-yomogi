@@ -1,0 +1,111 @@
+@import '../icon-button/IconButton.css';
+.ds-modal { position: fixed; inset: 0; z-index: 200000; display: none; }
+.ds-modal--open { display: flex; align-items: center; justify-content: center; animation: ds-modal-fade-in 0.3s ease-out; }
+.ds-modal--static { position: static; display: inline-block; }
+.ds-modal--static .ds-modal__backdrop { display: none; }
+.ds-modal--static .ds-modal__content { animation: none; }
+.ds-modal__backdrop { position: absolute; inset: 0; background: var(--color-semantic-overlay-neutral-30-light); animation: ds-modal-backdrop-fade-in 0.2s ease-out; }
+.ds-modal__content { position: relative; background: var(--color-semantic-neutral-50-light); border-radius: var(--radius-4xl); width: 100%; max-height: 80vh; overflow: auto; box-shadow: var(--shadow-drop-shadow-lg-light) var(--color-semantic-text-high-light); animation: ds-modal-content-slide-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 3px solid var(--color-semantic-text-high-light); }
+
+/* アニメーション定義 */
+@keyframes ds-modal-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes ds-modal-backdrop-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes ds-modal-content-slide-in {
+  from { 
+    opacity: 0;
+    transform: translateY(-40px) rotate(-8deg) scale(0.8);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+}
+
+@keyframes ds-modal-content-fade-scale {
+  from { 
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to { 
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes ds-modal-content-slide-up {
+  from { 
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ds-modal-content-bounce-scale {
+  0% { 
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  60% { 
+    opacity: 1;
+    transform: scale(1.02);
+  }
+  100% { 
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* フルモーダル用：通常モーダルから回転を除いたもの */
+@keyframes ds-modal-content-slide-in-no-rotate {
+  from { 
+    opacity: 0;
+    transform: translateY(-40px) scale(0.8);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.ds-modal--size-sm .ds-modal__content { max-width: var(--layout-max-width-sm); }
+.ds-modal--size-md .ds-modal__content { max-width: var(--layout-max-width-md); }
+.ds-modal--size-lg .ds-modal__content { max-width: var(--layout-max-width-lg); }
+.ds-modal--size-xl .ds-modal__content { max-width: var(--layout-max-width-xl); }
+.ds-modal--size-2xl .ds-modal__content { max-width: var(--layout-max-width-2xl); }
+.ds-modal--size-3xl .ds-modal__content { max-width: var(--layout-max-width-3xl); }
+.ds-modal--size-4xl .ds-modal__content { max-width: var(--layout-max-width-4xl); }
+.ds-modal--size-fluid-90 .ds-modal__content { width: 90vw !important; max-width: 90vw !important; height: 90vh !important; max-height: 90vh !important; }
+.ds-modal--size-full .ds-modal__content { max-width: none; height: 100vh; max-height: 100vh; border-radius: 0; animation: ds-modal-content-slide-in-no-rotate 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; flex-direction: column; border: none; box-shadow: none; background: var(--color-semantic-neutral-100-light); align-items: flex-start; }
+.ds-modal--size-full .ds-modal__body { flex: 1; width: 100%; padding: 0; min-height: 0; }
+[data-theme="dark"] .ds-modal--size-full .ds-modal__content { background: var(--color-semantic-neutral-100-dark); }
+.ds-modal--size-full .ds-modal__header { width: 100%; }
+.ds-modal--size-full .ds-modal__close { position: fixed; top: var(--spacing-padding-32); right: var(--spacing-padding-48); width: var(--spacing-padding-48); height: var(--spacing-padding-48); min-width: var(--spacing-padding-48); min-height: var(--spacing-padding-48); background: var(--color-semantic-absolute-white-light); z-index: 10; }
+.ds-modal--size-full .ds-modal__close:hover { background: var(--color-semantic-neutral-50-light); }
+[data-theme="dark"] .ds-modal--size-full .ds-modal__close { background: var(--color-semantic-neutral-100-dark); }
+[data-theme="dark"] .ds-modal--size-full .ds-modal__close:hover { background: var(--color-semantic-neutral-50-dark); }
+.ds-modal__header { padding: var(--spacing-padding-32) var(--spacing-padding-48) var(--spacing-padding-24); display: flex; justify-content: space-between; align-items: center; }
+.ds-modal__title { margin: 0; font-size: var(--font-size-20); font-weight: var(--font-weight-600); line-height: var(--font-line-height-28); }
+.ds-modal__body { padding: 0 var(--spacing-padding-48) var(--spacing-padding-32); }
+.ds-modal__footer { padding: var(--spacing-padding-24) var(--spacing-padding-48) var(--spacing-padding-32); display: flex; gap: var(--spacing-padding-12); justify-content: flex-end; }
+
+/* Manual dark mode support */
+[data-theme="dark"] .ds-modal__content {
+  background: var(--color-semantic-neutral-50-dark);
+  color: var(--color-semantic-text-high-dark);
+  border-color: var(--color-semantic-text-high-dark);
+  box-shadow: var(--shadow-drop-shadow-lg-dark) var(--color-semantic-text-high-dark);
+}
+[data-theme="dark"] .ds-modal__backdrop { background: var(--color-semantic-overlay-neutral-85-dark); }
+
+/* ボーダー削除により、ダークモードのボーダー色指定も不要 */
+

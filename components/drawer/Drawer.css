@@ -1,0 +1,20 @@
+.ds-drawer { position: relative; overflow: hidden; }
+.ds-drawer__panel {
+  position: absolute; top: 0; bottom: 0; width: var(--layout-max-width-sm);
+  background: var(--color-semantic-neutral-50-light);
+  border-left: 1px solid var(--color-semantic-divider-middle-light);
+  box-shadow: var(--shadow-box-shadow-lg-light);
+  padding: var(--spacing-padding-16);
+}
+.ds-drawer--right .ds-drawer__panel { right: 0; }
+.ds-drawer--left .ds-drawer__panel { left: 0; border-left: none; border-right: 1px solid var(--color-semantic-divider-middle-light); }
+
+[data-theme="dark"] .ds-drawer__panel {
+  background: var(--color-semantic-neutral-50-dark);
+  border-color: var(--color-semantic-divider-middle-dark);
+  box-shadow: var(--shadow-box-shadow-lg-dark);
+}
+
+
+
+

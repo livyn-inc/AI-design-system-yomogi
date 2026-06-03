@@ -1,0 +1,144 @@
+---
+description: カラートークン利用ガイド・API仕様
+globs: "tokens/colors/**/*"
+---
+## 概要
+ベースカラーとセマンティックカラーによる2層構造。一貫した色彩設計とテーマ切り替えを提供。
+
+## API
+### Base Colors（基本色）
+#### Gray
+| Token | CSS Variable | Light Value | Dark Value | 用途 |
+|-------|-------------|-------------|------------|------|
+| gray-50 | --color-base-gray-50-light/dark | #f9fafb | #111827 | 背景色（最薄） |
+| gray-100 | --color-base-gray-100-light/dark | #f3f4f6 | #1f2937 | 背景色（薄） |
+| gray-200 | --color-base-gray-200-light/dark | #e5e7eb | #374151 | ボーダー色 |
+| gray-300 | --color-base-gray-300-light/dark | #d1d5db | #4b5563 | 無効化ボーダー |
+| gray-400 | --color-base-gray-400-light/dark | #9ca3af | #6b7280 | プレースホルダー |
+| gray-500 | --color-base-gray-500-light/dark | #6b7280 | #9ca3af | アイコン色 |
+| gray-600 | --color-base-gray-600-light/dark | #4b5563 | #d1d5db | サブテキスト |
+| gray-700 | --color-base-gray-700-light/dark | #374151 | #e5e7eb | テキスト色 |
+| gray-800 | --color-base-gray-800-light/dark | #1f2937 | #f3f4f6 | 見出し色 |
+| gray-900 | --color-base-gray-900-light/dark | #111827 | #f9fafb | メインテキスト |
+
+#### Primary（ブランドカラー）
+| Token | CSS Variable | Light Value | Dark Value |
+|-------|-------------|-------------|------------|
+| primary-50 | --color-base-primary-50-light/dark | #eff6ff | 自動調整 |
+| primary-100 | --color-base-primary-100-light/dark | #dbeafe | 自動調整 |
+| primary-500 | --color-base-primary-500-light/dark | #3b82f6 | 自動調整 |
+| primary-600 | --color-base-primary-600-light/dark | #2563eb | 自動調整 |
+| primary-700 | --color-base-primary-700-light/dark | #1d4ed8 | 自動調整 |
+
+### Semantic Colors（意味色）
+| Token | CSS Variable | 用途 | 基本色参照 |
+|-------|-------------|------|-----------|
+| color-semantic-neutral-50 | --color-semantic-neutral-50-light/dark | 基本背景色 | neutral-50 |
+| color-semantic-neutral-100 | --color-semantic-neutral-100-light/dark | 微細背景色 | neutral-100 |
+| color-semantic-text-high | --color-semantic-text-high-light/dark | メインテキスト | neutral-900 |
+| color-semantic-text-middle | --color-semantic-text-middle-light/dark | サブテキスト | neutral-700 |
+| color-semantic-text-low | --color-semantic-text-low-light/dark | 低優先度テキスト | gray-400 |
+| color-semantic-divider-extra-high | --color-semantic-divider-extra-high-light/dark | 境界線 | neutral-700 |
+| color-semantic-primary-500 | --color-semantic-primary-500-light/dark | プライマリアクション | primary-500 |
+
+### Overlay（アルファ付き・用途色）
+- 背景やコンポーネントの上に「状態レイヤー」として重ねるためのセマンティックカラー。
+- 例（中立系）：
+  - `overlay/neutral-05` → `--color-semantic-overlay-neutral-05-light/dark`
+  - `overlay/neutral-15` → `--color-semantic-overlay-neutral-15-light/dark`
+  - `overlay/neutral-30` → `--color-semantic-overlay-neutral-30-light/dark`
+- ライトは黒ベースα、ダークは白ベースαで、背景に応じて自然に馴染む。
+
+## 使用例
+### CSS
+```css
+/* 背景色 */
+.card {
+  background: var(--color-semantic-neutral-50-light);
+  border: 1px solid var(--color-semantic-divider-extra-high-light);
+}
+
+/* テキスト色 */
+.heading {
+  color: var(--color-semantic-text-high-light);
+}
+
+.description {
+  color: var(--color-semantic-text-middle-light);
+}
+
+/* ボタン */
+.button-primary {
+  background: var(--color-semantic-primary-500-light);
+  color: var(--color-semantic-absolute-white-light);
+}
+
+/* 状態レイヤー（例：hover）にoverlayを使用 */
+.button-neutral-outline:hover {
+  background: var(--color-semantic-overlay-neutral-05-light);
+}
+
+/* ダークモード対応 */
+[data-theme="dark"] .card {
+  background: var(--color-semantic-neutral-50-dark);
+  border-color: var(--color-semantic-divider-extra-high-dark);
+}
+```
+
+### JavaScript（コンポーネント内）
+```javascript
+// Storybook等でのインラインスタイル
+style="color: var(--color-semantic-text-high-light); background: var(--color-semantic-neutral-50-light);"
+```
+
+## 命名規則
+### Base Colors
+- **color-base-{色名}-{濃度}-{テーマ}**
+  - 例：`color-base-gray-500-light`、`color-base-primary-600-dark`
+
+### Semantic Colors
+- **color-semantic-{用途}-{詳細}-{テーマ}**
+  - 例：`color-semantic-text-high-light`、`color-semantic-neutral-100-dark`
+
+## 注意事項・ベストプラクティス
+### 🚨 絶対禁止
+- **直接カラーコード**: `color: #333333` ❌
+- **直接RGB指定**: `background: rgba(0,0,0,0.5)` ❌
+
+### ✅ 必須実装方法
+- **セマンティックトークン優先**: `color: var(--color-semantic-text-high-light)` ✅
+- **ベーストークンは特殊用途のみ**: `color: var(--color-base-gray-500-light)` ⚠️
+ - **状態レイヤーはoverlayトークンを使用**: `background: var(--color-semantic-overlay-neutral-05-light)` ✅
+
+### 使い分けガイド
+1. **通常はSemanticカラーを使用**：意味に基づいた命名で保守性向上
+2. **Baseカラーは特殊用途のみ**：独自コンポーネント作成時など
+3. **テーマ切り替え対応**：light/darkサフィックスで自動切り替え
+
+### テーマ切り替え
+```css
+/* ライトテーマ（デフォルト） */
+.element {
+  color: var(--color-semantic-text-high-light);
+}
+
+/* ダークテーマ */
+[data-theme="dark"] .element {
+  color: var(--color-semantic-text-high-dark);
+}
+```
+
+### アクセシビリティ考慮
+- コントラスト比WCAG 2.2 AA相当を目安に確認（通常テキスト4.5:1以上）
+- 色のみに依存しない情報伝達
+- カラーブラインド対応配色
+
+### テーマカラー変更ルール（プロジェクト標準）
+- サイト全体のテーマカラー（例: primary系）を変更する場合は、必ず「同一ステップ」へ対応付ける。
+  - 例: blue-500 → green-500、blue-100 → green-100
+- セマンティック参照（hover/active/outline 等）も同ステップで整合を取る。
+- 直指定は禁止。必ずトークン（tokens/colors/index.json）を更新して反映し、`npm run build-tokens` 後にStorybookで差分確認する。
+
+### トークン追加時の確認（必須）
+- 追加後に `npm run build-tokens` を実行し、`build/css/tokens.css` に変数が出力されていることを確認。
+- Storybookの `Tokens/Colors > OverlayColors` でライト/ダーク両方の視覚確認を行う。

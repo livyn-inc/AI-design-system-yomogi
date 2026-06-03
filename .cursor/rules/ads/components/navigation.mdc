@@ -1,0 +1,70 @@
+# Navigation コンポーネント
+
+## 目的
+- ヘッダー横長（`top`）と左端縦長（`side`）の2タイプを提供し、サイト内移動を統一デザインで実現する
+
+## API（最新版）
+```js
+Navigation({
+  variant: 'top' | 'side',
+  items: [
+    // 通常アイテム
+    { label, href?, current?, leftIcon?, rightIcon?, defaultOpen?, children?: Item[] },
+    // セクション（グルーピング）
+    { type: 'section', title, items: Item[], group?: 'divider' | 'space' }
+  ]
+})
+```
+
+## 仕様（共通）
+- 役割: `<nav class="ds-navigation" role="navigation">`
+- アクティブ: `aria-current="page"` を付与（`current: true`）
+- ダーク対応: `data-theme="dark"` 時はトークンのダーク値を使用
+- トークン準拠: 余白/色/線/角丸/影はすべて実在するトークンで指定する（直書き禁止）
+
+## 仕様（top）
+- 横並びメニュー
+- `.ds-nav__link` は `hover` で背景色（semantic neutral）
+- `leftIcon`/`rightIcon` をサポート（アイコンは `currentColor` 運用）
+
+## 仕様（side）
+- 縦並び + 入れ子
+- 行（リンク・アイコン・トグルを包括するヒットエリア）: `.ds-nav__row`
+  - `padding: var(--spacing-padding-12) var(--spacing-padding-12)`
+  - `:hover` 背景は `.ds-nav__row` に統一（リンク個別では付けない）
+- `.ds-navigation--side .ds-nav__link { padding: 0; }`（二重余白防止）
+- アイコンサイズ統一: `.ds-nav__left/right svg` は `var(--spacing-padding-16)`
+- トグル: 右端に配置、ラベルの右
+  - アイコンは山括弧「＞」型
+  - `aria-expanded="true"` で 90deg 回転（右→下）
+- 子リストの整列（開始位置の統一）
+  - 親ラベルの起点に合わせるため、子ULに `.ds-nav__children--align` を付与
+  - 親に左アイコンがある場合は `.ds-nav__children--has-left` を追加し、左パディングを加算
+
+## グルーピング（セクション）
+- `type: 'section'` でセクション化
+- `title` は `.ds-nav__section-title`（色: text-low、サイズ: 14、ウェイト: 400）
+- 区切り手段は2種:
+  - `group: 'divider'`
+    - 次のグループの「上」に 1px divider（middle）を引く
+    - 罫線の上下余白: `margin-top: var(--spacing-padding-40)`（罫線上側）、`padding-top: var(--spacing-padding-40)`（罫線下側）
+  - `group: 'space'`
+    - 罫線なしでセクション間を広めの余白にする（`margin-top: var(--spacing-padding-16)` 既定）
+- 注意: 最初のセクションに罫線を入れない（線は“次のまとまりの上”が原則）
+
+## アクセシビリティ
+- `role="navigation"` を根要素に付与
+- アクティブ項目は `aria-current="page"`
+- 入れ子開閉のトグルは `aria-expanded` を適切に更新
+
+## Story 構成（最新版）
+- `Top`: ロゴ・検索・アバター入りのヘッダー例
+- `Side`: セクション2つ以上で構成する例
+  - 例: `メイン`（ダッシュボード/プロジェクト(子: 一覧・新規作成)/レポート）
+  - 例: `管理`（チーム/権限/全体設定）… セクション開始に `divider`、上下は 40
+- 表示崩れ時は `.storybook/stories/_matrix.css` やコンポーネントCSSで対応し、ストーリー側に独自styleを増やさない
+
+## トークン確認チェック
+- 使用前に `build/css/tokens.css` で該当トークンの存在を確認
+- 余白: `--spacing-padding-*`、色: `--color-semantic-*`、線: `--color-semantic-divider-*`
+

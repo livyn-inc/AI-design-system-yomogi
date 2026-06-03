@@ -1,0 +1,152 @@
+---
+description: UIコンポーネント設計指針（階層4：全体ルール・トークンルールに従う）
+globs: "components/**/*"
+---
+ボタン、入力欄、カード、モーダルなど、再利用可能なUI部品のセット。
+- 基本はニュートラルなデザインで、ブランド定義に合わせてカスタマイズ可能。
+
+## コンポーネント運用ルール
+- すべてのUI部品はcomponents/配下に配置し、命名規則・ディレクトリ構成を統一
+- コンポーネントはprops/引数でvariant, size, color, icon, label等を受け取り、トークン値でスタイルを制御
+- アクセシビリティ（aria属性、コントラスト、キーボード操作等）を必ず考慮
+
+## CSS実装時の必須ルール（AI・開発者共通）
+### 絶対禁止事項
+- **直接px指定禁止**：`font-size: 16px` ❌、`margin: 8px` ❌
+- **直接カラーコード指定禁止**：`color: #333` ❌、`background: #f0f0f0` ❌
+- **直接数値指定禁止**：`border-radius: 4px` ❌、`box-shadow: 0 2px 4px rgba(0,0,0,0.1)` ❌
+- **ブラウザデフォルト余白放置禁止**：figure, p, ul等は必ず`margin: 0`でリセット ❌
+
+### 必須実装方法
+- **フォントサイズ**：`font-size: var(--font-size-16)` ✅
+- **余白**：`padding: var(--spacing-padding-8) var(--spacing-padding-16)` ✅
+- **色**：`color: var(--color-semantic-text-high-light)` ✅
+- **角丸**：`border-radius: var(--radius-sm)` ✅
+- **シャドウ**：`box-shadow: var(--shadow-box-shadow-md-light)` ✅
+- **ブラウザデフォルト余白**：figure, p, ul等は`margin: 0`でリセット ✅
+
+### 実装例
+```css
+/* ❌ 悪い例（直接指定） */
+.ds-component {
+  font-size: 14px;
+  color: #333;
+  padding: 8px 16px;
+  border-radius: 4px;
+}
+
+/* ✅ 良い例（トークン使用） */
+.ds-component {
+  font-size: var(--font-size-14);
+  color: var(--color-semantic-text-high-light);
+  padding: var(--spacing-padding-8) var(--spacing-padding-16);
+  border-radius: var(--radius-sm);
+}
+```
+
+## Storybook・ドキュメント運用
+- すべてのコンポーネントはstorybook/stories/配下でプレビュー・ドキュメント化
+- ストーリーのtitle命名規則（例: components/Button など）を守る
+- 使い方・設計思想・注意点は各.mdcファイルに記載し、AIや人間が迷わず参照できるようにする
+
+## UIデザイン実践ガイド（抜粋）
+- ボタンの色・variant・サイズ選択はcomponents/button.mdcを参照
+- 新しいコンポーネント追加時はpatterns.mdcに使用例を追加
+- 余白・レイアウト原則はlayout.mdcを参照
+
+## UIデザイン時の判断フロー
+### Step 1: コンポーネント種類の選択
+1. ユーザーアクション → Button
+2. 情報表示 → Tag, Card, Table, List, Avatar
+3. 通知・メッセージ → Alert（インライン）, Toast（オーバーレイ）
+4. データ入力 → Input, Select, TextArea
+5. 設定のON/OFF → Switch
+6. ナビゲーション → Navigation, Breadcrumb, Pagination
+7. 補助UI → Modal, Drawer, Tabs, Dropdown, Tooltip, Popover, IconButton
+
+### Step 2: 詳細設定（現在利用可能）
+#### ボタンの詳細設定
+- アクションの重要度でvariantを決定（solid/outline/ghost）
+- アクションの性質でcolorを決定（primary/neutral/negative）
+- サイズ（lg/md/sm）は用途に応じて
+
+#### Input・Select・TextAreaの詳細設定
+- 入力種類でtypeを決定（Input: text/email/password/number/tel/url/search）
+- 入力量でコンポーネント選択（短文: Input、長文: TextArea）
+- サイズ（lg/md/sm）は用途に応じて
+- 状態（default/error/success）でユーザーフィードバック
+- 必須項目はrequired属性とアスタリスク(*)表示
+- アクセシビリティ（aria-label, aria-describedby等）を必ず設定
+
+#### Switchの詳細設定
+- ON/OFF切り替えが直感的な場面で使用
+- サイズ（lg/md/sm）はコンテキストに応じて
+- ラベルは明確で理解しやすい表現にする
+- 無効化時は理由を明示
+
+#### Tagの詳細設定
+- カテゴリ・ラベル: サイズmd、removable検討
+- ステータス表示（Badge的）: サイズsm、removableなし
+- 数値表示（Badge的）: サイズsm、3桁まで
+- 詳細はcomponents/tag.mdcを参照
+
+#### Alert/Toastの詳細設定
+- 重要な情報・エラー: Alert（インライン表示）
+- 軽い通知・操作完了: Toast（オーバーレイ表示）
+- Alert: アクションボタン検討、dismissible設定
+- Toast: autoDismiss・duration設定、actionButton検討
+- 詳細はcomponents/alert.mdc, components/toast.mdcを参照
+
+### Step 3: 配置・レイアウト
+- フォーム送信は右下にprimary/solid
+- モーダルは右下に主要、左にキャンセル（outline/neutral）
+- ツールバーは危険操作（negative）は分離配置
+- リスト操作は各行にghost/neutral
+
+### ボタングループの間隔
+- 関連ボタン: `var(--spacing-padding-16)` 以上の間隔
+- 危険操作: `var(--spacing-padding-24)` 以上離す
+
+### 実装前チェックリスト
+#### ボタンのチェック項目
+- 1画面のprimary/solidは1つ以下か
+- 削除・取消はnegativeを使っているか
+- ボタングループの間隔は `var(--spacing-padding-16)` 以上か
+- アイコンの意味は明確か
+- ローディング状態は適切に処理されているか
+- アクセシビリティ（aria-label等）は考慮されているか
+
+#### Input・Select・TextAreaのチェック項目
+- labelとinput/select/textareaの関連付け（for属性とid）は正しいか
+- 必須項目にrequired属性と視覚的表示(*)があるか
+- エラー状態時にaria-invalid="true"が設定されているか
+- エラーメッセージがaria-describedbyで関連付けられているか
+- placeholderだけでなく適切なlabelが設定されているか
+- 入力タイプ（email, tel等）が適切に選択されているか
+- TextArea使用時は適切な行数（rows）とリサイズ設定がされているか
+
+#### Switchのチェック項目
+- ON/OFF状態が視覚的に明確に区別できるか
+- キーボード操作（Space, Tab）が正しく動作するか
+- ラベルとスイッチの関連付けがされているか
+- 無効化時に適切な説明があるか
+
+#### Tagのチェック項目
+- 用途に応じた適切なサイズ（sm/md）を選択しているか
+- removable機能は適切な場面でのみ使用されているか
+- 数値表示は3桁以内に収まっているか（99+表記等）
+- スクリーンリーダーで適切に読み上げられるか
+
+#### Alert/Toastのチェック項目
+- Alert/Toastの使い分けは適切か（重要度・表示場所）
+- 適切なステータス（info/success/warning/critical・negative）を選択しているか
+- アクセシビリティ（role, aria-live, aria-label等）が設定されているか
+- Alert: アクションボタンの配置は適切か（プライマリ/セカンダリ）
+- Toast: 自動消去時間は内容に適しているか（1-7秒）
+- 複数表示時の管理・制限は考慮されているか
+
+### 今後のコンポーネント追加時
+- 新しいコンポーネント追加時は、Step 1を更新
+- patterns.mdcに使用例を追加
+- 必要に応じて関連mdcを更新
+- **必須：.cursor/rules/ads/components/配下に[component-name].mdcファイルを作成**

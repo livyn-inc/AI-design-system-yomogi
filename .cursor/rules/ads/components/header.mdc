@@ -1,0 +1,140 @@
+# Header コンポーネント
+
+## 目的
+- ユーティリティヘッダーとナビゲーションヘッダーの両方をサポート
+- ロゴ、パンくず、アクション要素を統一された形で提供
+- 既存の Breadcrumb・Navigation コンポーネントとの協調動作を実現
+
+## API
+```js
+Header({
+  variant: 'utility' | 'navigation', // デフォルト: 'utility'
+  logo: {
+    text?: string,
+    icon?: string,
+    href?: string
+  } | string | null,
+  navigation?: string, // Breadcrumb または Navigation コンポーネントの HTML
+  actions: [
+    { type: 'text', content: string } |
+    { type: 'icon', icon: string, href?: string, ariaLabel?: string } |
+    { type: 'button', content: string } |
+    string // 生の HTML
+  ],
+  background: 'default' | 'neutral' | 'primary', // デフォルト: 'default'
+  sticky: boolean, // デフォルト: false
+  bordered: boolean // デフォルト: false
+})
+```
+
+## 使用例
+
+### ユーティリティヘッダー（パンくず付き）
+```js
+// creative-taskboard.html で使用する場合
+const breadcrumbHtml = Breadcrumb({
+  items: [
+    { label: 'Communication Design', href: '#', leftIcon: '<i data-lucide="palette"></i>' },
+    { label: 'クリエイティブ制作タスクボード' }
+  ],
+  size: 'lg'
+});
+
+const headerHtml = Header({
+  variant: 'utility',
+  logo: {
+    text: 'EXPLAZA, Inc.',
+    icon: '<i data-lucide="layers"></i>',
+    href: '/'
+  },
+  navigation: breadcrumbHtml,
+  actions: [
+    { type: 'text', content: '9月4日 編集' },
+    { type: 'icon', icon: '<i data-lucide="users"></i>', ariaLabel: 'ユーザー管理' },
+    { type: 'text', content: '+@10名' },
+    { type: 'icon', icon: '<i data-lucide="share"></i>', ariaLabel: '共有' },
+    { type: 'icon', icon: '<i data-lucide="star"></i>', ariaLabel: 'お気に入り' },
+    { type: 'icon', icon: '<i data-lucide="more-horizontal"></i>', ariaLabel: 'その他' }
+  ],
+  bordered: true
+});
+```
+
+### ナビゲーションヘッダー（階層メニュー付き）
+```js
+const navigationHtml = Navigation({
+  variant: 'top',
+  items: [
+    { label: 'ダッシュボード', href: '/dashboard', current: true },
+    { label: 'プロジェクト', href: '/projects' },
+    { label: 'チーム', href: '/team' }
+  ]
+});
+
+const headerHtml = Header({
+  variant: 'navigation',
+  logo: { text: 'MyApp', href: '/' },
+  navigation: navigationHtml,
+  actions: [
+    { type: 'icon', icon: '<i data-lucide="bell"></i>', ariaLabel: '通知' },
+    { type: 'button', content: 'ログアウト' }
+  ],
+  background: 'neutral',
+  sticky: true
+});
+```
+
+## 仕様
+
+### 基本構造
+- `.ds-header`: 最外部コンテナ
+- `.ds-header__container`: 内部のフレックスボックスコンテナ
+- `.ds-header__logo`: ロゴセクション（左端、flex-shrink: 0）
+- `.ds-header__navigation`: ナビゲーションセクション（中央、flex: 1）
+- `.ds-header__actions`: アクションセクション（右端、flex-shrink: 0）
+
+### バリエーション
+- `utility`: 軽量なユーティリティヘッダー（デフォルト背景）
+- `navigation`: メインナビゲーション用ヘッダー（グレー背景）
+
+### 背景オプション
+- `default`: `--color-semantic-neutral-50-light`
+- `neutral`: `--color-semantic-neutral-100-light`
+- `primary`: `--color-semantic-primary-50-light`
+
+### レスポンシブ対応
+- 768px以下でパディング調整
+- テキスト系アクションは モバイルで非表示
+
+### アクセシビリティ
+- ロゴリンクは適切な href 属性
+- アイコンボタンは aria-label 必須
+- sticky時は z-index: 100
+
+## 既存コンポーネントとの統合
+
+### Breadcrumb コンポーネント
+- `navigation` プロパティに Breadcrumb() の戻り値を渡す
+- `size: 'lg'` 推奨（ヘッダー内では視認性向上のため）
+
+### Navigation コンポーネント
+- `variant: 'top'` の Navigation を `navigation` プロパティに渡す
+- Header の `variant: 'navigation'` と組み合わせて使用
+
+## トークン使用
+- 余白: `--spacing-padding-*`
+- 色: `--color-semantic-*`
+- フォントサイズ: `--font-size-*`
+- フォントウェイト: `--font-weight-*`
+- 角丸: `--radius-*`
+- 影: `--elevation-*`
+
+## ダークテーマ対応
+- `[data-theme="dark"]` セレクターでダーク用トークンを使用
+- 全ての色系プロパティがダークモード対応済み
+
+## 注意事項
+- ロゴテキストは16px、ウェイト600で視認性確保
+- アクションアイテムは16pxの適度なgapで配置
+- モバイル時はテキストアクションを非表示にしてスペース確保
+- Breadcrumb使用時は必ず lg サイズを指定（統一感のため）

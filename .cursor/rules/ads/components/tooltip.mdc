@@ -1,0 +1,65 @@
+# Tooltip コンポーネント
+
+## 目的
+- アイコンや短い UI 要素に対して、文字での補足説明を一時的に表示する
+- 「無くてもページは成立するが、あれば理解が早くなる」情報のためのもの
+
+## API
+```js
+Tooltip({
+  triggerHtml: string,                              // トリガー要素のHTML（省略時は標準ボタン）
+  content: string,                                  // 吹き出し内のテキスト（HTML可）
+  placement: 'top' | 'right' | 'bottom' | 'left',   // 既定: 'top'
+  id: string                                        // 吹き出し ID（省略時は自動生成、aria-describedby と紐付く）
+})
+```
+
+返り値は `<span class="ds-tooltip ds-tooltip--{placement}">…<span class="ds-tooltip__bubble" role="tooltip">…</span></span>` の HTML 文字列。表示制御は CSS の hover / focus-within が基本。
+
+## 使用例
+```js
+Tooltip({
+  triggerHtml: IconButton({ icon: '<i data-lucide="info"></i>', ariaLabel: '詳細情報' }),
+  content: '請求対象の月度を選択してください',
+  placement: 'top'
+})
+
+// テキスト要素のホバー補足
+Tooltip({
+  triggerHtml: '<span class="ds-text--truncate">非常に長いプロジェクト名…</span>',
+  content: '非常に長いプロジェクト名のフルテキスト',
+  placement: 'bottom'
+})
+```
+
+## デザイン仕様（トークン）
+- 吹き出し背景: `var(--color-semantic-neutral-900-light/dark)`（ライト時は黒寄り、ダーク時は白寄りの反転設計）
+- 文字色: `var(--color-semantic-neutral-50-light/dark)`（背景と反転ペアになり、コントラスト確保）
+  - 注: 実装 `Tooltip.css` は base layer の `--color-base-gray-900/-50-*` を使用しているが、ADSの運用としては semantic トークン名で記述する
+- 角丸: `var(--radius-sm)`
+- フォントサイズ: `var(--font-size-12)` 〜 `var(--font-size-14)`
+- 影: `var(--shadow-box-shadow-sm-light/dark)`（軽量）
+- 内側 padding: `var(--spacing-padding-8)` `var(--spacing-padding-12)`
+- placement とトリガーの隙間: `var(--spacing-padding-8)`
+- 矢印（任意）: CSS のみで生成。色は吹き出し背景と揃える
+
+## ふるまい
+- CSS の `:hover` / `:focus-within` で表示。タッチデバイスではフォーカスでも開く前提
+- 開閉のディレイは CSS のトランジションで（出現遅延 100〜200ms 推奨）
+- 1ページに10個以上ホバー可能な要素を並べる場合、過剰演出にならないよう全体の遷移トーンを統一
+
+## アクセシビリティ
+- 吹き出しに `role="tooltip"` を自動付与
+- `id` をトリガー側の `aria-describedby` と一致させる（自動生成の場合は呼び出し側で設定）
+- ホバーだけで開かない設計にする（フォーカスでも開く `:focus-within`）
+- 重要情報を Tooltip 単独で持たせない（タッチ環境やスクリーンリーダーで見落とされやすい）
+
+## Tooltip / Popover の使い分け
+- **Tooltip**: 文字テキストのみ、操作不要、無くても成立する情報
+- **Popover**: 複数要素・操作・選択肢を含む。閉じる動作が明確に必要な情報
+
+## アンチパターン
+- ボタン本体のラベル代わりに使う（`aria-label` と可視ラベルの両方を整える）
+- インタラクティブ要素（`<button>` / `<a>`）を `content` に入れる（Popover を使う）
+- 長い段落（3行以上）を入れる（情報設計を見直し、Popover や別画面に逃がす）
+- ホバーのみで表示し、フォーカスや長押しで開けないようにする

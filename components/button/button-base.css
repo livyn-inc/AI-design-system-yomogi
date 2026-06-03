@@ -1,0 +1,73 @@
+@import '../../build/css/tokens.css';
+
+/**
+ * Button Base Styles
+ * 共通のボタン基盤スタイル
+ * すべてのボタン系コンポーネントで使用される基本的な動作・状態
+ */
+
+/* 基本的なボタンのリセットと共通設定 */
+.ds-button-base {
+  /* リセット */
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-weight: var(--font-weight-400);
+  text-decoration: none;
+  outline: none;
+  box-sizing: border-box;
+  
+  /* 共通設定 */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  
+  /* トランジション */
+  transition: all 0.2s ease;
+}
+
+/* フォーカス状態（キーボードナビゲーション） */
+.ds-button-base:focus-visible {
+  outline: var(--spacing-padding-2) solid var(--color-semantic-primary-100-light);
+  outline-offset: var(--spacing-padding-2);
+}
+
+/* ホバー状態の基本設定（各コンポーネントで詳細定義） */
+.ds-button-base:hover:not(:disabled):not(.is-disabled) {
+  /* 各コンポーネントで個別に定義 */
+}
+
+/* アクティブ状態（クリック中） */
+.ds-button-base:active:not(:disabled):not(.is-disabled) {
+  /* 軽い押下感 */
+  transform: translateY(1px);
+}
+
+/* 無効化状態 */
+.ds-button-base:disabled,
+.ds-button-base.is-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ローディング状態の基本設定 */
+.ds-button-base.is-loading {
+  color: transparent;
+  pointer-events: none;
+}
+
+/* ダークモード対応 */
+[data-theme="dark"] .ds-button-base:focus-visible {
+  outline-color: var(--color-semantic-primary-100-dark);
+}
+
+/* タッチデバイス対応 */
+@media (hover: none) and (pointer: coarse) {
+  .ds-button-base:active:not(:disabled):not(.is-disabled) {
+    transform: none; /* タッチデバイスでは押下感を無効化 */
+  }
+}

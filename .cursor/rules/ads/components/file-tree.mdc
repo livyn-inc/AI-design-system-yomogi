@@ -1,0 +1,71 @@
+# FileTree コンポーネント
+
+## 目的
+- 階層構造のファイル / フォルダを縦並びで表示し、開閉・選択・操作を提供する
+- ファイルマネージャ・ドキュメントエクスプローラ・コードエディタのサイドペインに使う
+
+## API
+```js
+FileTree({
+  items: TreeItem[],            // ツリー本体
+  onFileClick: (info) => void,  // ファイル選択時のコールバック（initFileTree で接続）
+  onFolderToggle: (info) => void, // フォルダ開閉時のコールバック
+  id: string                    // コンテナ ID（省略時は自動生成）
+})
+
+// 初期化（イベントリスナーを束ねる）
+initFileTree(containerId, onFileClick?, onFolderToggle?)
+
+// TreeItem 型
+type TreeItem = {
+  type: 'file' | 'folder',
+  name: string,
+  icon?: string,                // Lucide アイコン名（省略時は file-text / folder / folder-open）
+  href?: string,                // file の場合のリンク先
+  badge?: 'modified' | 'conflict' | 'readonly' | 'pinned',
+  badgeTooltip?: string,        // バッジのツールチップ文言
+  open?: boolean,               // folder の初期開閉
+  children?: TreeItem[]         // folder の子要素
+}
+```
+
+返り値は `<div class="rs-file-tree" id="...">…</div>` の HTML 文字列。`initFileTree(id)` で開閉・選択・コンテキストメニュー・スクロールインジケータを有効化する。
+
+## 構造
+- **メインセクション（`rs-tree-section--main`）**: 渡された `items` を表示。既定で展開
+- **ピン留めセクション（`rs-tree-section--pinned`）**: ピン留めしたファイル一覧（デモ用に固定2件）。既定で折りたたみ
+- **最近セクション（`rs-tree-section--recent`）**: 直近アクセスしたファイル一覧（デモ用に空）
+- **ゴミ箱セクション（`rs-tree-section--trash`）**: 30日後に自動削除される対象。既定で折りたたみ
+- **コンテキストメニュー**: アイテム種別（main / pinned / trash / confluence）でメニュー項目を切り替える
+
+## デザイン仕様（トークン）
+- 行 padding: 縦 `var(--spacing-padding-4)` 〜 `var(--spacing-padding-8)`、横 `var(--spacing-padding-12)`
+- アイコンサイズ: 16px（Lucide の `width="16" height="16"`）。バッジは 12px
+- 選択行: `selected` クラスで `var(--color-semantic-overlay-neutral-15-light/dark)` 相当の塗り
+- hover: `var(--color-semantic-overlay-neutral-05-light/dark)`
+- セクション見出し: 文字色 `text-low`、ウェイト 400、サイズ 14
+- 区切り線: 必要な箇所に限り `var(--color-semantic-divider-extra-high-light/dark)`
+
+## ふるまい
+- フォルダ行クリックで開閉。シェブロンが `chevron-right` ↔ `chevron-down` に切り替わる
+- ⋮ ボタンまたは右クリックでコンテキストメニュー。メニューはセクション種別で内容が変わる
+  - main: 開く / ピン留め / コピー / 名前を変更 / 移動 / 削除
+  - pinned: 開く / ピン留め解除 / コピー / 名前を変更 / 移動 / 削除
+  - trash: もとに戻す / 完全に削除
+  - confluence: 開く / ローカルにコピー
+- 削除・完全削除は Modal による確認ダイアログを挟む（`Modal` / `Button` が利用可能なら使用、なければ `confirm` フォールバック）
+- 下部固定エリアは縦リサイズ可（高さは localStorage に保存）
+- スクロール末尾以外で下向きインジケータが現れる
+- ファイル名が省略されている場合、自動で `title` 属性を付与してネイティブツールチップを出す
+
+## アクセシビリティ
+- ファイル / フォルダ行は `<a>` / `<button>` でフォーカス可能
+- ⋮ メニューは `aria-label="メニュー"`
+- コンテキストメニューは Esc で閉じる
+- バッジには `Tooltip` コンポーネント構造で意味（未保存 / 競合 / 読み取り専用 / ピン留め）を補足する
+
+## アンチパターン
+- ツリーの深さを4階層以上に増やす（横スクロールが必要になりがち）
+- ファイル名のみで状態を伝える（バッジで状態を可視化する）
+- コンテキストメニュー以外の方法で削除を実行できないようにする（誤操作復旧のため Modal 確認は必須）
+- `rs-tree-*` クラスを直接書き換えて装飾を上書きする（トークンと CSS 変数で調整する）

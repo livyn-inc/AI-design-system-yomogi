@@ -1,0 +1,304 @@
+/* Select Component Styles */
+
+.ds-select {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-padding-4);
+  width: 100%;
+}
+
+.ds-select__label {
+  font-weight: var(--font-weight-500);
+  color: var(--color-semantic-text-high-light);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-padding-4);
+}
+
+.ds-select__label--sm {
+  font-size: var(--font-size-12);
+  line-height: 16px;
+}
+
+.ds-select__label--md {
+  font-size: var(--font-size-14);
+  line-height: 20px;
+}
+
+.ds-select__label--lg {
+  font-size: var(--font-size-14);
+  line-height: 20px;
+}
+
+.ds-select__required {
+  color: var(--color-semantic-negative-500-light);
+}
+
+.ds-select__wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.ds-select__field {
+  width: 100%;
+  border: 1px solid var(--color-semantic-divider-higher-light);
+  border-radius: var(--radius-xl);
+  background-color: var(--color-semantic-absolute-white-light);
+  color: var(--color-semantic-text-high-light);
+  font-family: var(--font-family-pro);
+  font-size: var(--font-size-14);
+  line-height: 1;
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+  /* 統一: border-box で実測高さを固定 */
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.ds-select__field option {
+  font-size: var(--font-size-14);
+  font-family: var(--font-family-pro);
+}
+
+.ds-select__field--sm {
+  height: var(--layout-height-input-sm);
+  min-height: var(--layout-height-input-sm);
+  padding: var(--spacing-padding-6) var(--spacing-padding-12);
+  padding-right: 32px;
+  font-size: var(--font-size-14);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.ds-select__field--md {
+  height: var(--layout-height-input-md);
+  min-height: var(--layout-height-input-md);
+  padding: var(--spacing-padding-8) var(--spacing-padding-16);
+  padding-right: 40px;
+  font-size: var(--font-size-14);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.ds-select__field--lg {
+  height: var(--layout-height-input-lg);
+  min-height: var(--layout-height-input-lg);
+  padding: var(--spacing-padding-12) var(--spacing-padding-20);
+  padding-right: 40px;
+  font-size: var(--font-size-14);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+/* プレースホルダー選択時の色 */
+.ds-select__field:has(option[value=""]:checked) {
+  color: var(--color-semantic-text-placeholder-light);
+}
+
+.ds-select__field:hover:not(:disabled) {
+  border-color: var(--color-semantic-text-middle-light);
+  box-shadow: 2px 2px var(--color-semantic-text-middle-light);
+}
+
+.ds-select__field:focus:not(:disabled) {
+  border-color: var(--color-semantic-primary-500-light);
+  box-shadow: 0 0 0 3px var(--color-semantic-primary-100-light);
+}
+
+.ds-select__field--error {
+  border-color: var(--color-semantic-negative-500-light);
+}
+
+.ds-select__field--error:focus:not(:disabled) {
+  border-color: var(--color-semantic-negative-500-light);
+  box-shadow: 0 0 0 3px var(--color-semantic-negative-100-light);
+}
+
+.ds-select__field--success {
+  border-color: var(--color-semantic-success-500-light);
+}
+
+.ds-select__field--success:focus:not(:disabled) {
+  border-color: var(--color-semantic-success-500-light);
+  box-shadow: 0 0 0 3px var(--color-semantic-success-100-light);
+}
+
+.ds-select__field:disabled {
+  background-color: var(--color-semantic-neutral-50-light);
+  color: var(--color-semantic-text-disabled-light);
+  border-color: var(--color-semantic-divider-middle-light);
+  cursor: not-allowed;
+}
+
+.ds-select--disabled,
+.ds-select--disabled:hover,
+.ds-select--disabled * {
+  cursor: not-allowed !important;
+}
+
+.ds-select__icon {
+  position: absolute;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-semantic-text-low-light);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.ds-select--disabled .ds-select__icon {
+  color: var(--color-semantic-text-disabled-light);
+}
+
+.ds-select__helper-text,
+.ds-select__error-text {
+  font-size: var(--font-size-12);
+  line-height: 16px;
+  margin-top: var(--spacing-padding-4);
+  text-align: left;
+}
+
+.ds-select__helper-text {
+  color: var(--color-semantic-text-low-light);
+}
+
+.ds-select__error-text {
+  color: var(--color-semantic-negative-500-light);
+}
+
+/* Prefix機能: 選択時の表示とドロップダウンで異なるテキストを表示 */
+.ds-select--with-prefix .ds-select__field {
+  color: transparent;
+}
+
+.ds-select--with-prefix .ds-select__field option {
+  color: var(--color-semantic-text-high-light);
+}
+
+.ds-select__display {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  color: var(--color-semantic-text-high-light);
+  font-family: var(--font-family-pro);
+  font-size: var(--font-size-14);
+  line-height: 1;
+  z-index: 1;
+}
+
+.ds-select__display > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+  width: 100%;
+}
+
+/* サイズ別のpadding調整 */
+.ds-select--sm .ds-select__display {
+  padding: var(--spacing-padding-6) var(--spacing-padding-12);
+  padding-right: 32px;
+}
+
+.ds-select--md .ds-select__display {
+  padding: var(--spacing-padding-8) var(--spacing-padding-16);
+  padding-right: 40px;
+}
+
+.ds-select--lg .ds-select__display {
+  padding: var(--spacing-padding-12) var(--spacing-padding-20);
+  padding-right: 40px;
+}
+
+/* Manual dark mode support */
+[data-theme="dark"] .ds-select__label {
+  color: var(--color-semantic-text-high-dark);
+}
+
+/* プレースホルダー選択時の色（ダークモード） */
+[data-theme="dark"] .ds-select__field:has(option[value=""]:checked) {
+  color: var(--color-semantic-text-placeholder-dark);
+}
+
+[data-theme="dark"] .ds-select__required {
+  color: var(--color-semantic-negative-500-dark);
+}
+
+[data-theme="dark"] .ds-select__field {
+  border-color: var(--color-semantic-divider-higher-dark);
+  background-color: var(--color-semantic-neutral-50-dark);
+  color: var(--color-semantic-text-high-dark);
+}
+
+[data-theme="dark"] .ds-select__field:hover:not(:disabled) {
+  border-color: var(--color-semantic-text-middle-dark);
+  box-shadow: 2px 2px var(--color-semantic-text-middle-dark);
+}
+
+[data-theme="dark"] .ds-select__field:focus:not(:disabled) {
+  border-color: var(--color-semantic-primary-500-dark);
+  box-shadow: 0 0 0 3px var(--color-semantic-primary-100-dark);
+}
+
+[data-theme="dark"] .ds-select__field--error {
+  border-color: var(--color-semantic-negative-500-dark);
+}
+
+[data-theme="dark"] .ds-select__field--error:focus:not(:disabled) {
+  border-color: var(--color-semantic-negative-500-dark);
+  box-shadow: 0 0 0 3px var(--color-semantic-negative-100-dark);
+}
+
+[data-theme="dark"] .ds-select__field--success {
+  border-color: var(--color-semantic-success-500-dark);
+}
+
+[data-theme="dark"] .ds-select__field--success:focus:not(:disabled) {
+  border-color: var(--color-semantic-success-500-dark);
+  box-shadow: 0 0 0 3px var(--color-semantic-success-100-dark);
+}
+
+[data-theme="dark"] .ds-select__field:disabled {
+  background-color: var(--color-semantic-neutral-50-dark);
+  color: var(--color-semantic-text-disabled-dark);
+  border-color: var(--color-semantic-divider-middle-dark);
+}
+
+[data-theme="dark"] .ds-select__icon {
+  color: var(--color-semantic-text-low-dark);
+}
+
+[data-theme="dark"] .ds-select--disabled .ds-select__icon {
+  color: var(--color-semantic-text-disabled-dark);
+}
+
+[data-theme="dark"] .ds-select__helper-text {
+  color: var(--color-semantic-text-low-dark);
+}
+
+[data-theme="dark"] .ds-select__error-text {
+  color: var(--color-semantic-negative-500-dark);
+}
+
+/* Prefix機能 - ダークモード */
+[data-theme="dark"] .ds-select--with-prefix .ds-select__field option {
+  color: var(--color-semantic-text-high-dark);
+}
+
+[data-theme="dark"] .ds-select__display {
+  color: var(--color-semantic-text-high-dark);
+  background-color: var(--color-semantic-neutral-50-dark);
+  border: 1px solid var(--color-semantic-divider-higher-dark);
+  border-radius: var(--radius-xl);
+}
+

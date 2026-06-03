@@ -1,0 +1,4 @@
+interface:
+  display_name: "DIP"
+  short_description: "Convert review findings into an iteration plan."
+  default_prompt: "Turn these design review findings into the next repair round."

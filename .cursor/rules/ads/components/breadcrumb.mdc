@@ -1,0 +1,91 @@
+# Breadcrumb コンポーネント
+
+## 目的
+- 階層ナビゲーションを「現在地までのパス」として表示する
+- 深い階層では省略（…）で簡潔に表現できる
+
+## API
+```js
+Breadcrumb({
+  items: Array<{
+    label: string,
+    href?: string,
+    leftIcon?: string,
+    rightIcon?: string
+  }>,
+  separator?: string,                       // 例: '/', '›'（既定: '/'）
+  size?: 'sm' | 'md',                       // 既定: 'md'
+  maxVisible?: number,                      // 省略発動の閾値（既定: 5）
+  collapseMode?: 'middle' | 'start' | 'end' // 省略方式（既定: 'middle'）
+})
+```
+
+## 使用例
+```js
+// 基本
+Breadcrumb({
+  items: [
+    { label: 'ホーム', href: '/' },
+    { label: 'プロジェクト', href: '/projects' },
+    { label: '請求書管理', href: '/projects/billing' },
+    { label: '2026年5月分' }   // 末尾は href 不要（現在地）
+  ]
+})
+
+// アイコン + セパレータ変更
+Breadcrumb({
+  items: [
+    { label: 'デザイン', href: '#', leftIcon: '<i data-lucide="palette"></i>' },
+    { label: 'タスクボード' }
+  ],
+  separator: '›',
+  size: 'lg'
+})
+
+// 深い階層を省略
+Breadcrumb({
+  items: [...8階層分...],
+  maxVisible: 5,
+  collapseMode: 'middle'
+})
+```
+
+## デザイン仕様（トークン）
+- ラッパー: `<nav role="navigation" aria-label="Breadcrumb"><ol>...</ol></nav>`
+- 現在地（末尾）: `aria-current="page"` を自動付与、リンク化しない
+- セパレータ: 文字列で差し替え可能。前後余白 `margin: 0 var(--spacing-padding-12)`
+- フォントサイズ: `var(--font-size-12)`（Pagination と統一）
+- アイコン: `leftIcon` / `rightIcon` をサポート、サイズ `var(--spacing-padding-16)`
+- リンクの hover / focus: 色を `var(--color-semantic-primary-600-light/dark)`、下線（`text-decoration: underline; text-underline-offset: var(--spacing-padding-2)`）
+- フォーカス: `outline: var(--spacing-padding-2) solid var(--color-semantic-primary-100-light/dark)`
+
+## 省略（collapsing）の挙動
+`maxVisible` を超える項目数のとき、`collapseMode` で省略方式を選ぶ:
+
+- **middle**（既定）: 先頭2 + … + 末尾2。深い階層で先頭・末尾の文脈を保ちたいとき
+- **start**: … + 末尾N。最近の階層だけ重要な場合
+- **end**: 先頭N + …。トップ近くの階層を強調したい場合
+
+省略部は「…」ボタンで、クリックすると隠れた階層をドロップダウン表示（`role="menu"`）。Esc で閉じる。
+
+## アクセシビリティ
+- `<nav>` に `role="navigation"` + `aria-label="Breadcrumb"`
+- `<ol>` / `<li>` の順序付きリスト構造で階層を明示
+- 現在地（末尾）は必ず `aria-current="page"`
+- 省略メニューのトグル: `aria-haspopup="menu"` + `aria-expanded` を切り替え
+- リンクは色変化だけでなく **下線併用**（細ウェイトのため色だけでは判別しづらい）
+
+## Breadcrumb / Navigation の使い分け
+- **Breadcrumb**: 「今どこにいるか」のパス表示。1次元の階層
+- **Navigation**: サイト全体のナビゲーション（top / side）。複数選択肢を並列に提示
+
+## アンチパターン
+- 1〜2階層しかないのに Breadcrumb を置く（情報が薄くノイズになる）
+- 末尾項目をリンク化する（現在地は移動先がない）
+- セパレータに記号以外の長い文字を使う（読みづらくなる）
+- 省略を使わず、横スクロールで対応する（情報設計の負け）
+- `maxVisible` を 3 以下にする（省略しすぎて意味が伝わらない）
+
+## 禁止事項（実装メモ）
+- px / hex / rgba 直書き
+- トークン名の推測記述（使用前に `build/css/tokens.css` で実在確認）

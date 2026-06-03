@@ -1,0 +1,61 @@
+# Avatar コンポーネント
+
+## 目的
+- ユーザー / 組織 / 連絡先などの「主体」を、画像またはイニシャルで小さく表示する
+- リスト・ヘッダー・コメント・ナビゲーション右上などで反復的に使われる
+
+## API
+```js
+Avatar({
+  size: 'sm' | 'md' | 'lg',     // 既定: 'md'
+  src: string,                  // 画像URL（指定があれば img を表示）
+  alt: string,                  // 画像の代替テキスト
+  fallback: string              // 画像なしのときに表示するイニシャル等（例: 'AK'）
+})
+```
+
+返り値は `<span class="ds-avatar ds-avatar--{size}">…</span>` の HTML 文字列。
+
+## 使用例
+```js
+Avatar({ size: 'md', src: '/img/user.jpg', alt: '山田太郎' })
+
+Avatar({ size: 'sm', fallback: 'YT' })
+
+Avatar({ size: 'lg', src: '/img/team.png', alt: 'Yomogi Team' })
+```
+
+## デザイン仕様（トークン）
+- 円形（角丸: `var(--radius-full)`）。サイズはトークン化された幅・高さを使う
+- 画像なし時の背景は `var(--color-semantic-neutral-100-light/dark)`、文字色は `var(--color-semantic-text-high-light/dark)`
+- 隣接要素との行内 gap は `var(--spacing-padding-8)` を既定とする（Tag や名前テキストと並ぶとき）
+- 影や枠線は基本付けない（必要なら `divider-extra-high` を1段階だけ）
+
+## ふるまい
+- `src` がある場合のみ `<img>` を表示。それ以外は `fallback` の文字列を表示する
+- 画像の読み込み失敗にはコンポーネントは関与しない（必要なら呼び出し側で `onerror` で `fallback` 表示に切り替える）
+
+## アクセシビリティ
+- 画像版は `alt` を必ず指定する。装飾用途なら `alt=""` を明示する
+- イニシャル版は `aria-hidden="true"` が自動付与され、隣接するユーザー名のテキストで意味を補う前提
+- インタラクティブな要素（クリックでプロフィールを開く等）にする場合は、Avatar を `<a>` / `<button>` でラップしてフォーカス可視を確保する
+
+## サイズ選択指針
+- **sm**: テーブル行・コメント・密度の高いリスト
+- **md**: ナビゲーション・カード・一般的な用途（デフォルト）
+- **lg**: プロフィールヘッダー・ダイアログ内のユーザー強調
+
+## グルーピング（複数Avatar の重ね表示）
+- メンバー一覧などで複数 Avatar を重ねる場合、`margin-left: calc(-1 * var(--spacing-padding-8))` 程度で部分的に重ねる
+- 重ねた Avatar には外周に `2px solid var(--color-semantic-neutral-50-light/dark)` の縁を付け、面の境界を明示する
+- 4人以上を重ねる場合、5人目以降は `+N` のテキスト Avatar に集約する（`fallback: '+12'`）
+
+## Avatar / IconButton の使い分け
+- **Avatar**: 主体（人 / 組織）の表現。情報の発信元を表す
+- **IconButton**: 操作の起点。`<i data-lucide="user"></i>` を入れた IconButton はアイコンであって主体ではない
+
+## アンチパターン
+- 矩形にトリミングする（このコンポーネントは円形前提）
+- `fallback` に長い文字列を入れる（イニシャル2文字程度を推奨）
+- アイコン（ベル等）を `fallback` に詰める（汎用的なアイコン表示は IconButton を使う）
+- 画像なし・`fallback` も無いまま空のサークルだけ置く

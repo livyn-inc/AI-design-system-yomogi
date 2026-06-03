@@ -1,0 +1,133 @@
+---
+description: スペーシング（余白）トークン利用ガイド・API仕様
+globs: "tokens/spacing/**/*"
+---
+## 概要
+8pxグリッドシステムに基づく余白・間隔トークン。一貫したレイアウトとリズムを提供。
+
+## API
+### Padding Tokens（内余白）
+| Token | CSS Variable | Value | rem値 | 用途 |
+|-------|-------------|-------|-------|------|
+| padding-4 | --spacing-padding-4 | 4px | 0.25rem | 極小余白（アイコン内側等） |
+| padding-8 | --spacing-padding-8 | 8px | 0.5rem | 小余白（ボタン内側等） |
+| padding-12 | --spacing-padding-12 | 12px | 0.75rem | 標準余白（入力フィールド等） |
+| padding-16 | --spacing-padding-16 | 16px | 1rem | 中余白（カード内側等） |
+| padding-20 | --spacing-padding-20 | 20px | 1.25rem | 大余白（セクション内側等） |
+| padding-24 | --spacing-padding-24 | 24px | 1.5rem | 特大余白（コンテナ内側等） |
+| padding-32 | --spacing-padding-32 | 32px | 2rem | 最大余白（ページ内側等） |
+
+### Margin / Gap での使い方
+現状のCSS変数は `--spacing-padding-*` スケールに集約されている。`margin` や `gap` にも、実在する `--spacing-padding-*` を使う。
+
+| 用途 | CSS Variable | 目安 |
+|-------|-------------|------|
+| 極小間隔 | --spacing-padding-4 | インライン要素間、密集配置 |
+| 小間隔 | --spacing-padding-8 | リスト項目間、ボタングループ |
+| 標準間隔 | --spacing-padding-12 | 段落間、フォーム項目 |
+| 中間隔 | --spacing-padding-16 | コンポーネント間、カードグリッド |
+| 大間隔 | --spacing-padding-24 | ブロック間、セクショングリッド |
+| 最大間隔 | --spacing-padding-32 | ページセクション間 |
+
+## 使用例
+### CSS
+```css
+/* パディング */
+.card {
+  padding: var(--spacing-padding-16);
+}
+
+.button {
+  padding: var(--spacing-padding-8) var(--spacing-padding-12);
+}
+
+/* マージン */
+.section {
+  margin-bottom: var(--spacing-padding-24);
+}
+
+.text-block {
+  margin-bottom: var(--spacing-padding-12);
+}
+
+/* Flexboxのgap */
+.button-group {
+  display: flex;
+  gap: var(--spacing-padding-8);
+}
+
+/* Gridのgap */
+.card-grid {
+  display: grid;
+  gap: var(--spacing-padding-16);
+}
+```
+
+### JavaScript（コンポーネント内）
+```javascript
+// Storybook等でのインラインスタイル
+style="padding: var(--spacing-padding-16); margin-bottom: var(--spacing-padding-12);"
+
+// Flexboxコンテナ
+style="display: flex; gap: var(--spacing-padding-8);"
+```
+
+## 命名規則
+- **spacing-padding-{数値}**: 余白スケールの実在CSS変数。padding / margin / gap の各プロパティで使う
+- **8pxグリッド**: 4, 8, 12, 16, 20, 24, 32（全て8の倍数または4の倍数）
+
+## 注意事項・ベストプラクティス
+### 🚨 絶対禁止
+- **直接px指定**: `margin: 16px` ❌
+- **直接数値指定**: `padding: 1rem` ❌
+- **8pxグリッド外の値**: `margin: 15px` ❌
+
+### ✅ 必須実装方法
+- **トークン使用**: `margin: var(--spacing-padding-16)` ✅
+- **8pxグリッド準拠**: 4, 8, 12, 16, 20, 24, 32のみ使用 ✅
+
+### 使い分けガイド
+#### Padding（内余白）
+- **4px**: アイコンボタンの内側、極小要素
+- **8px**: 小ボタン、タグの内側
+- **12px**: 入力フィールド、標準ボタン
+- **16px**: カード、パネルの内側
+- **24px**: セクション、コンテナの内側
+- **32px**: ページレベルの内余白
+
+#### Margin（外余白）
+- **4px**: インライン要素間、密集レイアウト
+- **8px**: リスト項目間、小要素間
+- **12px**: 段落間、テキストブロック間
+- **16px**: コンポーネント間
+- **24px**: セクション間
+- **32px**: ページセクション間
+
+#### Gap（Flexbox/Grid）
+- **4px**: タグクラウド、密集配置
+- **8px**: ボタングループ、ツールバー
+- **12px**: フォーム項目
+- **16px**: カードグリッド
+- **24px**: セクショングリッド
+
+### 8pxグリッドシステム
+- **基準**: 8px = 0.5rem
+- **比率**: 1:1.5:2:2.5:3:4（4:8:12:16:20:24:32）
+- **視覚的リズム**: 一貫した間隔による統一感
+
+### レスポンシブ対応
+```css
+/* モバイル */
+@media (max-width: 768px) {
+  .container {
+    padding: var(--spacing-padding-12);
+  }
+}
+
+/* デスクトップ */
+@media (min-width: 769px) {
+  .container {
+    padding: var(--spacing-padding-24);
+  }
+}
+```

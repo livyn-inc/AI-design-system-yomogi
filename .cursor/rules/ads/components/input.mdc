@@ -1,0 +1,113 @@
+---
+description: Inputコンポーネント設計・利用ガイド
+globs: "components/input/**/*"
+---
+## 概要
+汎用的なテキスト入力コンポーネント。様々な入力タイプ、サイズ、状態に対応し、アクセシビリティに配慮した設計。
+
+## API
+### Props
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| type | 'text' \| 'email' \| 'password' \| 'number' \| 'tel' \| 'url' \| 'search' | 'text' | 入力フィールドのタイプ |
+| size | 'sm' \| 'md' \| 'lg' | 'md' | 入力フィールドのサイズ |
+| status | 'default' \| 'error' \| 'success' | 'default' | 入力フィールドの状態 |
+| placeholder | string | '' | プレースホルダーテキスト |
+| value | string | '' | 入力値 |
+| label | string | '' | ラベルテキスト |
+| helperText | string | '' | 補助テキスト |
+| errorText | string | '' | エラーテキスト（status="error"時に表示） |
+| leftIcon | string | '' | 左側のアイコン（HTML） |
+| rightIcon | string | '' | 右側のアイコン（HTML） |
+| disabled | boolean | false | 無効化状態 |
+| readonly | boolean | false | 読み取り専用状態 |
+| required | boolean | false | 必須項目 |
+| id | string | '' | input要素のID |
+| name | string | '' | input要素のname属性 |
+| ariaLabel | string | '' | アクセシビリティ用ラベル |
+| ariaDescribedby | string | '' | アクセシビリティ用説明ID |
+
+## 使用例
+```javascript
+// 基本的な使用
+Input({ 
+  label: 'メールアドレス',
+  type: 'email',
+  placeholder: 'example@email.com'
+})
+
+// エラー状態
+Input({
+  label: 'パスワード',
+  type: 'password',
+  status: 'error',
+  errorText: '8文字以上で入力してください',
+  required: true
+})
+
+// アイコン付き
+Input({
+  label: '検索',
+  type: 'search',
+  leftIcon: '<svg>...</svg>',
+  placeholder: '検索...'
+})
+
+// フォーム内での使用
+Input({
+  label: '氏名',
+  name: 'fullname',
+  required: true,
+  helperText: '姓名を入力してください'
+})
+```
+
+## デザイン判断ガイド
+### サイズの選択指針
+- **sm**: 限られたスペースや補助的な入力用（32px高）
+- **md**: 一般的な用途（デフォルト、40px高）
+- **lg**: モバイルやタッチデバイス向け（48px高）
+
+### 状態の使い分け
+- **default**: 通常の入力状態
+- **error**: バリデーションエラーや入力ミス
+- **success**: 入力完了や検証成功の明示
+
+### タイプの選択
+- **text**: 一般的なテキスト入力
+- **email**: メールアドレス入力（モバイルキーボード最適化）
+- **password**: パスワード入力（マスク表示）
+- **number**: 数値入力（スピナー表示）
+- **tel**: 電話番号入力（モバイルキーボード最適化）
+- **url**: URL入力
+- **search**: 検索入力（クリアボタン表示可能）
+
+### アイコンの使用指針
+- **leftIcon**: 入力内容のタイプを示す（ユーザー、メール、検索など）
+- **rightIcon**: アクション表示（クリア、表示/非表示、送信など）
+- アイコンサイズは20x20pxを推奨
+
+## アクセシビリティ
+- labelまたはaria-labelで必ず入力フィールドの目的を明示
+- エラー時はaria-invalid="true"とaria-describedbyで詳細を提供
+- 必須項目はaria-required="true"で明示
+- キーボードナビゲーション完全対応
+- スクリーンリーダー対応（役割と状態の読み上げ）
+- 色だけに頼らない状態表示（アイコンやテキストも併用）
+
+## レイアウト・余白原則
+- 入力フィールドの内側余白はlayout.mdcの原則に従う
+  - sm: padding 6px 12px
+  - md: padding 8px 16px
+  - lg: padding 12px 20px
+- アイコン使用時は適切な余白を自動調整
+- ラベルと入力フィールドの間隔は4px
+- ヘルパー/エラーテキストとの間隔は4px
+
+## 技術的詳細
+- CSS変数でテーマ対応（ライト/ダークモード）
+- トークンベースの色・余白・サイズ管理
+- フォーカス時の視覚的フィードバック（青いアウトライン）
+- エラー時の視覚的フィードバック（赤いボーダーとテキスト）
+- 成功時の視覚的フィードバック（緑のボーダー）
+- 自動IDジェネレーション（アクセシビリティ対応）

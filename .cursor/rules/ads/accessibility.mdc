@@ -1,0 +1,50 @@
+---
+description: アクセシビリティガイドライン（Accessibility Guideline）
+globs: "**/*"
+---
+すべてのユーザーが快適に利用できるようにするための基準やチェックリスト。
+
+## 基本方針
+- デザイン・実装の全ての段階でアクセシビリティを必ず考慮すること
+- アクセシビリティ基準（WCAG 2.2 AA相当）を基本にする。導入先要件に応じて WCAG 2.1 AA 互換も確認する
+
+## レイアウト・見やすさの配慮（原則）
+- 要素同士の間隔や余白を十分に確保し、詰め込みすぎを避けること
+- セクションやグループごとに視覚的な区切りや余白を設け、情報のまとまりを分かりやすくすること
+- 視覚的な区切りを設ける際は、安易に罫線（ボーダー）だけに頼らず、余白や背景色、見出しなども活用すること
+- 罫線を使う場合は、コントラストや太さ、間隔に配慮し、情報の分断やごちゃごちゃした印象を与えないよう注意すること
+- 具体的な余白・間隔・グリッドの基準は「layout.mdc」を参照
+
+## チェックリスト・具体的基準
+- テキストと背景のコントラスト比は、通常のテキストで4.5:1以上、大きなテキストで3:1以上（WCAG 2.2 AA基準）
+- アイコンやUI要素も、視認性を損なわないコントラストを確保する
+- 本文は最低14px以上、行間（line-height）は1.5倍程度を目安にする
+- すべての操作をキーボード（Tab, Enter, Spaceなど）で完結できるようにする
+- フォーカスが当たった要素は明確に可視化する（outlineや背景色など）
+- 画像にはalt属性を必ず付与
+- ボタンやリンクにはaria-label等で役割や目的を明示
+- 見出しやリストなど、HTMLの構造化タグを正しく使う
+- 色だけに頼らない情報伝達（必ずアイコンやテキストも併用）
+- 入力欄にはラベルを明示し、aria属性も活用
+- エラー時はテキストやアイコンで明確に伝える
+- エラー内容はスクリーンリーダーでも読み上げられるようにする
+- 激しい点滅や過度な動きは避ける
+- motion-reduce（ユーザーの設定）に対応し、アニメーションを抑制できるようにする
+- 装飾が情報の伝達や可読性を妨げていないか常に確認する
+- 色の使い方は「brand.mdc」「tokens.mdc」も参照
+
+## アクセシビリティチェックツール
+以下は Yomogi がインストールするパッケージではなく、必要に応じて人間が確認に使う外部ツール・参考資料。
+
+- [axe DevTools](https://www.deque.com/axe/devtools/)
+- [Google Lighthouse](https://developer.chrome.com/docs/lighthouse/overview)
+- [WAVE](https://wave.webaim.org/)
+- [NVDA（Windowsスクリーンリーダー）](https://www.nvaccess.org/)
+- [VoiceOver（Mac/iOSスクリーンリーダー）](https://support.apple.com/ja-jp/guide/voiceover/welcome/mac)
+
+## 参考リンク
+- [WCAG 2.2 日本語訳](https://waic.jp/translations/WCAG22/)
+- [JIS X 8341-3:2016](https://waic.jp/docs/jis2016/)
+- [gov.uk accessibility guidance](https://www.gov.uk/guidance/accessibility-requirements-for-public-sector-websites-and-apps)
+- [Apple Accessibility](https://www.apple.com/accessibility/)
+- [Google Accessibility](https://developers.google.com/accessibility)

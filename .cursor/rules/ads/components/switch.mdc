@@ -1,0 +1,147 @@
+---
+description: Switchコンポーネントの設計・運用仕様
+globs: "components/switch/**/*"
+---
+
+# Switch コンポーネント仕様
+
+## 概要
+ON/OFF状態を切り替えるトグルスイッチコンポーネント。設定の有効/無効、機能の開始/停止などに使用。
+
+## 基本使用法
+```javascript
+// 基本
+${Switch({ label: '通知を受け取る' })}
+
+// ON状態
+${Switch({ label: 'ダークモード', checked: true })}
+
+// 無効化
+${Switch({ label: 'プレミアム機能', disabled: true })}
+```
+
+## API仕様
+
+### Props
+| 名前 | 型 | デフォルト | 説明 |
+|------|-----|----------|------|
+| id | string | auto-generated | 要素のID |
+| name | string | '' | form要素でのname属性 |
+| checked | boolean | false | チェック状態 |
+| disabled | boolean | false | 無効化状態 |
+| size | 'sm' \| 'md' \| 'lg' | 'md' | サイズ |
+| label | string | '' | ラベルテキスト |
+| onChange | function | () => {} | 変更時のコールバック |
+| className | string | '' | 追加CSSクラス |
+
+### サイズ仕様
+- **sm**: 32×16px（モバイル・コンパクトUI用）
+- **md**: 40×20px（標準サイズ）
+- **lg**: 48×24px（タッチUI・大画面用）
+
+## デザインガイドライン
+
+### 色の使い方
+- **OFF状態**: グレー系背景、白いノブ
+- **ON状態**: プライマリカラー背景、白いノブ
+- **無効化**: 低コントラスト、操作不可を示す
+
+### 配置・間隔
+- ラベルとスイッチの間隔: 12px
+- スイッチ同士の縦間隔: 16px以上
+- タップ/クリック領域はスイッチ全体（ラベル含む）
+
+## 使用場面
+
+### 適切な使用場面
+- ✅ 設定のON/OFF切り替え
+- ✅ 機能の有効/無効制御
+- ✅ 表示/非表示の切り替え
+- ✅ 通知設定の制御
+
+### 不適切な使用場面
+- ❌ 複数選択肢からの選択（Radioを使用）
+- ❌ 一覧での複数項目選択（Checkboxを使用）
+- ❌ フォームの同意（Checkboxを使用）
+- ❌ 一時的な実行（Buttonを使用）
+
+## 状態とインタラクション
+
+### 状態一覧
+1. **OFF/未チェック**: デフォルト状態
+2. **ON/チェック**: 有効化状態
+3. **Hover**: カーソル接近時のフィードバック
+4. **Focus**: キーボードフォーカス時
+5. **Disabled**: 操作不可状態
+
+### キーボード操作
+- `Space`: ON/OFF切り替え
+- `Tab`: 次の要素にフォーカス移動
+- `Shift + Tab`: 前の要素にフォーカス移動
+
+## アクセシビリティ
+
+### 必須対応
+- セマンティックなHTML（input[type="checkbox"] + label）
+- キーボード操作完全対応
+- スクリーンリーダー対応
+- 十分なコントラスト比（4.5:1以上）
+- 最小タップ領域（44×44px以上）
+
+### ARIA属性
+- `role="switch"` は自動付与
+- `aria-checked` は状態に応じて自動設定
+- `aria-labelledby` でラベルとの関連付け
+
+## 実装注意事項
+
+### CSS実装ルール
+```css
+/* ❌ 禁止 */
+.switch { width: 40px; color: #333; }
+
+/* ✅ 必須 */
+.switch { 
+  width: var(--spacing-padding-40); 
+  color: var(--color-semantic-text-middle-light); 
+}
+```
+
+### JavaScript実装
+- 状態変更時は必ずonChangeコールバックを実行
+- アニメーション完了を待つ必要はなし
+- フォーム送信時は checked 値を正しく送信
+
+## バリエーション例
+
+### サイズ別使い分け
+```javascript
+// コンパクトなフォーム・表内
+${Switch({ size: 'sm', label: '有効' })}
+
+// 一般的な設定画面
+${Switch({ size: 'md', label: '通知を受け取る' })}
+
+// モバイル・タッチ重視
+${Switch({ size: 'lg', label: 'ダークモード' })}
+```
+
+### 設定画面での使用
+```javascript
+<div class="settings-group">
+  ${Switch({ label: 'メール通知', checked: true })}
+  ${Switch({ label: 'プッシュ通知', checked: false })}
+  ${Switch({ label: 'SMS通知', disabled: true })}
+</div>
+```
+
+## 他コンポーネントとの使い分け
+
+| コンポーネント | 用途 | 例 |
+|---------------|------|-----|
+| **Switch** | ON/OFF切り替え | 通知設定、ダークモード |
+| **Checkbox** | 単一/複数同意・選択 | 利用規約同意、複数項目選択 |
+| **Radio** | 排他的選択 | 性別選択、配送方法選択 |
+
+## 更新時の注意
+- 実装やAPIを変更した場合は、Storybookと本mdcの使用例を同じタイミングで更新する。

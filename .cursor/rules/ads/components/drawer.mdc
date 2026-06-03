@@ -1,0 +1,60 @@
+# Drawer コンポーネント
+
+## 目的
+- 画面端から滑り出す細長いオーバーレイ領域。設定・詳細・補助情報・ナビゲーションを「メイン画面を閉じずに」差し込む
+- Modal が「中央で操作を奪う」のに対し、Drawer は「横から関連情報を足す」位置づけ
+
+## API
+```js
+Drawer({
+  side: 'left' | 'right',  // 既定: 'right'
+  content: string          // 内部HTML（コンポーネントを組み合わせて構成）
+})
+```
+
+返り値は `<div class="ds-drawer ds-drawer--{side}">…</div>` の HTML 文字列。本実装は静的デモ。開閉やバックドロップ制御はアプリ側の責務。
+
+## 使用例
+```js
+Drawer({
+  side: 'right',
+  content: `
+    <h2>フィルター</h2>
+    ${Checkbox({ id: 'f1', label: 'アクティブのみ' })}
+    ${Select({ id: 'sort', label: '並び順', options: [...] })}
+    <div class="ds-drawer__actions">
+      ${Button({ variant: 'outline', color: 'neutral', label: 'リセット' })}
+      ${Button({ variant: 'solid', color: 'primary', label: '適用' })}
+    </div>
+  `
+})
+```
+
+## デザイン仕様（トークン）
+- パネル背景: `var(--color-semantic-neutral-50-light/dark)`
+- 影: `var(--shadow-box-shadow-lg-light/dark)`（Modal より控えめ）
+- 余白: 内側 padding は `var(--spacing-padding-24)` 上下左右が既定。狭い場合は 16
+- 幅: `var(--layout-max-width-sm)` 〜 `var(--layout-max-width-md)` を目安に、内容量で決める
+- アクション領域は下端に sticky で配置することが多い
+
+## Drawer / Modal / Popover の選択
+- **Drawer**: 補助・設定・詳細パネル。複数の入力を含む。閉じても作業が続く
+- **Modal**: 重要な確認や、ステップを完了させたい操作（送信・削除確認）
+- **Popover**: 1〜2要素の補助情報・選択肢のクイック表示
+
+## ふるまい
+- 表示状態は呼び出し側で制御する（display / aria-hidden / focus trap）
+- バックドロップクリック・Esc キーで閉じる挙動はアプリ側で実装する
+- 開閉時のスライドイン/アウトは CSS のトランジションで補助する
+
+## アクセシビリティ
+- ラッパーに `role="dialog"` または `aria-label` / `aria-labelledby` を付与する
+- 開いたときは Drawer 内の最初のフォーカス可能要素にフォーカスを移す
+- 閉じる手段（ボタン / 背景クリック / Esc）を必ず1つ以上提供する
+- 背後のメイン画面は `inert` または `aria-hidden="true"` でフォーカスから外す
+
+## アンチパターン
+- 重要な決定（削除確認など）を Drawer で出す（Modal を使う）
+- Drawer 内に Modal を重ねて開く（フォーカスと階層が壊れやすい）
+- 幅を画面の半分以上にする（閉じた状態のメイン画面が見えるのが Drawer の意義）
+- バックドロップなしで永続表示にする（その場合は Drawer ではなく SideNav / Aside を使う）

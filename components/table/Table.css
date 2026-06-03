@@ -1,0 +1,140 @@
+.ds-table__figure { display: block; margin: var(--spacing-padding-0); }
+.ds-table__container { display: block; overflow: hidden; background-color: var(--color-semantic-absolute-white-light); }
+.ds-table { width: 100%; border-collapse: collapse; }
+.ds-table__caption { text-align: left; color: var(--color-semantic-text-middle-light); padding: var(--spacing-padding-8) 0; }
+.ds-table__header { padding: var(--spacing-padding-16) var(--spacing-padding-20); text-align: left; border-bottom: 1px solid var(--color-semantic-divider-high-light); font-weight: var(--font-weight-600); background: var(--color-semantic-neutral-50-light); color: var(--color-semantic-text-middle-light); font-size: var(--font-size-16); }
+.ds-table__cell { padding: var(--spacing-padding-16) var(--spacing-padding-20); border-bottom: 1px solid var(--color-semantic-divider-high-light); font-weight: var(--font-weight-400); font-size: var(--font-size-16); }
+
+/* 外枠あり（outlined）のとき、最終行の下線を消して二重線を防ぐ */
+.ds-table__container--outlined .ds-table tbody tr:last-child > .ds-table__cell { border-bottom: none; }
+
+/* Variant: outlined/plain (container holds border & radius) */
+.ds-table__container--outlined { border: var(--border-width-base-light) solid var(--color-semantic-text-high-light); border-radius: var(--radius-xl); }
+.ds-table__container--plain { border: none; }
+
+/* Density */
+.ds-table--density-sm .ds-table__header,
+.ds-table--density-sm .ds-table__cell { padding: var(--spacing-padding-8) var(--spacing-padding-12); }
+.ds-table--density-md .ds-table__header,
+.ds-table--density-md .ds-table__cell { padding: var(--spacing-padding-16) var(--spacing-padding-20); }
+.ds-table--density-lg .ds-table__header,
+.ds-table--density-lg .ds-table__cell { padding: var(--spacing-padding-20) var(--spacing-padding-24); }
+
+/* 縦線（vLines）: 列ボーダー。最終列の二重線はoutlined時は外枠に任せる */
+.ds-table--vlines .ds-table__cell { border-right: 1px solid var(--color-semantic-divider-low-light); }
+.ds-table__container--outlined .ds-table--vlines tr > .ds-table__cell:last-child { border-right: none; }
+.ds-table__container--plain .ds-table--vlines tr > .ds-table__cell:last-child { border-right: 1px solid var(--color-semantic-divider-low-light); }
+.ds-table--vlines .ds-table__header + .ds-table__header { border-left: 1px solid var(--color-semantic-divider-middle-light); }
+
+/* Row hover */
+.ds-table tbody tr {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.ds-table tbody tr:hover {
+  background-color: var(--color-base-primary-50-light);
+}
+
+[data-theme="dark"] .ds-table--vlines .ds-table__cell { border-right-color: var(--color-semantic-divider-low-dark); }
+[data-theme="dark"] .ds-table--vlines .ds-table__header + .ds-table__header { border-left-color: var(--color-semantic-divider-middle-dark); }
+[data-theme="dark"] .ds-table__container--outlined .ds-table--vlines tr > .ds-table__cell:last-child { border-right: none; }
+
+/* Grid lines: removed per revert request */
+
+/* Manual dark mode support */
+[data-theme="dark"] .ds-table {
+  color: var(--color-semantic-text-high-dark);
+}
+
+[data-theme="dark"] .ds-table__container {
+  background-color: var(--color-semantic-neutral-50-dark);
+}
+
+[data-theme="dark"] .ds-table__container--outlined {
+  border-color: var(--color-semantic-divider-high-dark);
+}
+
+[data-theme="dark"] .ds-table__header {
+  border-bottom-color: var(--color-semantic-divider-high-dark);
+  color: var(--color-semantic-text-high-dark);
+  background: var(--color-semantic-neutral-100-dark);
+}
+
+[data-theme="dark"] .ds-table__cell {
+  border-bottom-color: var(--color-semantic-divider-high-dark);
+  color: var(--color-semantic-text-high-dark);
+}
+
+/* ダークモードでも最終行の二重線回避を維持（色指定の上書きがないため追加は不要だが念のため保守的にセレクタを再掲） */
+[data-theme="dark"] .ds-table__container--outlined .ds-table tbody tr:last-child > .ds-table__cell { border-bottom: none; }
+
+[data-theme="dark"] .ds-table tbody tr:hover {
+  background-color: var(--color-base-primary-50-dark);
+}
+
+/* Resizable columns support */
+.ds-table__container--resizable {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.ds-table__container--resizable .ds-table {
+  table-layout: fixed;
+  min-width: 800px;
+  width: 100%;
+}
+
+.ds-table__resizer {
+  position: absolute;
+  right: -2px;
+  top: 0;
+  width: 8px;
+  height: 100%;
+  cursor: col-resize;
+  background: transparent;
+  z-index: 10;
+  border-right: 2px solid transparent;
+}
+
+.ds-table__resizer:hover {
+  background: var(--color-semantic-primary-500-light);
+}
+
+[data-theme="dark"] .ds-table__resizer:hover {
+  background: var(--color-semantic-primary-500-dark);
+}
+
+/* Additional styles for proper resizing */
+.ds-table__container--resizable .ds-table__header {
+  position: relative;
+  user-select: none;
+}
+
+.ds-table__container--resizable .ds-table th {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* リサイズ可能エリアのホバーエフェクト */
+.ds-table__container--resizable .ds-table__header::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 8px;
+  height: 100%;
+  background-color: transparent;
+  transition: background-color 0.2s;
+}
+
+.ds-table__container--resizable .ds-table__header:hover::after {
+  background-color: var(--color-base-primary-600-light);
+}
+
+/* ダークモード対応 */
+[data-theme="dark"] .ds-table__container--resizable .ds-table__header:hover::after {
+  background-color: var(--color-base-primary-600-dark);
+}
+

@@ -1,0 +1,97 @@
+---
+description: デザイントークン運用・命名規則（階層3：全体ルールに従う）
+globs: "tokens/**/*"
+---
+デザイントークンは、色・フォント・余白・角丸・シャドウなど、UIのスタイル値を一元管理するための「変数」です。導入先ごとのカスタマイズや一貫性の担保、テーマ切り替えを容易にします。
+
+## 管理するトークンの主な種類
+- 色（color-primary, color-bg, color-border など）
+- フォント（font-family, font-size, font-weight など）
+- 余白・間隔（spacing-xs, spacing-md, spacing-lg など）
+- 角丸（radius-sm, radius-lg など）
+- シャドウ（shadow-card, shadow-modal など）
+- ボーダー（border-width, border-color など）
+- アイコンサイズ（icon-size-sm, icon-size-lg など）
+- その他（opacity, z-index, transition など）
+- 透明度（opacity-0, opacity-50, opacity-65 など）
+
+## 命名規則・管理方法
+- 英語のケバブケース（kebab-case）で統一（例: color-primary, spacing-md, font-size-lg）
+- カテゴリごとにprefixを付ける
+- 8pxグリッドなど、スケールを意識した命名
+- ファイル名は用途で統一（index.json, primitives.json など）
+- ルート直下にJSONを置かず、必ずカテゴリディレクトリ内に格納
+
+## カラートークン一元管理
+- カラートークンは `tokens/colors/index.json` で一元管理
+
+## 透明度（Opacity）トークン
+- 透明度は `tokens/opacity/primitives.json` で一元管理
+- 7段階の数値ベース命名（opacity-0, opacity-5, opacity-15, opacity-30, opacity-50, opacity-65, opacity-100）
+- 機能名ではなく段階的な命名で柔軟性を確保
+- 主な用途：
+  - opacity-0: 完全透明（要素隠し）
+  - opacity-5: 微細なホバー効果
+  - opacity-15: 軽いホバー状態・選択状態
+  - opacity-30: 無効化テキスト・プレースホルダー
+  - opacity-50: 無効化要素・モーダル背景
+  - opacity-65: ローディングオーバーレイ・強調無効化
+  - opacity-100: 完全不透明（デフォルト）
+
+## フォントサイズの標準値・プラットフォーム別推奨値
+### 標準フォントサイズ（本文）
+- **Web**：16px（ブラウザデフォルト、Google推奨、WCAG準拠）
+- **iOS（ネイティブアプリ）**：17pt（HIG推奨、最小11pt）
+- **Android（ネイティブアプリ）**：15sp（Material Design推奨、最小13sp）
+
+### 導入先初期化時の調整方針
+- デフォルトはWeb標準の16pxで設定
+- ヒアリング結果に応じて、導入先の開始時に該当プラットフォームの推奨値に一括調整
+- 導入先固有要件がある場合は、さらに個別カスタマイズ
+
+## カスタマイズ・テーマ切り替え例
+- 導入先ごとにcolor-primaryやfont-familyなどを上書きするだけで、全体の雰囲気を簡単に変更可能
+- ダークモードやブランドごとのテーマも、トークンのセットを切り替えるだけで実現
+
+## トークン追加・変更時の運用ルール
+- 追加・変更は必ず { "key": { "value": ... } } 形式で記述
+- 命名はkebab-case、カテゴリprefix必須
+- 追加・変更時は影響範囲を確認し、命名規則・一貫性を守る
+- **🚨 単位必須：すべてのサイズ・距離・時間値には適切な単位を必ず付ける**
+- 追加・変更後は必ず `npm run build-tokens` を実行し、tokens.cssを最新化
+- tokens.cssが古い場合、UIやStorybookに反映されないので注意
+- 生成cssはgit管理してもよいし、ビルド時に自動生成でもOK
+- **Storybook連携：新しいトークンを追加した場合は、必ずstorybook/stories/配下に該当トークンのstoriesファイルも追加・更新すること（title命名規則：tokens/●●）**
+
+## 単位指定ルール（必須）
+### 🚨 絶対禁止：単位なし数値
+- ❌ `"lineHeight-20": { "value": 20 }` → CSSで `line-height: 20;` となり無効
+- ❌ `"size-16": { "value": 16 }` → CSSで `font-size: 16;` となり無効
+
+### ✅ 必須：適切な単位付き
+- ✅ `"lineHeight-20": { "value": "20px" }` → CSSで `line-height: 20px;`
+- ✅ `"size-16": { "value": "16px" }` → CSSで `font-size: 16px;`
+
+### トークンタイプ別必須単位
+| トークン種別 | 必須単位 | 例 |
+|-------------|----------|-----|
+| font-size | px | `"16px"` |
+| lineHeight | px | `"20px"` |
+| spacing/padding/margin | px | `"8px"` |
+| radius | px | `"4px"` |
+| opacity | 数値のみ（0-1） | `0.5` |
+| font-weight | 数値のみ（100-900） | `400` |
+| letterSpacing | % または em | `"2.5%"` |
+
+- PR時のチェックリスト例：
+  - [ ] 命名規則（kebab-case, prefix）を守っている
+  - [ ] **すべての値に適切な単位が付いている**
+  - [ ] 影響範囲を確認した
+  - [ ] build-tokensを実行し、tokens.cssを最新化した
+  - [ ] Storybook storiesを追加・更新した
+  - [ ] 必要に応じてmdcファイルも更新した
+
+## 参考ツール・リンク
+- [Style Dictionary](https://amzn.github.io/style-dictionary/)
+- [Tokens Studio](https://tokens.studio/)
+- [Design Tokens Community Group](https://design-tokens.github.io/community-group/)

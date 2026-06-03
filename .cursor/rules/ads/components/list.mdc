@@ -1,0 +1,104 @@
+# List コンポーネント
+
+## 目的
+- 汎用的な縦並びの情報表示・選択・ナビゲーションを **1つの API で提供** する
+- ボタン / トークン体系と整合した余白・色・サイズを共有
+
+## API
+```js
+List({
+  variant: 'plain'|'divided'|'nav'|'structured'|'ordered'|'unordered',
+  size: 'sm'|'md'|'lg',
+  selection: 'none'|'single'|'multiple',
+  items: Array<
+    | { type?: 'item', leading?: string, title?: string, subtitle?: string, meta?: string, trailing?: string, disabled?: boolean, selected?: boolean }
+    | { type: 'section', label: string }
+    | { type: 'separator' }
+    | { type: 'nav', title: string, href?: string, current?: boolean, defaultOpen?: boolean, children?: any[] }
+    | { type: 'kv', key: string, value: string }
+  >
+})
+```
+
+## 使用例
+```js
+// 標準のアイテムリスト（divided）
+List({
+  variant: 'divided',
+  size: 'md',
+  items: [
+    { leading: '<i data-lucide="user"></i>', title: '山田 花子', subtitle: '営業1部', meta: 'オンライン' },
+    { leading: '<i data-lucide="user"></i>', title: '佐藤 健', subtitle: '営業2部', meta: '不在' }
+  ]
+})
+
+// ナビゲーション（nav）
+List({
+  variant: 'nav',
+  items: [
+    { type: 'nav', title: 'ダッシュボード', href: '/', current: true },
+    { type: 'nav', title: 'プロジェクト', href: '/projects', children: [
+      { type: 'nav', title: '一覧', href: '/projects' },
+      { type: 'nav', title: '新規作成', href: '/projects/new' }
+    ]}
+  ]
+})
+
+// キー・バリュー（kv 構造化）
+List({
+  variant: 'structured',
+  items: [
+    { type: 'kv', key: '会社名', value: '株式会社サンプル' },
+    { type: 'kv', key: '所在地', value: '東京都渋谷区...' }
+  ]
+})
+
+// 単一選択
+List({
+  variant: 'plain',
+  selection: 'single',
+  items: [
+    { title: '通常配送', subtitle: '5-7営業日', selected: true },
+    { title: '速達', subtitle: '1-2営業日' }
+  ]
+})
+```
+
+## variant の選び指針
+- **plain**: 区切り線なしの基本リスト。カード内などコンテナがある場面
+- **divided**: 行ごとに区切り線。情報量がある汎用リスト（既定）
+- **nav**: ナビゲーション用途。`type: 'nav'` の階層構造を持つ
+- **structured**: `dl/dt/dd` 相当の意味付け（key-value 表示）
+- **ordered / unordered**: 純粋な箇条書き（番号 or ビュレット）
+
+## デザイン仕様（トークン）
+- 行 padding: sm=`var(--spacing-padding-8)` / md=`var(--spacing-padding-12)` / lg=`var(--spacing-padding-16)`
+- 区切り線: `var(--color-semantic-divider-extra-high-light/dark)`（divided / structured）
+- 文字色: `title` = text-high、`subtitle` = text-middle、`meta` = text-low
+- hover: `var(--color-semantic-overlay-neutral-05-light/dark)`
+- selected: `var(--color-semantic-overlay-neutral-15-light/dark)` 相当
+- アイコン（leading / trailing）サイズは本文サイズと揃え、行内 gap は `var(--spacing-padding-12)`
+
+## ふるまい
+- `selection: 'single'` / `'multiple'`: クリック / Enter / Space で選択切り替え
+- `type: 'nav'` の `children`: トグルで開閉、`defaultOpen: true` で初期展開
+- `type: 'separator'`: 単なる区切り線（操作不可）
+- `type: 'section'`: グループ見出しを挿入
+
+## アクセシビリティ
+- `selection !== 'none'`: ルートに `role="listbox"`、各アイテムに `role="option"` + `aria-selected`、キーボード上下 / Enter / Space で操作
+- `variant: 'nav'`: `<nav>` 領域 + リンクに `aria-current="page"`（深い階層のツリー A11y は別途拡張）
+- `variant: 'structured'`: `<dl>` / `<dt>` / `<dd>` で意味付け
+- `disabled: true` のアイテムは `aria-disabled="true"` + フォーカス不可
+
+## List / Table / Card の使い分け
+- **List**: 縦並びの情報・操作・ナビゲーション。1次元の連続的データ
+- **Table**: 行 × 列の比較・走査が必要な2次元データ
+- **Card**: 同質要素の比較を「面」として並べる（画像主体・操作面が大きい等）
+
+## アンチパターン
+- px / rgba 直書き、トークン未使用
+- 行とパネル（外側コンテナ）の角丸 / 影を二重に持たせる
+- `selection: 'single'` なのに視覚的にチェックボックスのように見せる（Radio を使う）
+- 列が増えてきた段階で List のままにする（Table に切り替える）
+- ナビゲーション用途で `nav` 以外の variant を使う（A11y が壊れる）

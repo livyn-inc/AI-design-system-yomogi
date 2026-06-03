@@ -1,0 +1,347 @@
+---
+description: デザイン実装時のチェックリスト
+globs: "**/*"
+alwaysApply: true
+---
+
+# デザインシステム チェックリスト
+
+このファイルは、ページやコンポーネントを作成・修正するときに使うチェックリストです。エージェントの運用方針（計画提示・ADS-LOG・8原則の取り扱いなど）は [`AGENTS.md`](../../../AGENTS.md) と `ai-operations.mdc` に分離されています。本ファイルはデザイン品質の確認項目に集中します。
+
+---
+
+## 0. クイックチェック
+
+チェック依頼を受けた場合は、本ファイルを参照しながら次の順で確認します。自然文の依頼は隠しトリガーではなく通常の依頼として扱い、対象HTMLが分かる場合は `npm run dcs-report -- <html>` の結果も併用します。
+
+1. コンポーネント利用確認（手書きHTMLが使われていないか）
+2. 重大な技術違反（直書き、推測トークン、生成場所違反）
+3. 視覚的問題（強調過多、余白の階層違反、アイコン不一致）
+4. 改善提案
+
+---
+
+## 1. 実装方法チェック（最優先）
+
+### コンポーネント利用
+- [ ] 利用可能なコンポーネントを `pages/_templates/components.js` 経由で使っているか
+- [ ] 手動HTMLではなくコンポーネントを使っているか
+- [ ] 不要な重複実装がないか
+- [ ] コンポーネントのprops/APIを正しく使っているか
+
+### 確認方法
+- `import.*components` の grep で利用状況を確認
+- `class="ds-` の grep で手動実装の有無を確認
+
+### あいまいな指示への対応
+- 「もっと大きく」「もっと目立つように」など曖昧な指示には、軽微/中程度/大幅 などの段階的選択肢（A/B/C）を提示し、ユーザーに選んでもらう。
+- 各段階で何が変わるか（例: フォントサイズ、強調度の変化）を簡潔に示す。
+
+---
+
+## 2. トークン使用チェック
+
+### 直書き禁止（最重要）
+- [ ] CSSに px / 数値の直接指定がないか
+- [ ] CSSに hex / rgba の直接指定がないか
+- [ ] すべて `var(--xxx)` のトークンを使っているか
+
+### トークン存在確認
+- [ ] 使う前に `build/css/tokens.css` で実在を確認したか
+- [ ] 推測でトークン名を書いていないか
+- [ ] 存在しないサイズが必要な場合、近似する既存トークンへの代替を提示したか
+- [ ] `calc()` を使う場合、計算根拠を明示したか
+
+### ボーダー・罫線の色
+- [ ] コンポーネント既定のボーダーはそのまま使う
+- [ ] カスタムCSS（カード・区切り線等）は `var(--color-semantic-divider-extra-high-light/dark)` を使う
+- [ ] `divider-low` / `divider-middle` は原則使わない
+
+### トークンの追加・変更
+- [ ] 新規追加は `tokens/*.json` 編集 → `npm run build-tokens` → 存在確認 → Storybookで目視
+- [ ] 既存トークンの値変更はシステム全体に影響するため、ユーザー確認を取る
+
+---
+
+## 3. デザイン原則チェック（principles.mdc）
+
+- [ ] 一貫性のあるUIパターンを使っているか
+- [ ] シンプルで分かりやすい構造か
+- [ ] ニュートラルなデザインを基本にしているか
+- [ ] ユーザーの操作負担を最小化しているか
+
+---
+
+## 4. レイアウトチェック（layout.mdc）
+
+### 余白の階層
+- [ ] L1（見出し直下）: `var(--spacing-padding-12)`
+- [ ] L2（関連要素間）: `var(--spacing-padding-24)` ～ `var(--spacing-padding-32)`
+- [ ] L3（要素グループ間）: `var(--spacing-padding-48)`
+- [ ] L4（セクション間）: `var(--spacing-padding-72)`
+- [ ] 余白入れ子原則（外側コンテナ ≥ 同階層間 ≥ 2×内側関連）
+
+### 横方向の組み合わせ
+- [ ] アイコン＋テキストに行内gapを設定（既定: `var(--spacing-padding-8)` ／密: `6` ／広: `12`）
+- [ ] Navigation項目、左/右アイコン付きButton、Input内蔵アイコン、Tag 等が対象
+- [ ] コンポーネントCSSで `inline-flex + gap` を既定化（例: `.ds-nav__left { gap: var(--spacing-padding-8) }`）
+- [ ] 横余白の px 直書きは不可（必ずトークン）
+
+### PageTemplate既定値
+- [ ] outer: `var(--spacing-padding-32)`
+- [ ] row-gap: `var(--spacing-padding-24)`
+- [ ] column-gap: `var(--spacing-padding-32)`
+
+### ベーススタイル（Reset/Base）
+- [ ] bundle.cssにbase.css（reset+base）が含まれている
+- [ ] bodyに `font-family: var(--font-family-pro)` と `line-height: 1.5` が設定済み
+- [ ] PageTemplateはフォントを上書きせず継承している
+
+### 基本ルール
+- [ ] 最低余白: padding 8px 16px以上（左右16px必須）
+- [ ] 狭い余白（4px以下）を使っていないか
+- [ ] 同階層のコンテンツの開始位置が揃っているか
+
+### ブラウザデフォルト余白
+- [ ] figure, p, ul, blockquote 等のデフォルトマージンをリセットしているか
+- [ ] コンポーネントのラッパー要素で `margin: 0` を明示しているか
+- [ ] DevToolsで実測値を確認したか
+- [ ] 確認順序: 内部余白 → 外周ラッパ余白 → UAデフォルト
+
+---
+
+## 5. ボタンヒエラルキー（button.mdc, patterns.mdc）
+
+### 基本
+- [ ] **1画面に1つのprimary/solid**（最重要アクションのみ）
+- [ ] 関連アクションは同じvariantで統一
+- [ ] 破壊的操作はnegative色
+
+### variant
+- **solid**: 最重要アクション（1画面1つ）
+- **outline**: 重要だが控えめなアクション
+- **ghost**: 補助的・テキストリンク的なアクション
+
+### 色
+- **primary**: 推奨アクション（送信、保存、次へ）
+- **neutral**: 中立的アクション（キャンセル、戻る）
+- **negative**: 危険なアクション（削除、リセット）
+
+### 配置
+- フォーム: 送信は右下、キャンセルは左
+- モーダル: 主要アクションは右下
+- ツールバー: 危険な操作は分離配置
+
+---
+
+## 6. アクセシビリティ（accessibility.mdc）
+
+### 基本
+- [ ] コントラスト比（通常 4.5:1 以上、大きな文字 3:1 以上）
+- [ ] 本文は最低14px以上、行間1.5倍程度
+- [ ] キーボード操作可能（Tab, Enter, Space）
+- [ ] フォーカス状態が明確に可視化されている
+- [ ] aria-label等で役割・目的を明示
+
+### 要素別
+- [ ] 画像にalt属性
+- [ ] ボタン・リンクにaria-label
+- [ ] 入力欄にラベル明示
+- [ ] エラーはテキスト・アイコンで明確に伝達
+- [ ] 色だけに頼らない情報伝達
+
+---
+
+## 7. コンポーネント使用（components.mdc）
+
+### 主要コンポーネント
+- フォーム: Button, IconButton, Input, Select, Checkbox, Radio, Switch, TextArea
+- レイアウト: Card, PageTemplate, Drawer, Modal, Tabs
+- ナビゲーション: Breadcrumb, Navigation, Pagination
+- データ表示: Table, List, Avatar, Tag, FileTree
+- フィードバック: Alert, Toast, Tooltip, Popover
+- インタラクティブ: Dropdown
+
+### 実装時
+- [ ] 適切なprops/引数を渡しているか
+- [ ] サイズ・色・variantが用途に合っているか
+- [ ] patterns.mdcの使用例を参照したか
+- [ ] Storybookで表示確認したか
+
+---
+
+## 8. 評価の扱い（測定可能な項目とAIレビュー観点）
+
+旧来の「総合品質スコア（ID × CX × AE × DP）」は概念ガイドであり、自動測定の実装は限定的です。報告では次の2層を分けて扱います。
+
+### 測定可能な項目（自動チェック対象）
+- トークン使用率 / 直書き検出（px/hex/rgba）
+- 未定義トークンの検出
+- コンポーネント利用率（`ds-*` クラス・コンポーネント関数呼び出し）
+- ボタンヒエラルキー（primary/solid 数）
+- ページ生成場所（`pages/generated/` 配下か）
+- アクセシビリティ属性（alt / aria-label / role / h1 / lang）
+- 構造（DOCTYPE / charset / viewport / title / bundle.css / components.js）
+- 強調度の構成要素（CP / SP / MP / AP / KP / FWP）の有無確認
+
+これらは `npm run dcs-report -- <html|dir>` で自動レポート化できる。
+
+### AIレビュー観点（説明として扱う）
+- AE（美的表現）: ブランド適合・色彩調和・統一性・主脇役バランス
+- CX（コンテキスト評価）: プロダクト・ページ・設計意図の適合
+- ID（情報密度）: 占有面積と表示領域のバランス
+- DP（発見可能性）: UI要素の見つけやすさ
+- 要素間の視覚的関係性、密度バランス、洗練度、一貫性
+
+両者を混ぜず、根拠を併記します。スコアを断定せず、観点として説明します。詳細ガイドは `project-config/emphasis-*-detailed.md` を参照（参照は必要なときだけ）。
+
+### 強調手段の適用順序（参考）
+- エスカレーション順: コントラスト → サイズ/余白 → 領域 → 動き
+- 1画面1つの 10ポイント超強調に制限
+- 3アプローチ（絶対強調・相対強調・ハイブリッド）から最適解を選ぶ
+
+---
+
+## 9. 視覚的品質チェック
+
+### アイコン使用
+- [ ] 文字だらけ診断（3行以上の連続テキストが3箇所以上ないか）
+- [ ] アイコンサイズは横並び時にフォントサイズと同じか
+- [ ] 同じ機能には同じアイコンを使う
+- [ ] 1画面5〜8種類程度に収まっているか
+- [ ] 導入先で定めた共通アイコン辞書を参照したか
+
+### NGパターン
+- [ ] 詰まって見えるメッセージ間余白（20px未満）を避ける
+- [ ] 粗いCSS三角や不適切な装飾を避ける
+- [ ] アイコンと吹き出しの接続を明確に
+- [ ] スクロール問題（overflow設定とGrid+Flex組み合わせ）
+
+---
+
+## 10. ページ生成フロー
+
+### 生成場所
+**必ず `pages/generated/` 配下に作成します。** `sample/` などは使いません。
+
+### 手順
+1. このチェックリストを確認
+2. `pages/_templates/base.html` を活用（プレースホルダー置換）
+3. `pages/_templates/components.js` で利用可能なコンポーネントを把握
+4. `pages/_assets/bundle.css`、`pages/_assets/tokens.css` の存在を確認
+5. `pages/generated/` に新規HTMLを生成
+6. このチェックリストの全項目を確認
+
+### 生成テンプレート
+
+```html
+<!-- pages/generated/example.html -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>サンプルページ</title>
+  <link rel="stylesheet" href="../_assets/bundle.css">
+</head>
+<body>
+  <div class="ds-page-template">
+    <main class="ds-page-main" role="main">
+      <div class="ds-container">
+        <div id="content"></div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../_templates/components.js"></script>
+  <script>
+    document.getElementById('content').innerHTML = Button({
+      variant: 'solid',
+      color: 'primary',
+      size: 'md',
+      label: '送信'
+    });
+  </script>
+</body>
+</html>
+```
+
+---
+
+## 11. よくある修正例
+
+### ボタンヒエラルキー
+
+```javascript
+// ❌ primary/solid が複数
+Button({ variant: 'solid', color: 'primary', label: '保存' })
+Button({ variant: 'solid', color: 'primary', label: '送信' })
+
+// ✅ 最重要を1つに絞る
+Button({ variant: 'solid', color: 'primary', label: '送信' })
+Button({ variant: 'outline', color: 'primary', label: '保存' })
+```
+
+### 余白
+
+```css
+/* ❌ 直接指定 */
+.section { margin-bottom: 20px; }
+
+/* ✅ 階層に応じたトークン */
+.section { margin-bottom: var(--spacing-padding-32); }
+```
+
+### トークン使用
+
+```css
+/* ❌ 直接指定 */
+color: #333;
+font-size: 16px;
+border-radius: 4px;
+
+/* ✅ トークン使用 */
+color: var(--color-semantic-text-high-light);
+font-size: var(--font-size-16);
+border-radius: var(--radius-sm);
+```
+
+---
+
+## 12. 実装後の確認
+
+- [ ] このチェックリストの主要項目を満たしているか
+- [ ] Storybookで表示確認
+- [ ] ライト/ダークモード両方で確認
+- [ ] レスポンシブ対応確認
+
+---
+
+## 13. ルール追加・更新の手順
+
+### 新ルール追加
+1. 関連mdc（layout, components/*, patterns 等）を確認
+2. このチェックリストの該当セクションに項目を追加
+3. 詳細ルールファイル（layout.mdc / components/*.mdc / patterns.mdc）を更新
+4. patterns.mdc に実装例を追加
+5. 必要に応じてStorybook stories を更新
+
+### 更新時のチェック
+- [ ] design-checklist.mdc を更新
+- [ ] 関連する詳細ファイルを同期更新
+- [ ] patterns.mdc の実例を更新
+- [ ] 既存コードへの影響を確認
+- [ ] 必要に応じてStorybookを更新
+
+---
+
+## 14. 関連ドキュメント
+
+- [`AGENTS.md`](../../../AGENTS.md): エージェントの最上位エントリ
+- `ai-operations.mdc`: AI/エージェント向けの運用ガイド（ADS-LOG・計画提示など）
+- `layout.mdc`: レイアウト・余白階層の詳細
+- `components.mdc`, `components/*.mdc`: コンポーネント仕様
+- `tokens.mdc`, `tokens/*.mdc`: トークン体系
+- `accessibility.mdc`: アクセシビリティ基準
+- `patterns.mdc`: 実装パターン集
+- `storybook-matrix.mdc`: Storybook Matrix規格

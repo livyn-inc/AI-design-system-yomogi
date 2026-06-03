@@ -1,0 +1,183 @@
+/* Card Component Styles */
+
+.ds-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-3xl);
+  background-color: var(--color-semantic-neutral-50-light);
+  transition: all 0.2s ease-in-out;
+  text-decoration: none;
+  color: inherit;
+}
+
+.ds-card--elevated {
+  box-shadow: var(--shadow-box-shadow-md-light);
+  border: none;
+}
+
+.ds-card--outlined {
+  border: var(--border-width-thin-light) solid var(--color-semantic-divider-middle-light);
+  box-shadow: none;
+}
+
+.ds-card--filled {
+  background-color: var(--color-semantic-neutral-100-light);
+  border: none;
+  box-shadow: none;
+}
+
+.ds-card--clickable {
+  cursor: pointer;
+}
+
+.ds-card--clickable:hover {
+  transform: translateY(calc(-1 * var(--spacing-padding-2)));
+  box-shadow: var(--shadow-box-shadow-lg-light);
+  background-color: var(--color-base-primary-50-light);
+}
+
+.ds-card__image {
+  width: 100%;
+  border-radius: var(--radius-3xl) var(--radius-3xl) 0 0;
+  overflow: hidden;
+}
+
+.ds-card__image img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.ds-card__content {
+  flex: 1;
+}
+
+.ds-card--sm .ds-card__content {
+  padding: var(--spacing-padding-12) var(--spacing-padding-16);
+}
+
+.ds-card--md .ds-card__content {
+  padding: var(--spacing-padding-16) var(--spacing-padding-20);
+}
+
+.ds-card--lg .ds-card__content {
+  padding: var(--spacing-padding-20) var(--spacing-padding-24);
+}
+
+.ds-card__title {
+  margin: 0 0 var(--spacing-padding-8) 0;
+  font-weight: var(--font-weight-600);
+  color: var(--color-semantic-text-high-light);
+}
+
+.ds-card__title--sm { 
+  font-size: var(--font-size-16);
+  line-height: var(--font-line-height-24);
+}
+
+.ds-card__title--md {
+  font-size: var(--font-size-18);
+  line-height: var(--font-line-height-28);
+}
+
+.ds-card__title--lg {
+  font-size: var(--font-size-20);
+  line-height: var(--font-line-height-32);
+}
+
+.ds-card__subtitle {
+  margin: 0 0 var(--spacing-padding-12) 0;
+  color: var(--color-semantic-text-low-light);
+}
+
+.ds-card__subtitle--sm {
+  font-size: var(--font-size-12);
+  line-height: var(--font-line-height-16);
+}
+
+.ds-card__subtitle--md {
+  font-size: var(--font-size-14);
+  line-height: var(--font-line-height-20);
+}
+
+.ds-card__subtitle--lg {
+  font-size: var(--font-size-14);
+  line-height: var(--font-line-height-20);
+}
+
+.ds-card__body {
+  color: var(--color-semantic-text-middle-light);
+}
+
+.ds-card__body--sm {
+  font-size: var(--font-size-14);
+  line-height: var(--font-line-height-20);
+}
+
+.ds-card__body--md {
+  font-size: var(--font-size-14);
+  line-height: var(--font-line-height-24);
+}
+
+.ds-card__body--lg {
+  font-size: var(--font-size-16);
+  line-height: var(--font-line-height-24);
+}
+
+.ds-card__actions {
+  display: flex;
+  gap: var(--spacing-padding-8);
+  border-top: var(--border-width-thin-light) solid var(--color-semantic-divider-low-light);
+}
+
+.ds-card--sm .ds-card__actions {
+  padding: var(--spacing-padding-12) var(--spacing-padding-16);
+}
+
+.ds-card--md .ds-card__actions {
+  padding: var(--spacing-padding-16) var(--spacing-padding-20);
+}
+
+.ds-card--lg .ds-card__actions {
+  padding: var(--spacing-padding-20) var(--spacing-padding-24);
+}
+
+/* Manual dark mode support */
+[data-theme="dark"] .ds-card {
+  background-color: var(--color-semantic-neutral-50-dark);
+}
+
+[data-theme="dark"] .ds-card--elevated {
+  box-shadow: var(--shadow-box-shadow-md-dark);
+  background-color: var(--color-semantic-neutral-100-dark);
+}
+
+[data-theme="dark"] .ds-card--outlined {
+  border-color: var(--color-semantic-divider-middle-dark);
+}
+
+[data-theme="dark"] .ds-card--filled {
+  background-color: var(--color-semantic-neutral-100-dark);
+}
+
+[data-theme="dark"] .ds-card--clickable:hover {
+  box-shadow: var(--shadow-box-shadow-lg-dark);
+  background-color: var(--color-base-primary-50-dark);
+}
+
+[data-theme="dark"] .ds-card__title {
+  color: var(--color-semantic-text-high-dark);
+}
+
+[data-theme="dark"] .ds-card__subtitle {
+  color: var(--color-semantic-text-low-dark);
+}
+
+[data-theme="dark"] .ds-card__body {
+  color: var(--color-semantic-text-middle-dark);
+}
+
+[data-theme="dark"] .ds-card__actions {
+  border-top-color: var(--color-semantic-divider-low-dark);
+}
+

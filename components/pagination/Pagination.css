@@ -1,0 +1,76 @@
+@import '../button/button-base.css';
+
+.ds-pagination { 
+  display: inline-flex; 
+  gap: var(--spacing-padding-8); 
+  align-items: center;
+}
+
+.ds-pagination__item {
+  /* button-base.cssの基本スタイルを継承済み */
+  /* Pagination固有のスタイル */
+  min-width: var(--spacing-padding-24);
+  height: var(--spacing-padding-24);
+  color: var(--color-semantic-text-high-light);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-padding-4) var(--spacing-padding-8);
+  font-size: var(--font-size-12);
+  gap: var(--spacing-padding-4);
+}
+
+.ds-pagination__item:hover:not(:disabled):not(.is-disabled) { 
+  background: var(--color-semantic-overlay-neutral-05-light);
+}
+
+.ds-pagination__item:disabled,
+.ds-pagination__item.is-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.ds-pagination__number.is-current {
+  background: var(--color-semantic-overlay-primary-15-light);
+  color: var(--color-semantic-primary-700-light);
+  font-weight: var(--font-weight-500);
+  cursor: default;
+}
+
+.ds-pagination__ellipsis {
+  border: none;
+  background: transparent;
+  cursor: default;
+  min-width: auto;
+  padding: 0 var(--spacing-padding-8);
+}
+
+.ds-pagination__ellipsis:hover {
+  background: transparent;
+}
+
+/* フォーカス状態はbutton-base.cssで定義済み */
+
+/* 前へ・次へボタンのアイコンサイズ */
+.ds-pagination__prev svg,
+.ds-pagination__next svg {
+  width: 12px;
+  height: 12px;
+}
+
+[data-theme="dark"] .ds-pagination__item {
+  background: transparent;
+  color: var(--color-semantic-text-high-dark);
+}
+
+[data-theme="dark"] .ds-pagination__item:hover:not(:disabled):not(.is-disabled) { 
+  background: var(--color-semantic-overlay-neutral-05-dark);
+}
+
+[data-theme="dark"] .ds-pagination__number.is-current {
+  background: var(--color-semantic-overlay-primary-15-dark);
+  color: var(--color-semantic-primary-700-dark);
+}
+
+/* ダークモード対応のフォーカス状態もbutton-base.cssで定義済み */
+
+

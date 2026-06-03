@@ -1,0 +1,238 @@
+---
+description: TextAreaコンポーネントの設計・運用仕様
+globs: "components/textarea/**/*"
+---
+
+# TextArea コンポーネント仕様
+
+## 概要
+複数行テキスト入力用コンポーネント。長文入力、コメント、説明文、メモ等に使用。
+
+## 基本使用法
+```javascript
+// 基本
+${TextArea({ label: 'コメント', placeholder: 'ご意見をお聞かせください' })}
+
+// 行数指定
+${TextArea({ label: 'メモ', rows: 6 })}
+
+// 文字数制限
+${TextArea({ label: 'プロフィール', maxLength: 200 })}
+
+// エラー状態
+${TextArea({ 
+  label: 'フィードバック', 
+  status: 'error', 
+  errorText: '必須項目です' 
+})}
+```
+
+## API仕様
+
+### Props
+| 名前 | 型 | デフォルト | 説明 |
+|------|-----|----------|------|
+| id | string | auto-generated | 要素のID |
+| name | string | '' | form要素でのname属性 |
+| value | string | '' | 入力値 |
+| placeholder | string | '' | プレースホルダーテキスト |
+| label | string | '' | ラベルテキスト |
+| helperText | string | '' | 補助テキスト |
+| errorText | string | '' | エラーメッセージ |
+| status | 'default' \| 'error' \| 'success' | 'default' | 状態 |
+| size | 'sm' \| 'md' \| 'lg' | 'md' | サイズ |
+| rows | number | 4 | 表示行数 |
+| cols | number | null | 表示列数 |
+| resize | 'none' \| 'vertical' \| 'horizontal' \| 'both' | 'vertical' | リサイズ方向 |
+| disabled | boolean | false | 無効化状態 |
+| readonly | boolean | false | 読み取り専用状態 |
+| required | boolean | false | 必須項目 |
+| maxLength | number | null | 最大文字数 |
+| className | string | '' | 追加CSSクラス |
+| onChange | function | () => {} | 変更時のコールバック |
+
+### サイズ仕様
+- **sm**: 12px文字、8px padding、最小高64px
+- **md**: 14px文字、12px padding、最小高96px
+- **lg**: 16px文字、16px padding、最小高128px
+
+## デザインガイドライン
+
+### 状態の色分け
+- **Default**: グレー系ボーダー
+- **Error**: 赤系ボーダー、エラーアイコン付きメッセージ
+- **Success**: 緑系ボーダー
+- **Disabled**: 低コントラスト、操作不可を示す
+
+### リサイズオプション
+- **none**: リサイズ不可（固定レイアウト用）
+- **vertical**: 縦方向のみ（推奨・デフォルト）
+- **horizontal**: 横方向のみ（特殊用途）
+- **both**: 両方向（自由度重視）
+
+## 使用場面
+
+### 適切な使用場面
+- ✅ コメント・フィードバック入力
+- ✅ 長文説明・メモ入力
+- ✅ コード・データ入力
+- ✅ 住所・備考欄入力
+
+### 不適切な使用場面
+- ❌ 単行の短いテキスト（Inputを使用）
+- ❌ パスワード入力（Input[type="password"]を使用）
+- ❌ 数値のみ入力（Input[type="number"]を使用）
+- ❌ 選択式項目（Select/Radio/Checkboxを使用）
+
+## 状態とインタラクション
+
+### 状態一覧
+1. **Empty**: 未入力状態（プレースホルダー表示）
+2. **Filled**: 入力済み状態
+3. **Focus**: アクティブ状態（境界線・影の変化）
+4. **Hover**: カーソル接近時
+5. **Error**: バリデーションエラー状態
+6. **Success**: バリデーション成功状態
+7. **Disabled**: 操作不可状態
+8. **Readonly**: 読み取り専用状態
+
+### キーボード操作
+- `Tab`: 次の要素にフォーカス移動
+- `Shift + Tab`: 前の要素にフォーカス移動
+- `Enter`: 改行（通常のテキストエリア動作）
+- `Ctrl/Cmd + A`: 全選択
+
+## アクセシビリティ
+
+### 必須対応
+- セマンティックなHTML（textarea要素）
+- labelとの適切な関連付け
+- エラー状態の明確な表示
+- 十分なコントラスト比（4.5:1以上）
+- キーボード操作完全対応
+
+### ARIA属性
+- `aria-describedby` でヘルプテキストとの関連付け
+- `aria-invalid="true"` エラー時に設定
+- `aria-required="true"` 必須項目時に設定
+
+## バリデーション
+
+### 一般的なバリデーション
+- 必須チェック
+- 最小・最大文字数チェック
+- 特定パターンマッチング
+- 禁止文字・単語チェック
+
+### バリデーション表示
+```javascript
+// エラー表示
+${TextArea({ 
+  status: 'error', 
+  errorText: '10文字以上入力してください',
+  value: '短い'
+})}
+
+// 成功表示
+${TextArea({ 
+  status: 'success', 
+  helperText: '入力内容は有効です',
+  value: '適切な長さのテキスト'
+})}
+```
+
+## 実装注意事項
+
+### CSS実装ルール
+```css
+/* ❌ 禁止 */
+.textarea { 
+  font-size: 14px; 
+  border: 1px solid #ddd;
+  padding: 12px; 
+}
+
+/* ✅ 必須 */
+.textarea { 
+  font-size: var(--font-size-14);
+  border: var(--border-width-thin-light) solid var(--color-semantic-divider-extra-high-light);
+  padding: var(--spacing-padding-12); 
+}
+```
+
+### 文字数カウンター
+- maxLength設定時に自動表示
+- リアルタイム更新
+- 制限に近づいた時の色変更
+
+## バリエーション例
+
+### 用途別設定
+```javascript
+// コメントフォーム
+${TextArea({ 
+  label: 'コメント',
+  placeholder: 'ご意見をお聞かせください',
+  rows: 4,
+  required: true
+})}
+
+// プロフィール入力
+${TextArea({ 
+  label: 'プロフィール',
+  placeholder: 'あなたについて教えてください',
+  maxLength: 200,
+  helperText: '他のユーザーに表示される情報です'
+})}
+
+// コード入力
+${TextArea({ 
+  label: 'HTMLコード',
+  placeholder: '<div>ここにコードを入力</div>',
+  rows: 8,
+  resize: 'both',
+  style: 'font-family: monospace;'
+})}
+
+// 住所入力
+${TextArea({ 
+  label: '住所',
+  placeholder: '都道府県から番地まで',
+  rows: 2,
+  resize: 'none'
+})}
+```
+
+### サイズ別使い分け
+```javascript
+// コンパクトなフォーム
+${TextArea({ size: 'sm', label: '備考', rows: 2 })}
+
+// 標準的なフォーム
+${TextArea({ size: 'md', label: 'メッセージ' })}
+
+// 大きな入力領域が必要
+${TextArea({ size: 'lg', label: '詳細説明', rows: 6 })}
+```
+
+## 他コンポーネントとの使い分け
+
+| コンポーネント | 用途 | 例 |
+|---------------|------|-----|
+| **TextArea** | 複数行長文入力 | コメント、説明文、住所 |
+| **Input** | 単行短文入力 | 名前、メール、パスワード |
+| **Select** | 選択式入力 | 都道府県、職業、カテゴリ |
+
+## パフォーマンス考慮
+
+### 大量テキスト処理
+- 文字数が多い場合のレンダリング最適化
+- リアルタイムバリデーションの頻度調整
+- 自動保存機能の実装検討
+
+### メモリ管理
+- 長時間使用時のメモリリーク対策
+- イベントリスナーの適切な解除
+
+## 更新時の注意
+- 実装やAPIを変更した場合は、Storybookと本mdcの使用例を同じタイミングで更新する。

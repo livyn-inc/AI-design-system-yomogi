@@ -1,0 +1,722 @@
+---
+description: コンポーネント使用パターン集（主要階層の補助ガイド）
+globs: "components/**/*"
+---
+## 使用例・パターン追加ルール
+- 新しいコンポーネントやパターンを追加した場合は、必ず本ファイルに使用例・パターンを追記すること
+- Storybook storiesと連動し、実装例・パターンの説明を充実させる
+
+## 🚀 現在利用可能
+
+### ボタン（Button）
+
+#### フォームでの使用
+**基本的な送信フォーム**
+```javascript
+// 主要アクション: 目立つsolid/primary
+${Button({ variant: 'solid', color: 'primary', size: 'md', label: '送信' })}
+
+// キャンセル: 控えめなoutline/neutral
+${Button({ variant: 'outline', color: 'neutral', size: 'md', label: 'キャンセル' })}
+
+// リセット: 危険を示すghost/negative
+${Button({ variant: 'ghost', color: 'negative', size: 'sm', label: 'リセット' })}
+```
+
+**ログインフォーム**
+```javascript
+// ログイン: 大きく目立つ
+${Button({ variant: 'solid', color: 'primary', size: 'lg', label: 'ログイン' })}
+
+// パスワード忘れ: 控えめなリンク風
+${Button({ variant: 'ghost', color: 'neutral', size: 'sm', label: 'パスワードを忘れた方' })}
+```
+
+#### ナビゲーションでの使用
+**ページ遷移**
+```javascript
+// 次へ: 進行を促すprimary + 右アイコン
+${Button({ 
+  variant: 'solid', 
+  color: 'primary', 
+  size: 'md', 
+  label: '次へ', 
+  rightIcon: '<svg>→</svg>' 
+})}
+
+// 戻る: 控えめなneutral + 左アイコン
+${Button({ 
+  variant: 'outline', 
+  color: 'neutral', 
+  size: 'md', 
+  label: '戻る', 
+  leftIcon: '<svg>←</svg>' 
+})}
+```
+
+#### モーダル・ダイアログでの使用
+**確認ダイアログ（危険な操作）**
+```javascript
+// 削除実行: 危険を強調
+${Button({ variant: 'solid', color: 'negative', size: 'md', label: '削除する' })}
+
+// キャンセル: 安全な選択肢
+${Button({ variant: 'outline', color: 'neutral', size: 'md', label: 'キャンセル' })}
+```
+
+**情報モーダル**
+```javascript
+// 閉じる: 単一アクション
+${Button({ variant: 'solid', color: 'neutral', size: 'md', label: '閉じる' })}
+
+// 詳細表示: 補助的なアクション
+${Button({ variant: 'ghost', color: 'primary', size: 'sm', label: '詳細を見る' })}
+```
+
+#### ツールバー・アクションバーでの使用
+**編集ツールバー**
+```javascript
+// 主要機能: アイコン + ラベル
+${Button({ 
+  variant: 'outline', 
+  color: 'neutral', 
+  size: 'md', 
+  label: '編集', 
+  leftIcon: '<svg>✏️</svg>' 
+})}
+
+// 共有: 軽い操作
+${Button({ 
+  variant: 'ghost', 
+  color: 'neutral', 
+  size: 'md', 
+  label: '共有', 
+  leftIcon: '<svg>📤</svg>' 
+})}
+
+// 削除: 危険操作は分離
+${Button({ 
+  variant: 'ghost', 
+  color: 'negative', 
+  size: 'md', 
+  label: '削除', 
+  leftIcon: '<svg>🗑️</svg>' 
+})}
+```
+
+#### ロード状態での使用
+**非同期処理**
+```javascript
+// 送信中: ローディング表示
+${Button({ 
+  variant: 'solid', 
+  color: 'primary', 
+  size: 'md', 
+  label: '送信中...', 
+  loading: true,
+  disabled: true
+})}
+
+// 保存中: 状態を明確に
+${Button({ 
+  variant: 'solid', 
+  color: 'primary', 
+  size: 'md', 
+  label: '保存中', 
+  loading: true
+})}
+```
+
+### 入力フィールド（Input）
+
+#### フォームでの使用
+**基本的な入力フォーム**
+```javascript
+// テキスト入力
+${Input({ 
+  label: '氏名', 
+  placeholder: '山田 太郎', 
+  required: true 
+})}
+
+// メールアドレス: 適切なキーボード表示
+${Input({ 
+  type: 'email', 
+  label: 'メールアドレス', 
+  placeholder: 'example@email.com',
+  helperText: '確認メールをお送りします'
+})}
+
+// パスワード: マスク表示
+${Input({ 
+  type: 'password', 
+  label: 'パスワード', 
+  placeholder: '8文字以上',
+  helperText: '英数字を含む8文字以上'
+})}
+```
+
+**検証状態の表示**
+```javascript
+// エラー状態: 赤いボーダーとメッセージ
+${Input({ 
+  status: 'error', 
+  label: 'ユーザー名',
+  value: 'user@123',
+  errorText: '半角英数字のみ使用可能です'
+})}
+
+// 成功状態: 緑のボーダー
+${Input({ 
+  status: 'success', 
+  label: 'メールアドレス',
+  value: 'valid@email.com',
+  helperText: '使用可能なメールアドレスです'
+})}
+```
+
+#### アイコン付き入力
+**用途別アイコン**
+```javascript
+// 検索: 左に虫眼鏡アイコン
+${Input({ 
+  type: 'search',
+  leftIcon: '<svg>🔍</svg>',
+  placeholder: '検索...'
+})}
+
+// ユーザー名: 左に人物アイコン
+${Input({ 
+  leftIcon: '<svg>👤</svg>',
+  label: 'ユーザー名',
+  placeholder: 'username'
+})}
+
+// パスワード: 右に表示/非表示アイコン
+${Input({ 
+  type: 'password',
+  label: 'パスワード',
+  rightIcon: '<svg>👁️</svg>',
+  placeholder: 'パスワード'
+})}
+```
+
+#### 特殊な入力タイプ
+**用途別タイプ選択**
+```javascript
+// 電話番号: 数字キーパッド表示
+${Input({ 
+  type: 'tel',
+  label: '電話番号',
+  placeholder: '090-1234-5678'
+})}
+
+// 数値: スピナー表示
+${Input({ 
+  type: 'number',
+  label: '数量',
+  placeholder: '1',
+  min: '1',
+  max: '100'
+})}
+
+// URL: URL用キーボード
+${Input({ 
+  type: 'url',
+  label: 'ウェブサイト',
+  placeholder: 'https://example.com'
+})}
+```
+
+#### サイズ選択の指針
+**コンテキスト別サイズ**
+```javascript
+// sm: コンパクトなフォームや表内
+${Input({ 
+  size: 'sm',
+  label: '郵便番号',
+  placeholder: '123-4567'
+})}
+
+// md: 一般的なフォーム（デフォルト）
+${Input({ 
+  size: 'md',
+  label: 'メールアドレス',
+  placeholder: 'email@example.com'
+})}
+
+// lg: モバイルファーストやタッチ操作重視
+${Input({ 
+  size: 'lg',
+  label: '電話番号',
+  placeholder: '090-1234-5678'
+})}
+```
+
+### Switch（ON/OFF切り替え）
+
+#### 設定画面での使用
+**基本的な設定切り替え**
+```javascript
+// 通知設定
+${Switch({ label: '通知を受け取る', checked: true })}
+
+// 表示設定
+${Switch({ label: 'ダークモード', checked: false })}
+
+// 機能設定
+${Switch({ label: '自動保存', checked: true })}
+```
+
+**権限・機能制御**
+```javascript
+// 機能の有効/無効
+${Switch({ 
+  label: 'コメント機能を有効にする', 
+  checked: false,
+  helperText: 'ユーザーがコメントできるようになります'
+})}
+
+// プライバシー設定
+${Switch({ 
+  label: 'プロフィールを公開する', 
+  checked: true 
+})}
+
+// 開発者向け機能
+${Switch({ 
+  label: 'デバッグモード', 
+  disabled: true,
+  helperText: '開発者のみ利用可能'
+})}
+```
+
+### TextArea（長文入力）
+
+#### フォームでの使用
+**コメント・フィードバック**
+```javascript
+// ユーザーからのフィードバック
+${TextArea({ 
+  label: 'ご意見・ご要望',
+  placeholder: 'サービス改善のためのご意見をお聞かせください',
+  rows: 4,
+  required: true
+})}
+
+// 問い合わせフォーム
+${TextArea({ 
+  label: 'お問い合わせ内容',
+  placeholder: 'できるだけ詳しくお書きください',
+  rows: 6,
+  maxLength: 1000
+})}
+```
+
+**プロフィール・説明文**
+```javascript
+// プロフィール入力
+${TextArea({ 
+  label: '自己紹介',
+  placeholder: 'あなたについて教えてください',
+  maxLength: 200,
+  helperText: 'プロフィールページに表示されます'
+})}
+
+// 商品説明
+${TextArea({ 
+  label: '商品説明',
+  placeholder: '商品の特徴や使用方法を記載してください',
+  rows: 8,
+  resize: 'vertical'
+})}
+```
+
+**技術・コード入力**
+```javascript
+// コードスニペット
+${TextArea({ 
+  label: 'HTMLコード',
+  placeholder: '<div>ここにHTMLを入力</div>',
+  rows: 10,
+  resize: 'both',
+  style: 'font-family: monospace;'
+})}
+
+// ログ・データ入力
+${TextArea({ 
+  label: 'ログファイル',
+  readonly: true,
+  value: 'システムログ内容...',
+  rows: 12,
+  resize: 'vertical'
+})}
+```
+
+#### バリデーション付き使用
+**文字数制限と検証**
+```javascript
+// ツイート風（短文）
+${TextArea({ 
+  label: 'つぶやき',
+  placeholder: '今何してる？',
+  maxLength: 140,
+  rows: 2
+})}
+
+// レビュー（中長文）
+${TextArea({ 
+  label: 'レビュー',
+  placeholder: '商品の感想を教えてください',
+  maxLength: 500,
+  rows: 4,
+  status: value.length < 10 ? 'error' : 'success',
+  errorText: '10文字以上入力してください'
+})}
+```
+
+### Tag（ラベル・カテゴリ・ステータス表示）
+
+#### カテゴリ・ラベル表示
+**記事やコンテンツの分類**
+```javascript
+// ブログ記事のカテゴリ
+${Tag({ label: 'JavaScript', size: 'md' })}
+${Tag({ label: 'React', size: 'md' })}
+${Tag({ label: 'TypeScript', size: 'md' })}
+
+// スキルタグ
+${Tag({ label: 'フロントエンド', size: 'md' })}
+${Tag({ label: 'バックエンド', size: 'md' })}
+${Tag({ label: 'DevOps', size: 'md' })}
+```
+
+**フィルタ可能なタグ**
+```javascript
+// 選択されたフィルタ（削除可能）
+${Tag({ label: 'TypeScript', removable: true })}
+${Tag({ label: '2024年', removable: true })}
+${Tag({ label: '未読', removable: true })}
+
+// 検索条件
+${Tag({ label: '価格: 1000円以下', removable: true })}
+${Tag({ label: 'カテゴリ: 本', removable: true })}
+```
+
+#### ステータス・状態表示（Badge的な使い方）
+**コンテンツの状態**
+```javascript
+// 記事のステータス
+${Tag({ label: '新着', size: 'sm' })}
+${Tag({ label: '人気', size: 'sm' })}
+${Tag({ label: '更新', size: 'sm' })}
+
+// タスクの状態
+${Tag({ label: '進行中', size: 'sm' })}
+${Tag({ label: '完了', size: 'sm' })}
+${Tag({ label: '保留', size: 'sm' })}
+
+// 優先度
+${Tag({ label: '重要', size: 'sm' })}
+${Tag({ label: '緊急', size: 'sm' })}
+${Tag({ label: '低', size: 'sm' })}
+```
+
+#### 数値・カウント表示（Badge的な使い方）
+**通知・カウント**
+```javascript
+// 通知数
+${Tag({ label: '3', size: 'sm' })}
+${Tag({ label: '10', size: 'sm' })}
+${Tag({ label: '99+', size: 'sm' })}
+
+// コメント数・いいね数
+${Tag({ label: '12 コメント', size: 'sm' })}
+${Tag({ label: '456 いいね', size: 'sm' })}
+```
+
+**バージョン・リリース情報**
+```javascript
+// バージョン表示
+${Tag({ label: 'v2.0.0', size: 'sm' })}
+${Tag({ label: 'Beta', size: 'sm' })}
+${Tag({ label: 'Preview', size: 'sm' })}
+
+// 環境表示
+${Tag({ label: 'Production', size: 'sm' })}
+${Tag({ label: 'Staging', size: 'sm' })}
+${Tag({ label: 'Development', size: 'sm' })}
+```
+
+#### 複合的な使用例
+**ユーザープロフィール**
+```javascript
+// ユーザーのスキルセット（削除可能）
+<div class="skill-tags">
+  ${Tag({ label: 'JavaScript', removable: true })}
+  ${Tag({ label: 'Python', removable: true })}
+  ${Tag({ label: 'Docker', removable: true })}
+  ${Tag({ label: '+ スキルを追加', size: 'sm' })}
+</div>
+```
+
+**商品情報**
+```javascript
+// 商品の属性表示
+<div class="product-tags">
+  ${Tag({ label: '送料無料', size: 'sm' })}
+  ${Tag({ label: '在庫あり', size: 'sm' })}
+  ${Tag({ label: '新商品', size: 'sm' })}
+  ${Tag({ label: 'セール -20%', size: 'sm' })}
+</div>
+```
+
+**検索結果**
+```javascript
+// 検索結果のメタ情報
+<div class="search-result-meta">
+  ${Tag({ label: 'PDF', size: 'sm' })}
+  ${Tag({ label: '2.3MB', size: 'sm' })}
+  ${Tag({ label: '2024年1月更新', size: 'sm' })}
+</div>
+```
+
+## 関連コンポーネント
+- Select / Checkbox / Radio / Card / Modal / Navigation / Table / List などの詳細は `components/*.mdc` を参照する。
+- 本ファイルは代表的な組み合わせ例に絞り、各コンポーネントのAPI詳細は個別mdcに寄せる。
+
+## パターン選択のコツ
+1. アクションの重要度で判断
+   - 最重要: solid + primary
+   - 重要: outline + primary/neutral
+   - 補助的: ghost + neutral
+2. アクションの性質で判断
+   - 推奨・進行: primary
+   - 中立・選択: neutral
+   - 危険・後退: negative
+3. コンテキストで判断
+   - フォーム: 送信は右下、キャンセルは左
+   - モーダル: 主要アクションは右下
+   - ツールバー: 危険な操作は分離して配置
+
+## 要素のまとまり設計（汎用）
+
+1. 要素の性質を見極める
+   - 反復要素か（同骨格・比較可能）
+   - 連続テキスト/説明か（流れが重要）
+   - 入力のまとまりか（操作の単位）
+
+2. 容器を選ぶ
+   - 反復要素 → カード（outlined推奨。必要に応じてelevated/filled）
+   - 説明・テキスト塊 → セクション（見出し＋余白）
+   - 単純一覧/表 → 行間/行ボーダーで整理
+
+3. 面と層分け
+   - 背景面とカード面はトークンで層分け（plain/tinted、light/dark）
+   - 層分けは「面の明度差」→「枠」→「影」の順で最小限に
+
+4. 余白と整列
+   - ページ既定（padding 32 / row-gap 24 / column-gap 32）を基準。調整は±1段階まで
+   - 左端/開始位置を揃える
+
+5. テーマ/色
+   - セマンティック優先。直指定禁止
+   - テーマカラー変更は同一ステップ対応（例: x-500 → y-500）
+
+6. ブラウザデフォルト余白のリセット
+   - figure, p, ul, blockquote等のブラウザデフォルトマージンを必ずリセット
+   - ラッパー要素では`margin: var(--spacing-padding-0)`を明示
+   - DevToolsで実測値確認を実施（計算値との差異をチェック）
+
+### Alert（インライン通知）
+
+#### フォームでの使用
+**バリデーションエラー**
+```javascript
+// フォーム全体のエラー
+${Alert({ 
+  type: 'critical', 
+  title: 'エラーが発生しました',
+  message: '必須項目をすべて入力してください。',
+  dismissible: true
+})}
+
+// 成功メッセージ
+${Alert({ 
+  type: 'success', 
+  message: 'データが正常に保存されました。',
+  dismissible: true
+})}
+```
+
+**重要な注意事項**
+```javascript
+// 警告メッセージ
+${Alert({ 
+  type: 'warning',
+  title: '注意',
+  message: 'この操作は元に戻すことができません。',
+  actionPrimary: '<button class="ds-btn ds-btn--solid ds-btn--primary">続行</button>',
+  actionSecondary: '<button class="ds-btn ds-btn--outline ds-btn--neutral">キャンセル</button>'
+})}
+
+// 情報提供
+${Alert({ 
+  type: 'info',
+  title: 'メンテナンスのお知らせ',
+  message: '明日午前2時〜4時の間、システムメンテナンスを実施します。',
+  actionPrimary: '<button class="ds-btn ds-btn--ghost ds-btn--primary">詳細を見る</button>'
+})}
+```
+
+#### ページレベルでの使用
+**システム通知**
+```javascript
+// アップデート通知
+${Alert({ 
+  type: 'info',
+  title: 'アップデートが利用可能です',
+  message: '新しい機能が追加されました。今すぐ更新することをお勧めします。',
+  actionPrimary: '<button class="ds-btn ds-btn--solid ds-btn--primary">今すぐ更新</button>',
+  actionSecondary: '<button class="ds-btn ds-btn--ghost ds-btn--neutral">後で</button>'
+})}
+
+// 接続エラー
+${Alert({ 
+  type: 'critical',
+  title: '接続エラー',
+  message: 'サーバーに接続できません。ネットワーク接続を確認してください。',
+  actionPrimary: '<button class="ds-btn ds-btn--solid ds-btn--primary">再試行</button>'
+})}
+```
+
+### Toast（オーバーレイ通知）
+
+#### 操作完了の通知
+**基本的な成功通知（自動消去）**
+```javascript
+// 保存完了（3秒で自動消去）
+${Toast({ 
+  status: 'success', 
+  message: '設定を保存しました',
+  autoDismiss: true, 
+  duration: 3 
+})}
+
+// コピー完了（1秒で自動消去）
+${Toast({ 
+  status: 'info', 
+  message: 'クリップボードにコピーしました',
+  autoDismiss: true, 
+  duration: 1 
+})}
+
+// アップロード完了（4秒で自動消去）
+${Toast({ 
+  status: 'success', 
+  message: 'ファイルをアップロードしました',
+  autoDismiss: true, 
+  duration: 4 
+})}
+```
+
+#### エラー・警告通知（手動消去）
+**重要なエラー**
+```javascript
+// ネットワークエラー
+${Toast({ 
+  status: 'negative', 
+  message: 'ネットワークエラーが発生しました' 
+})}
+
+// 権限エラー
+${Toast({ 
+  status: 'negative', 
+  message: 'この操作を実行する権限がありません' 
+})}
+
+// 警告
+${Toast({ 
+  status: 'warning', 
+  message: 'ストレージ容量が不足しています' 
+})}
+```
+
+#### アクション付き通知
+**取り消し機能**
+```javascript
+// 削除の取り消し
+${Toast({ 
+  status: 'info',
+  message: '3件のアイテムを削除しました',
+  actionButton: '<button class="ds-btn ds-btn--ghost ds-btn--primary ds-btn--sm">元に戻す</button>'
+})}
+
+// アーカイブの取り消し
+${Toast({ 
+  status: 'info',
+  message: '会話をアーカイブしました',
+  actionButton: '<button class="ds-btn ds-btn--ghost ds-btn--primary ds-btn--sm">元に戻す</button>'
+})}
+```
+
+**詳細確認**
+```javascript
+// エラー詳細
+${Toast({ 
+  status: 'negative',
+  message: 'インポート中にエラーが発生しました',
+  actionButton: '<button class="ds-btn ds-btn--ghost ds-btn--neutral ds-btn--sm">詳細を見る</button>'
+})}
+
+// 更新通知
+${Toast({ 
+  status: 'info',
+  message: '新しいバージョンが利用可能です',
+  actionButton: '<button class="ds-btn ds-btn--ghost ds-btn--primary ds-btn--sm">今すぐ更新</button>'
+})}
+```
+
+#### 複合的な使用例
+**フォーム送信の流れ**
+```javascript
+// 1. 送信開始（Toast - 自動消去）
+${Toast({ 
+  status: 'info', 
+  message: 'データを送信しています...',
+  autoDismiss: true, 
+  duration: 2 
+})}
+
+// 2. 送信完了（Toast - 自動消去）
+${Toast({ 
+  status: 'success', 
+  message: 'データを送信しました',
+  autoDismiss: true, 
+  duration: 3 
+})}
+
+// 3. エラー時（Alert - インライン表示）
+${Alert({ 
+  type: 'critical',
+  title: '送信エラー',
+  message: '入力内容に問題があります。確認して再度お試しください。',
+  actionPrimary: '<button class="ds-btn ds-btn--solid ds-btn--primary">修正する</button>'
+})}
+```
+
+#### Alert/Toast使い分けガイド
+**Alert を使う場面**
+- フォームエラー（ページ内に表示）
+- 重要な警告・注意事項
+- アクションが必要な通知
+- ユーザーが確認すべき情報
+
+**Toast を使う場面**
+- 操作完了の確認
+- 軽い情報提供
+- 一時的なエラー・警告
+- バックグラウンド処理の結果
+
+## 現在の扱い
+主要コンポーネントの使い分け例は本ファイルと `components/*.mdc` に分散している。新しいコンポーネントを追加した場合は、該当コンポーネントのmdcと必要な使用例だけを更新する。

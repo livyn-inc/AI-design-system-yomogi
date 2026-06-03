@@ -1,0 +1,21 @@
+{
+  "layout": {
+    "maxWidth-3xs": { "value": "120px" },
+    "maxWidth-2xs": { "value": "160px" },
+    "maxWidth-xs": { "value": "240px" },
+    "maxWidth-sm": { "value": "320px" },
+    "maxWidth-md": { "value": "384px" },
+    "maxWidth-lg": { "value": "448px" },
+    "maxWidth-xl": { "value": "512px" },
+    "maxWidth-2xl": { "value": "576px" },
+    "maxWidth-3xl": { "value": "672px" },
+    "maxWidth-4xl": { "value": "768px" },
+    "maxWidth-5xl": { "value": "896px" },
+    "maxWidth-6xl": { "value": "1024px" },
+    "maxWidth-7xl": { "value": "1152px" },
+    "maxWidth-8xl": { "value": "1280px" },
+    "height-input-sm": { "value": "32px" },
+    "height-input-md": { "value": "40px" },
+    "height-input-lg": { "value": "48px" }
+  }
+}

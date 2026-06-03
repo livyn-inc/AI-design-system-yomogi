@@ -1,0 +1,86 @@
+# IconButton コンポーネント
+
+## 目的
+- アイコンのみのボタン（閉じる / 削除 / ミュート / シェア / メニュー等）に使う
+- `Button` と同一の variant / color / size 規格に追従し、サイズ整合・フォーカス・アクセシビリティを統一する
+
+## API
+```js
+IconButton({
+  icon: string,                                       // SVG または Lucide の HTML
+  variant?: 'solid'|'outline'|'ghost'|'outline-solid'|'ghost-solid',  // 既定: 'ghost'
+  color?: 'primary'|'neutral'|'negative'|'absolute-white'|'absolute-black', // 既定: 'neutral'
+  size?: 'sm'|'md'|'lg',                              // 既定: 'md'（高さは Button と一致）
+  state?: 'enable'|'hover'|'active'|'loading'|'disabled', // 内部用
+  ariaLabel?: string,                                 // 必須相当（後述）
+  title?: string,                                     // ネイティブツールチップ
+  disabled?: boolean,
+  loading?: boolean,
+  className?: string,
+  id?: string,
+  dataAttributes?: Record<string, string>             // data-* 属性（camelCase → kebab-case 自動変換）
+})
+```
+
+## 使用例
+```js
+// アラートを閉じる
+IconButton({
+  icon: '<i data-lucide="x"></i>',
+  variant: 'ghost',
+  color: 'neutral',
+  ariaLabel: '閉じる'
+})
+
+// 行を削除（破壊的操作）
+IconButton({
+  icon: '<i data-lucide="trash-2"></i>',
+  variant: 'ghost',
+  color: 'negative',
+  size: 'sm',
+  ariaLabel: 'この項目を削除',
+  dataAttributes: { deleteIndex: '3' }
+})
+
+// 通知系の中で同化させる
+// 親コンテナに color: var(--color-semantic-info-600-light) などを付与し、
+// IconButton のアイコンは currentColor で追従させる
+```
+
+## デザイン仕様（トークン）
+- 高さ・余白: `Button` と同サイズに揃う（`button-base.css` 共通基盤を継承）
+- 状態レイヤー
+  - hover（neutral / outline / ghost）: `var(--color-semantic-overlay-neutral-05-light/dark)`
+  - focus-visible: outline `var(--color-semantic-primary-100-light/dark)`、`outline-offset: var(--spacing-padding-2)`
+  - disabled: `cursor: not-allowed` + 不透明度低下（`button-base.css` 準拠）
+- アイコン色: `currentColor` 運用。親コンテナで `color` を変えれば追従する
+- 直書き禁止: px / hex / rgba を CSS / HTML に直接書かない
+
+## ステータス色との同化（通知・警告系）
+- `Alert` / `Toast` などの中で使う場合、親コンテナ側で `color: var(--color-semantic-info-600-light)` 等を指定し、IconButton 自体は `color="neutral"` のまま `currentColor` で追従させる
+- 個別に `color="negative"` などを指定すると、コンテナのトーンと衝突するので避ける
+
+## variant の選び指針
+- **ghost（既定）**: ツールバー・行末の小操作・モーダルの×。最も控えめ
+- **outline**: 単体で目立たせたいが背景塗りは強すぎる場面
+- **solid**: フローティングアクションボタン（FAB）相当の主要操作
+- **outline-solid / ghost-solid**: 状態遷移時のレイヤー演出用（通常は基本3つで足りる）
+
+## アクセシビリティ
+- **`ariaLabel` は必須相当**: 視覚ラベルがないため、スクリーンリーダーには `aria-label` でしか機能を伝えられない
+- `title` 属性は併設可（マウス hover でネイティブツールチップ）
+- `disabled` 時はキーボード操作も無効になる（ネイティブ `<button disabled>`）
+- フォーカスリングは `:focus-visible` で表示（マウス hover では出ない）
+- タッチターゲット: `size: sm` でも 32×32 以上を確保。狭すぎる場合は `md` に上げる
+
+## Button / IconButton の使い分け
+- **Button**: ラベル文字が必要な操作（送信・保存・キャンセル等）
+- **IconButton**: アイコンだけで意味が伝わる定型操作（閉じる・削除・編集・コピー等）
+- ラベル + アイコンの両方が要る場合は `Button({ leftIcon })` を使う
+
+## アンチパターン
+- `ariaLabel` を空のまま使う（スクリーンリーダーに何のボタンか伝わらない）
+- 1画面に IconButton ばかりを並べて意味が分からなくする（重要操作は `Button` でラベル明示）
+- ステータス色と `color` プロパティを二重に当てて色が衝突する
+- `size: sm` を狭いタッチデバイス前提のレイアウトに使う（44px ターゲットを下回る）
+- アイコンを `<img>` で埋める（SVG / Lucide の inline で `currentColor` 運用にする）

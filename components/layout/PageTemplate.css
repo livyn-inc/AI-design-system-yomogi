@@ -1,0 +1,79 @@
+@import '../../build/css/tokens.css';
+
+.ds-page {
+  box-sizing: border-box;
+  margin: 0 auto;
+  max-width: var(--layout-max-width-7xl);
+  padding: var(--spacing-padding-32);
+  display: grid;
+  grid-auto-rows: min-content;
+  row-gap: var(--spacing-padding-24);
+}
+
+
+.ds-page__header,
+.ds-page__subheader,
+.ds-page__toolbar,
+.ds-page__footer {
+  width: 100%;
+}
+
+.ds-page__mainarea {
+  display: grid;
+  column-gap: var(--spacing-padding-32);
+}
+
+/* container: full → ビューポートに広げる（左右ガターは維持） */
+.ds-page[style*="max-width: none;"] {
+  max-width: none !important;
+  width: 100%;
+  padding-left: var(--spacing-padding-32);
+  padding-right: var(--spacing-padding-32);
+}
+
+/* base: single column */
+.ds-page--one-col .ds-page__mainarea {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* two columns: main + aside */
+.ds-page--two-col .ds-page__mainarea {
+  grid-template-columns: minmax(0, 1fr) var(--layout-max-width-md);
+}
+
+/* three columns: main + aside + aside2 */
+.ds-page--three-col .ds-page__mainarea {
+  grid-template-columns: var(--layout-max-width-md) minmax(0, 1fr) var(--layout-max-width-sm);
+}
+
+.ds-page__main { min-width: 0; }
+.ds-page__aside { min-width: 0; }
+.ds-page__aside2 { min-width: 0; }
+
+/* sticky options */
+.ds-page--sticky-aside .ds-page__aside,
+.ds-page--sticky-aside .ds-page__aside2 {
+  position: sticky;
+  top: var(--spacing-padding-32);
+  height: fit-content;
+}
+
+/* density variants (gap scale) */
+.ds-page--comfortable { row-gap: var(--spacing-padding-24); }
+.ds-page--compact { row-gap: var(--spacing-padding-12); }
+
+/* simple slot wrappers (visual aid for Storybook) */
+.ds-slot { 
+  background: var(--color-semantic-neutral-50-light);
+  color: var(--color-semantic-text-high-light);
+  border: 1px solid var(--color-semantic-divider-high-light);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-padding-16);
+}
+
+[data-theme="dark"] .ds-slot {
+  background: var(--color-semantic-neutral-100-dark);
+  color: var(--color-semantic-text-high-dark);
+  border-color: var(--color-semantic-divider-high-dark);
+}
+

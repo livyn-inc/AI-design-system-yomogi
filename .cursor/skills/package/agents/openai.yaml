@@ -1,0 +1,4 @@
+interface:
+  display_name: "Yomogi Package"
+  short_description: "Export and hand off the Yomogi package."
+  default_prompt: "Export the Yomogi package and tell me how to use it."

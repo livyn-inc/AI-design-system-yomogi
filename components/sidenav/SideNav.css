@@ -1,0 +1,262 @@
+/* SideNav base styles */
+.ds-sidenav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  background-color: var(--color-semantic-neutral-100-light);
+  border-right: 1px solid var(--color-semantic-divider-middle-light);
+  transition: width 0.3s ease, transform 0.3s ease;
+  z-index: 50;
+}
+
+.ds-sidenav__container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+}
+
+/* Width variants */
+.ds-sidenav--width-default {
+  width: var(--layout-max-width-sm);
+}
+
+.ds-sidenav--width-compact {
+  width: var(--layout-max-width-xs);
+}
+
+.ds-sidenav--width-wide {
+  width: var(--layout-max-width-md);
+}
+
+/* Collapsed state */
+.ds-sidenav--collapsed {
+  width: var(--spacing-padding-64);
+}
+
+/* Variant: Permanent */
+.ds-sidenav--permanent {
+  position: fixed;
+}
+
+/* Variant: Temporary (modal) */
+.ds-sidenav--temporary {
+  transform: translateX(-100%);
+}
+
+.ds-sidenav--temporary.ds-sidenav--open {
+  transform: translateX(0);
+}
+
+/* Variant: Overlay */
+.ds-sidenav--overlay {
+  position: absolute;
+  box-shadow: var(--shadow-box-shadow-lg-light);
+}
+
+/* Logo section */
+.ds-sidenav__logo {
+  padding: var(--spacing-padding-16) var(--spacing-padding-20);
+  border-bottom: 1px solid var(--color-semantic-divider-low-light);
+  flex-shrink: 0;
+}
+
+.ds-sidenav__logo-link,
+.ds-sidenav__logo-text {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-padding-12);
+  color: var(--color-semantic-text-high-light);
+  font-weight: var(--font-weight-600);
+  font-size: var(--font-size-16);
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.ds-sidenav__logo-link:hover {
+  color: var(--color-semantic-primary-600-light);
+}
+
+.ds-sidenav--collapsed .ds-sidenav__logo-link,
+.ds-sidenav--collapsed .ds-sidenav__logo-text {
+  justify-content: center;
+  gap: 0;
+}
+
+/* Navigation section */
+.ds-sidenav__navigation {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-padding-16) 0;
+}
+
+/* Custom navigation styles for sidenav context */
+.ds-sidenav__navigation .ds-navigation {
+  background: transparent;
+}
+
+.ds-sidenav__navigation .ds-nav__link {
+  padding: var(--spacing-padding-12) var(--spacing-padding-20);
+  border-radius: 0;
+  margin: 0 var(--spacing-padding-8);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-padding-12);
+  color: var(--color-semantic-text-middle-light);
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.ds-sidenav__navigation .ds-nav__link:hover {
+  background-color: var(--color-semantic-overlay-neutral-05-light);
+  color: var(--color-semantic-text-high-light);
+}
+
+.ds-sidenav__navigation .ds-nav__link.is-current {
+  background-color: var(--color-semantic-primary-100-light);
+  color: var(--color-semantic-primary-700-light);
+  font-weight: var(--font-weight-500);
+}
+
+.ds-sidenav--collapsed .ds-sidenav__navigation .ds-nav__link {
+  justify-content: center;
+  margin: 0 var(--spacing-padding-4);
+  padding: var(--spacing-padding-12);
+}
+
+.ds-sidenav--collapsed .ds-sidenav__navigation .ds-nav__label {
+  display: none;
+}
+
+/* Footer section */
+.ds-sidenav__footer {
+  flex-shrink: 0;
+  padding: var(--spacing-padding-16) var(--spacing-padding-20);
+  border-top: 1px solid var(--color-semantic-divider-low-light);
+}
+
+/* Collapse toggle */
+.ds-sidenav__toggle {
+  position: absolute;
+  top: var(--spacing-padding-20);
+  right: var(--spacing-padding-8);
+  width: var(--spacing-padding-32);
+  height: var(--spacing-padding-32);
+  background: var(--color-semantic-neutral-50-light);
+  border: 1px solid var(--color-semantic-divider-middle-light);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--color-semantic-text-middle-light);
+  transition: all 0.2s ease;
+  z-index: 1;
+}
+
+.ds-sidenav__toggle:hover {
+  background: var(--color-semantic-primary-50-light);
+  color: var(--color-semantic-primary-600-light);
+  border-color: var(--color-semantic-primary-200-light);
+}
+
+.ds-sidenav__toggle svg,
+.ds-sidenav__toggle i {
+  width: var(--font-size-16);
+  height: var(--font-size-16);
+  transition: transform 0.3s ease;
+}
+
+.ds-sidenav--collapsed .ds-sidenav__toggle svg,
+.ds-sidenav--collapsed .ds-sidenav__toggle i {
+  transform: rotate(180deg);
+}
+
+/* Backdrop for temporary variant */
+.ds-sidenav__backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: var(--color-semantic-overlay-neutral-30-light);
+  z-index: -1;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.ds-sidenav--temporary.ds-sidenav--open .ds-sidenav__backdrop {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .ds-sidenav--permanent {
+    transform: translateX(-100%);
+  }
+  
+  .ds-sidenav--permanent.ds-sidenav--mobile-open {
+    transform: translateX(0);
+  }
+}
+
+/* Dark theme support */
+[data-theme="dark"] .ds-sidenav {
+  background-color: var(--color-semantic-neutral-100-dark);
+  border-right-color: var(--color-semantic-divider-middle-dark);
+}
+
+[data-theme="dark"] .ds-sidenav--overlay {
+  box-shadow: var(--shadow-box-shadow-lg-dark);
+}
+
+[data-theme="dark"] .ds-sidenav__logo {
+  border-bottom-color: var(--color-semantic-divider-low-dark);
+}
+
+[data-theme="dark"] .ds-sidenav__logo-link,
+[data-theme="dark"] .ds-sidenav__logo-text {
+  color: var(--color-semantic-text-high-dark);
+}
+
+[data-theme="dark"] .ds-sidenav__logo-link:hover {
+  color: var(--color-semantic-primary-600-dark);
+}
+
+[data-theme="dark"] .ds-sidenav__navigation .ds-nav__link {
+  color: var(--color-semantic-text-middle-dark);
+}
+
+[data-theme="dark"] .ds-sidenav__navigation .ds-nav__link:hover {
+  background-color: var(--color-semantic-overlay-neutral-05-dark);
+  color: var(--color-semantic-text-high-dark);
+}
+
+[data-theme="dark"] .ds-sidenav__navigation .ds-nav__link.is-current {
+  background-color: var(--color-semantic-primary-100-dark);
+  color: var(--color-semantic-primary-700-dark);
+}
+
+[data-theme="dark"] .ds-sidenav__footer {
+  border-top-color: var(--color-semantic-divider-low-dark);
+}
+
+[data-theme="dark"] .ds-sidenav__toggle {
+  background: var(--color-semantic-neutral-50-dark);
+  border-color: var(--color-semantic-divider-middle-dark);
+  color: var(--color-semantic-text-middle-dark);
+}
+
+[data-theme="dark"] .ds-sidenav__toggle:hover {
+  background: var(--color-semantic-primary-50-dark);
+  color: var(--color-semantic-primary-600-dark);
+  border-color: var(--color-semantic-primary-200-dark);
+}
+
+[data-theme="dark"] .ds-sidenav__backdrop {
+  background: var(--color-semantic-overlay-neutral-30-dark);
+}

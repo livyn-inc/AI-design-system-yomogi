@@ -1,0 +1,107 @@
+---
+description: Cardのデザイン運用ガイド（実装固定なし／AI・人がデザイン時に配慮するための基準）
+---
+
+# Card デザイン運用ガイド
+
+## 目的・役割
+- 関連する情報・操作をひとかたまりの「面」にまとめ、スキャン性・理解容易性を高める。
+- 典型構成: タイトル / サブ情報 / 本文 / サムネイル（任意）/ アクション（任意）。
+
+## バリアント方針（テーマ横断）
+- Elevated: 面を浮かせて強調。
+  - Light: 影で浮き上がり（例: `var(--shadow-box-shadow-md-light)`).
+  - Dark: 面の明度を1段上げ、控えめな影で補助（例: 面=`var(--color-semantic-neutral-100-dark)`, 影=`var(--shadow-box-shadow-md-dark)`）。
+- Outlined: 枠線で区切り。必要に応じてごく薄い塗りで判別性補助。
+- Filled: 背景色の差で区切る（セクション内のセパレーションを強めたいとき）。
+
+## Surface文脈（plain / tinted）と選択ルール
+デザイン時に、ページ/セクションの“面の文脈”をまず決める。
+- plain: 白地（ニュートラルな背景）
+- tinted: 薄い色を敷いた背景（同系のごく薄い面）
+
+選択ルール（例。必ず既存トークンで選択すること）
+- Light × plain（背景=白地）
+  - Outlined: 面=`var(--color-semantic-neutral-50-light)`, 枠=`var(--color-semantic-divider-middle-light)`
+  - Elevated: 面=`var(--color-semantic-neutral-50-light)`, 影=`var(--shadow-box-shadow-md-light)`
+  - Filled: 面=`var(--color-semantic-neutral-100-light)`
+- Light × tinted（背景=薄色地）
+  - 原則: カード面は周囲の面より明るく（実質“白寄り”）してコントラスト確保。
+  - 例: セクション面=`var(--color-semantic-neutral-100-light)` のとき、カード面=`var(--color-semantic-neutral-50-light)`, 枠=`var(--color-semantic-divider-middle-light)`
+- Dark × plain（背景=暗色）
+  - Elevated: 面=`var(--color-semantic-neutral-100-dark)`, 影=`var(--shadow-box-shadow-md-dark)`
+  - Outlined: 面=`var(--color-semantic-neutral-50-dark)`, 枠=`var(--color-semantic-divider-middle-dark)`
+  - Filled: 面=`var(--color-semantic-neutral-100-dark)`
+- Dark × tinted（背景=やや明るい暗色）
+  - 原則: セクション面より1段明るい面を選ぶ。枠は `divider-middle-dark` を基準。
+
+注意
+- 影の直書き・RGBA直書きは禁止。必ずシャドウトークン（`--shadow-box-shadow-*-light/dark`）を使用。
+- 色の直書きや推測トークン名の使用は禁止（トークン存在は `build/css/tokens.css` で確認）。
+
+## アクセシビリティ・コントラスト
+- 本文テキストはAA（4.5:1）を満たす組合せにする。見出しはサイズ次第で3:1可。
+- 判定NGなら、面を1段調整（より明るい/暗い）する。色直書きは禁止。
+
+## デザイン時チェックリスト（AI/人共通）
+- 基本背景（Light/Dark, plain/tinted）を明示したか。
+- カードの面/枠/テキストがAAを満たすか（満たさない場合の代替案も用意）。
+- クリック可能カードは、全体がタップ領域でフォーカス可視か（44×44相当）。
+- 画像に `alt`、見出し階層は適切か。
+- 例外（このカードだけ白面等）は注記で明示。
+
+## 出力時の注記テンプレ（AIが毎回添える）
+- Assumptions（前提）
+  - Base background: Light/Dark, Surface: plain/tinted
+- Selected tokens（採用トークンと理由）
+  - Surface: `var(--color-semantic-neutral-50-light)` など（理由: セクション面より○段明るい/暗い）
+  - Border: `var(--color-semantic-divider-middle-light)` など（理由）
+  - Shadow (Elevated): `var(--shadow-box-shadow-md-light)` など（理由）
+- Accessibility
+  - コントラスト判定: AA/未満（必要なら代替案: 面を○段調整）
+
+## Storybook 提示（任意）
+- 可能であれば plain/tinted の2通りのセクション例を用意して差の可視化を行う（独自styleは避け、トークンのみ）。
+
+## 運用メモ
+- 実装を固定せず、デザイン生成の度に上記ルールで最適な面・枠・影を選び、根拠を明示する。
+- ルール更新時は本ファイルを改訂し、以後の出力に反映する。
+
+## カード使用判断基準（汎用）
+
+### 「カード」を使うと良い条件
+- 反復する同質の要素を並べる（同じ情報骨格・比較可能）
+- 要素全体が操作対象になる（選択・遷移・ドラッグ等）
+- 周囲から視覚的に区切り、持ち運び可能な“塊”として扱いたい
+- 視覚要素（画像/図版）を内包し、誤クリックを避けたい
+
+### 「カード」を使わないほうが良い条件
+- 連続した文章・説明の流れ（見出し＋段落＋余白で構造化）
+- 入力グループ（fieldset/セクションで。各入力のカード化はしない）
+- 単純なリスト/テーブル（行間や行ボーダーで十分に判別可能）
+
+### バリアント選択の指針
+- outlined（推奨既定）: 背景を塗らず枠で区切る。中立的な集合に適する
+- elevated: 兄弟要素の中で相対的に強調したい時（使用は最小限・影は薄く）
+- filled: 背景面との層分けを強めたい時。背景が薄色面の場合は“周囲より明るく”見える設定に
+
+### 面（背景）との関係
+- Light × plain（背景=白）
+  - outlined: 面=`var(--color-semantic-neutral-50-light)`, 枠=`var(--color-semantic-divider-middle-light)`
+  - filled: 面=`var(--color-semantic-neutral-100-light)`
+- Light × tinted（背景=薄い中間面）
+  - 原則: 周囲の面より明るい面を選び、枠/影で層分け
+- Dark系は各 `-dark` を選択。AA準拠で確認
+
+### 余白・密度（トークン）
+- ページ既定（padding 32 / row-gap 24 / column-gap 32）に従い、±1段階の範囲で調整
+- px直書き・カラー直書きは禁止。`--spacing-padding-*` / `--color-semantic-*` 系の実在トークンを使用
+
+### アクセシビリティ
+- カード全体が操作対象の場合はフォーカス可能・フォーカス可視（44×44相当）
+- 画像にはalt、情報階層は見出しで表現、コントラストはAA以上
+
+### アンチパターン
+- 過度なカード化（単要素や説明文の無意味な囲い）
+- カードの入れ子、多重の枠や過剰な影
+- 余白不足・揃え不統一

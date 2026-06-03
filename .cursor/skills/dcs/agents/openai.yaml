@@ -1,0 +1,4 @@
+interface:
+  display_name: "DCS"
+  short_description: "Run and interpret Yomogi design checks."
+  default_prompt: "Review this Yomogi page and explain what to fix."

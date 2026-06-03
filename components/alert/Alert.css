@@ -1,0 +1,191 @@
+/* Alert Container - 3カラムGridレイアウト */
+.ds-alert {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: start;
+  column-gap: var(--spacing-padding-12);
+  padding: var(--spacing-padding-16);
+  border-radius: var(--radius-xl);
+  border: 1px solid;
+}
+
+/* アイコンコンテナ（左カラム） */
+.ds-alert__icon-container {
+  flex-shrink: 0;
+  margin-top: var(--spacing-padding-2);
+}
+
+.ds-alert__icon {
+  width: var(--spacing-padding-20);
+  height: var(--spacing-padding-20);
+  display: block;
+}
+
+/* コンテンツ領域（中央カラム） */
+.ds-alert__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.ds-alert__title {
+  margin: 0 0 var(--spacing-padding-4) 0;
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-700);
+  line-height: var(--font-line-height-20);
+}
+
+/* タイトルの色をアイコンと揃える */
+.ds-alert--info .ds-alert__title { color: var(--color-semantic-info-600-light); }
+.ds-alert--success .ds-alert__title { color: var(--color-semantic-success-600-light); }
+.ds-alert--warning .ds-alert__title { color: var(--color-semantic-text-high-light); }
+.ds-alert--critical .ds-alert__title { color: var(--color-semantic-text-high-light); }
+
+[data-theme="dark"] .ds-alert--info .ds-alert__title { color: var(--color-semantic-info-600-dark); }
+[data-theme="dark"] .ds-alert--success .ds-alert__title { color: var(--color-semantic-success-600-dark); }
+
+.ds-alert__message {
+  margin: 0;
+  font-size: var(--font-size-14);
+  line-height: var(--font-line-height-20);
+}
+
+/* アクションボタン */
+.ds-alert__actions {
+  display: flex;
+  gap: var(--spacing-padding-8);
+  margin-top: var(--spacing-padding-12);
+}
+
+/* 閉じるボタン（右カラム） */
+.ds-alert__close {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: var(--spacing-padding-4);
+  border-radius: var(--radius-xl);
+  line-height: 1;
+  width: var(--layout-height-input-sm);
+  height: var(--layout-height-input-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: start;
+  justify-self: end;
+  margin-top: var(--spacing-padding-4);
+}
+
+.ds-alert__close:hover { background: var(--color-semantic-overlay-neutral-05-light); }
+
+.ds-alert__close:focus {
+  outline: 2px solid;
+  outline-offset: 2px;
+}
+
+/* タイプ別スタイル */
+.ds-alert--info {
+  background: var(--color-semantic-info-50-light);
+  border-color: var(--color-semantic-info-200-light);
+  color: var(--color-semantic-info-900-light);
+}
+
+.ds-alert.ds-alert--info .ds-alert__close { color: var(--color-semantic-info-600-light); }
+.ds-alert--info .ds-alert__icon,
+.ds-alert--info .ds-alert__close:focus {
+  color: var(--color-semantic-info-600-light);
+  outline-color: var(--color-semantic-info-600-light);
+}
+
+.ds-alert--success {
+  background: var(--color-semantic-success-50-light);
+  border-color: var(--color-semantic-success-200-light);
+  color: var(--color-semantic-success-900-light);
+}
+
+.ds-alert.ds-alert--success .ds-alert__close { color: var(--color-semantic-success-600-light); }
+.ds-alert--success .ds-alert__icon,
+.ds-alert--success .ds-alert__close:focus {
+  color: var(--color-semantic-success-600-light);
+  outline-color: var(--color-semantic-success-600-light);
+}
+
+.ds-alert--warning {
+  background: var(--color-semantic-warning-500-light);
+  border-color: var(--color-semantic-warning-800-light);
+  color: var(--color-semantic-text-high-light);
+}
+
+.ds-alert.ds-alert--warning .ds-alert__close { color: var(--color-semantic-text-high-light); }
+.ds-alert--warning .ds-alert__icon,
+.ds-alert--warning .ds-alert__close:focus {
+  color: var(--color-semantic-text-high-light);
+  outline-color: var(--color-semantic-text-high-light);
+}
+
+.ds-alert--critical {
+  background: var(--color-semantic-negative-500-light);
+  border-color: var(--color-semantic-negative-800-light);
+  color: var(--color-semantic-text-high-light);
+}
+
+.ds-alert.ds-alert--critical .ds-alert__close { color: var(--color-semantic-text-high-light); }
+.ds-alert--critical .ds-alert__icon,
+.ds-alert--critical .ds-alert__close:focus {
+  color: var(--color-semantic-text-high-light);
+  outline-color: var(--color-semantic-text-high-light);
+}
+
+/* 閉じるアイコンサイズ（ヒットエリアは既定のまま） */
+.ds-alert__close .ds-btn__icon { width: var(--spacing-padding-20); height: var(--spacing-padding-20); }
+
+/* Alert内ボタンの視認性最適化（コンテキスト限定） */
+/* Alert内ボタンの上書きは行わない（Button.cssの既定に委譲） */
+/* → 検証のため、hover時のみoverlay-05を適用（outline/ghost neutral 限定） */
+.ds-alert .ds-btn--outline.ds-btn--neutral:hover:not(:disabled),
+.ds-alert .ds-btn--outline.ds-btn--neutral.ds-btn--hover:not(:disabled) {
+  background: var(--color-semantic-overlay-neutral-05-light);
+}
+.ds-alert .ds-btn--ghost.ds-btn--neutral:hover:not(:disabled),
+.ds-alert .ds-btn--ghost.ds-btn--neutral.ds-btn--hover:not(:disabled) {
+  background: var(--color-semantic-overlay-neutral-05-light);
+}
+
+/* ダークモード対応 */
+[data-theme="dark"] .ds-alert__close:hover { background: var(--color-semantic-overlay-neutral-05-dark); }
+
+[data-theme="dark"] .ds-alert--info {
+  background: var(--color-semantic-info-50-dark);
+  border-color: var(--color-semantic-info-200-dark);
+  color: var(--color-semantic-info-900-dark);
+}
+
+[data-theme="dark"] .ds-alert.ds-alert--info .ds-alert__close { color: var(--color-semantic-info-600-dark); }
+[data-theme="dark"] .ds-alert--info .ds-alert__icon,
+[data-theme="dark"] .ds-alert--info .ds-alert__close:focus {
+  color: var(--color-semantic-info-600-dark);
+  outline-color: var(--color-semantic-info-600-dark);
+}
+
+[data-theme="dark"] .ds-alert--success {
+  background: var(--color-semantic-success-50-dark);
+  border-color: var(--color-semantic-success-200-dark);
+  color: var(--color-semantic-success-900-dark);
+}
+
+[data-theme="dark"] .ds-alert.ds-alert--success .ds-alert__close { color: var(--color-semantic-success-600-dark); }
+[data-theme="dark"] .ds-alert--success .ds-alert__icon,
+[data-theme="dark"] .ds-alert--success .ds-alert__close:focus {
+  color: var(--color-semantic-success-600-dark);
+  outline-color: var(--color-semantic-success-600-dark);
+}
+
+/* ダークモード: Alert内ボタン最適化 */
+/* ダークモード側も上書きなし（Button.cssの既定に委譲） */
+/* → 検証のため、hover時のみoverlay-05を適用（outline/ghost neutral 限定） */
+[data-theme="dark"] .ds-alert .ds-btn--outline.ds-btn--neutral:hover:not(:disabled),
+[data-theme="dark"] .ds-alert .ds-btn--outline.ds-btn--neutral.ds-btn--hover:not(:disabled) {
+  background: var(--color-semantic-overlay-neutral-05-dark);
+}
+[data-theme="dark"] .ds-alert .ds-btn--ghost.ds-btn--neutral:hover:not(:disabled),
+[data-theme="dark"] .ds-alert .ds-btn--ghost.ds-btn--neutral.ds-btn--hover:not(:disabled) {
+  background: var(--color-semantic-overlay-neutral-05-dark);
+}

@@ -1,0 +1,87 @@
+# TopBar コンポーネント
+
+## 目的
+- 画面上部に常設するヘッダーバー（ロゴ + ナビゲーション + ユーティリティアクション）
+- アプリ型 UI で、画面間移動とユーザーアクションの起点を一箇所にまとめる
+- 同等の用途で `Header` コンポーネントもあるが、TopBar はナビ常設のアプリレイアウト寄り、`Header` は記事/ユーティリティ画面寄り
+
+## API
+```js
+TopBar({
+  variant: 'primary' | 'secondary',     // 既定: 'primary'
+  logo: { text?, icon?, href? } | string | null,
+  navigation: string,                   // Navigation({ variant: 'top' }) や Breadcrumb の HTML
+  actions: Action[],                    // 右側ユーティリティ（後述）
+  background: 'default' | 'neutral' | 'primary', // 既定: 'default'
+  sticky: boolean,                      // 既定: false（画面上部に固定するか）
+  bordered: boolean,                    // 既定: false（下端に区切り線）
+  height: 'compact' | 'default' | 'tall' // 既定: 'default'
+})
+
+// Action 型
+type Action =
+  | string
+  | { type: 'text', content: string }
+  | { type: 'icon', icon: string, href?: string, ariaLabel?: string }
+  | { type: 'button', content: string };
+```
+
+返り値は `<header class="ds-topbar …" role="banner">…</header>` の HTML 文字列。
+
+## 使用例
+```js
+TopBar({
+  variant: 'primary',
+  logo: { text: 'Yomogi', icon: '<i data-lucide="leaf"></i>', href: '/' },
+  navigation: Navigation({
+    variant: 'top',
+    items: [
+      { label: 'ダッシュボード', href: '/', current: true },
+      { label: 'プロジェクト', href: '/projects' },
+      { label: 'チーム', href: '/team' }
+    ]
+  }),
+  actions: [
+    { type: 'icon', icon: '<i data-lucide="search"></i>', ariaLabel: '検索' },
+    { type: 'icon', icon: '<i data-lucide="bell"></i>', ariaLabel: '通知' },
+    Avatar({ size: 'sm', fallback: 'AK' })
+  ],
+  sticky: true,
+  bordered: true
+})
+```
+
+## variant の選択
+- **primary**: アプリのメインヘッダー。グローバルナビ常設・ロゴ強調
+- **secondary**: セクション内ヘッダー・サブナビ。primary の下に重ねるケース
+
+## デザイン仕様（トークン）
+- 背景: `default` = `var(--color-semantic-neutral-50-light/dark)`、`neutral` = `100`、`primary` = `var(--color-semantic-primary-50-light/dark)`
+- 区切り線（bordered）: `var(--color-semantic-divider-extra-high-light/dark)`
+- 内側 padding: 縦 `var(--spacing-padding-12)` 〜 `16`、横 `var(--spacing-padding-24)` を基準。height バリアントで変動
+- アクション間の gap: `var(--spacing-padding-16)`
+- ロゴテキスト: `var(--font-size-16)`、ウェイト 600
+- sticky 時の z-index: 100（Modal は 200 以上にして重ね順を確保）
+
+## ふるまい
+- `sticky: true` で `position: sticky; top: 0;` 相当の挙動になる
+- 横幅が狭くなった時、テキスト系アクション（`type: 'text'` など）は非表示に切り替わる
+- スクロール量に応じて影や色を変える「縮むヘッダー」演出はアプリ側で対応（コンポーネント側では非対応）
+
+## アクセシビリティ
+- ルートに `role="banner"`
+- ロゴリンクは適切な `href`、ロゴアイコンのみの場合はリンク全体に `aria-label`
+- アイコンアクションはすべて `aria-label` 必須
+- sticky 時のフォーカス順序を維持（フォーカス移動時にスクロールで隠れないこと）
+
+## SideNav / Header / TopBar の使い分け
+- **TopBar**: アプリの常設ヘッダー（横）。ロゴ + グローバルナビ + ユーティリティ
+- **SideNav**: 縦の常設ナビゲーション
+- **Header**: 記事・LP・ユーティリティ画面のヘッダー（パンくず・小さなアクション中心）
+
+## アンチパターン
+- TopBar の中で `<h1>` を入れる（タイトルはコンテンツ側に置く）
+- アクション数を 5 以上並べる（重要なものに絞り、それ以外は Dropdown / Popover にまとめる）
+- ナビゲーション項目を `actions` に詰める（`navigation` プロパティを使う）
+- 異なるブランドの色（primary / accent）を背景と境界の両方で同時に強調する
+- sticky なのに z-index を未指定で他の要素に隠れる

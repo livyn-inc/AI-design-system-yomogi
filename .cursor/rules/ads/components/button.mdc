@@ -1,0 +1,102 @@
+---
+description: Buttonコンポーネント設計・利用ガイド
+globs: "components/button/**/*"
+---
+## 概要
+汎用的なボタンコンポーネント。3つのvariant、3つの色、3つのサイズの組み合わせで様々な用途に対応。
+
+## API
+### Props
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| variant | 'solid' \| 'outline' \| 'ghost' | 'solid' | ボタンのスタイル |
+| color | 'primary' \| 'neutral' \| 'negative' | 'primary' | ボタンの色 |
+| size | 'sm' \| 'md' \| 'lg' | 'md' | ボタンのサイズ |
+| label | string | '' | ボタンのテキスト |
+| leftIcon | string | '' | 左側のアイコン（HTML） |
+| rightIcon | string | '' | 右側のアイコン（HTML） |
+| disabled | boolean | false | 無効化状態 |
+| loading | boolean | false | ローディング状態 |
+| state | string | 'enable' | 状態（内部用：enable/hover/active） |
+| ariaLabel | string | '' | アクセシビリティ用ラベル |
+
+## 使用例
+```javascript
+// 基本的な使用
+Button({ label: '送信' })
+
+// カスタマイズ
+Button({
+  variant: 'outline',
+  color: 'negative',
+  size: 'sm',
+  label: '削除',
+  leftIcon: '<svg>...</svg>'
+})
+
+// ローディング状態
+Button({
+  variant: 'solid',
+  color: 'primary',
+  label: '保存中...',
+  loading: true
+})
+```
+
+## デザイン判断ガイド
+### 基本ルール
+1. **1画面に1つのprimary/solid**: 最重要アクションのみ
+2. **関連アクションは同じvariant**: 統一感のため
+3. **破壊的操作は必ずnegative**: ユーザーの誤操作防止
+
+### 色の選択指針
+- **primary**: 送信、保存、次へ、ログインなど推奨アクション
+- **neutral**: キャンセル、戻る、詳細表示、設定など中立的アクション
+- **negative**: 削除、取消、ログアウト、リセットなど危険なアクション
+
+### variantの選択指針
+- **solid**: 最も目立つ、主要アクション用
+- **outline**: 重要だが控えめ、選択肢の1つとして
+- **ghost**: 最も控えめ、テキストリンクに近い用途
+
+### 状態レイヤー（overlay）ルール
+- 中立色（neutral）の `outline`/`ghost` の hover 背景は overlay/neutral-05 を既定とする。
+  - Light: `--color-semantic-overlay-neutral-05-light`
+  - Dark: `--color-semantic-overlay-neutral-05-dark`
+- `active` は現状プロジェクト既定を維持（必要に応じて overlay-15 へ拡張検討）。
+- `solid` は基本opaque（不透明）を維持し、可読性と一貫性を優先する（stateのみoverlay適用は別途検証）。
+
+### サイズの選択指針
+- **lg**: モバイルやCTA（Call To Action）用
+- **md**: 一般的な用途（デフォルト）
+- **sm**: 狭いスペースや補助的な用途
+
+## アクセシビリティ
+- aria-label属性でスクリーンリーダー対応
+- disabled状態でキーボード操作を無効化
+- 十分なコントラスト比を確保
+- タッチターゲットサイズ（最小44px）を考慮
+
+## 技術的詳細
+- CSS変数でテーマ対応（ライト/ダークモード）
+- トークンベースの色・余白管理
+- hover/active/loading状態の視覚フィードバック
+- フォーカス状態のキーボードナビゲーション対応
+
+## 共通ボタン基盤（button-base.css）
+- すべてのボタン系コンポーネント（Button、IconButton、Pagination）で使用される共通スタイル
+- フォーカス状態（:focus-visible）の統一
+- 無効化状態（:disabled、.is-disabled）の統一
+- アクティブ状態（:active）の統一
+- トランジション効果の統一
+- 基本的なリセットスタイル
+
+### 共通基盤を使用しているコンポーネント
+- Button（components/button/Button.css）
+- IconButton（components/icon-button/IconButton.css）
+- Pagination（components/pagination/Pagination.css）
+
+### 更新時の注意事項
+- 共通動作の変更 → button-base.css を修正
+- 個別の見た目の変更 → 各コンポーネントのCSS を修正
+- 新規ボタン系コンポーネント作成時 → button-base.css を必ずインポート

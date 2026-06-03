@@ -1,0 +1,271 @@
+# グローバルナビゲーション構成ガイド
+
+## 概要
+
+このガイドでは、PageTemplate を基盤とした柔軟なグローバルナビゲーション構成について説明します。レイアウト層（PageTemplate）とコンポーネント層（TopBar、SideNav、Navigation）の役割分担を明確にし、適切なパターン選択をサポートします。
+
+## アーキテクチャ
+
+### レイアウト層
+**PageTemplate**: ページ全体のレイアウト構造を定義
+- スロット提供: header、aside、main、footer 等
+- レイアウトオプション: カラム数、幅、密度の管理
+
+### コンポーネント層  
+**各スロットに配置するナビゲーションコンポーネント**:
+
+1. **TopBar**: header スロット用 - 上部グローバルナビゲーション
+2. **SideNav**: aside スロット用 - 左側グローバルナビゲーション  
+3. **Navigation**: 汎用メニュー - どのスロットでも使用可能
+
+## グローバルナビゲーションパターン
+
+### パターン1: TopBar + SideNav（両方型）
+**用途**: 複雑なアプリケーション、多階層ナビゲーション
+**例**: 管理画面、CRM、ERP システム
+
+```js
+PageTemplate({
+  columns: 'two-col',
+  slots: {
+    header: TopBar({
+      variant: 'primary',
+      logo: { text: 'MyApp', icon: '<i data-lucide="layers"></i>', href: '/' },
+      actions: [
+        { type: 'icon', icon: '<i data-lucide="bell"></i>', ariaLabel: '通知' },
+        { type: 'icon', icon: '<i data-lucide="user"></i>', ariaLabel: 'プロフィール' }
+      ]
+    }),
+    aside: SideNav({
+      variant: 'permanent',
+      navigation: Navigation({
+        variant: 'side',
+        items: [
+          { label: 'ダッシュボード', href: '/dashboard', leftIcon: '<i data-lucide="home"></i>' },
+          { label: 'プロジェクト', href: '/projects', leftIcon: '<i data-lucide="folder"></i>' },
+          { label: '設定', href: '/settings', leftIcon: '<i data-lucide="settings"></i>' }
+        ]
+      })
+    }),
+    main: pageContent
+  }
+})
+```
+
+### パターン2: SideNav のみ（左側型）
+**用途**: コンテンツ重視、垂直型ナビゲーション
+**例**: Slack、Discord、VS Code
+
+```js
+PageTemplate({
+  columns: 'two-col',
+  slots: {
+    // header スロットは未使用
+    aside: SideNav({
+      variant: 'permanent',
+      logo: { text: 'MyApp', icon: '<i data-lucide="layers"></i>', href: '/' },
+      navigation: Navigation({
+        variant: 'side',
+        items: [
+          { label: 'チーム1', href: '/team1', leftIcon: '<i data-lucide="users"></i>' },
+          { label: 'チーム2', href: '/team2', leftIcon: '<i data-lucide="users"></i>' },
+          { 
+            type: 'section', 
+            title: 'プロジェクト',
+            items: [
+              { label: 'プロジェクト A', href: '/project-a' },
+              { label: 'プロジェクト B', href: '/project-b' }
+            ]
+          }
+        ]
+      }),
+      footer: `
+        <div style="padding: var(--spacing-padding-16);">
+          <button class="ds-button">設定</button>
+        </div>
+      `
+    }),
+    main: pageContent
+  }
+})
+```
+
+### パターン3: TopBar のみ（上部型）
+**用途**: シンプルなサイト、水平型ナビゲーション
+**例**: 企業サイト、ブログ、ランディングページ
+
+```js
+PageTemplate({
+  columns: 'one-col',
+  slots: {
+    header: TopBar({
+      variant: 'primary',
+      logo: { text: 'MyApp', icon: '<i data-lucide="layers"></i>', href: '/' },
+      navigation: Navigation({
+        variant: 'top',
+        items: [
+          { label: 'ホーム', href: '/', current: true },
+          { label: '製品', href: '/products' },
+          { label: '会社情報', href: '/about' },
+          { label: 'お問い合わせ', href: '/contact' }
+        ]
+      }),
+      actions: [
+        { type: 'button', content: 'ログイン' },
+        { type: 'button', content: '無料体験' }
+      ]
+    }),
+    main: pageContent
+    // aside スロットは未使用
+  }
+})
+```
+
+### パターン4: TopBar + パンくず（階層型）
+**用途**: 深い階層構造、コンテンツサイト
+**例**: ドキュメントサイト、ECサイト
+
+```js
+PageTemplate({
+  columns: 'one-col',
+  slots: {
+    header: TopBar({
+      variant: 'primary',
+      logo: { text: 'MyApp', href: '/' },
+      navigation: Breadcrumb({
+        items: [
+          { label: 'ホーム', href: '/' },
+          { label: 'カテゴリ', href: '/category' },
+          { label: '商品名' }
+        ],
+        size: 'lg'
+      }),
+      actions: [
+        { type: 'icon', icon: '<i data-lucide="search"></i>', ariaLabel: '検索' },
+        { type: 'icon', icon: '<i data-lucide="shopping-cart"></i>', ariaLabel: 'カート' }
+      ]
+    }),
+    main: pageContent
+  }
+})
+```
+
+## SideNav バリエーション
+
+### 永続型（Permanent）
+```js
+SideNav({
+  variant: 'permanent',     // 常時表示
+  width: 'default',         // 280px
+  collapsible: true,        // 折りたたみ可能
+  collapsed: false          // 初期状態
+})
+```
+
+### 一時型（Temporary）
+```js
+SideNav({
+  variant: 'temporary',     // モーダル表示
+  width: 'default',
+  overlay: true            // オーバーレイ背景
+})
+```
+
+### オーバーレイ型（Overlay）
+```js
+SideNav({
+  variant: 'overlay',       // 浮いて表示
+  width: 'compact',         // 240px
+  collapsible: false
+})
+```
+
+## TopBar バリエーション
+
+### プライマリ（Primary）
+```js
+TopBar({
+  variant: 'primary',       // メインナビゲーション
+  height: 'default',        // 64px
+  sticky: true,             // スクロール固定
+  bordered: true            // 下ボーダー
+})
+```
+
+### セカンダリ（Secondary）
+```js
+TopBar({
+  variant: 'secondary',     // サブナビゲーション
+  height: 'compact',        // 48px
+  background: 'neutral'
+})
+```
+
+## レスポンシブ対応
+
+### モバイル優先設計
+```js
+// デスクトップ: TopBar + SideNav
+// タブレット: TopBar + 折りたたみ SideNav
+// モバイル: TopBar + ハンバーガーメニュー
+
+PageTemplate({
+  columns: 'two-col',
+  slots: {
+    header: TopBar({
+      variant: 'primary',
+      logo: { text: 'MyApp' },
+      actions: [
+        // モバイルでハンバーガーメニューとして表示
+        { type: 'icon', icon: '<i data-lucide="menu"></i>', ariaLabel: 'メニュー', className: 'mobile-menu-trigger' }
+      ]
+    }),
+    aside: SideNav({
+      variant: 'permanent',
+      collapsible: true,
+      navigation: mainNavigation
+    }),
+    main: pageContent
+  }
+})
+```
+
+## ベストプラクティス
+
+### 1. 適切なパターン選択
+- **シンプルなサイト**: TopBar のみ
+- **コンテンツ重視**: SideNav のみ  
+- **複雑なアプリ**: TopBar + SideNav
+- **階層構造**: TopBar + Breadcrumb
+
+### 2. アクセシビリティ
+- `role="banner"` (TopBar), `role="complementary"` (SideNav) を適切に設定
+- キーボードナビゲーション対応
+- スクリーンリーダー対応のラベル
+
+### 3. パフォーマンス
+- SideNav の折りたたみ状態をローカルストレージに保存
+- レスポンシブ対応での適切な表示切替
+- Navigation コンポーネントの再利用
+
+### 4. 一貫性
+- アイコンサイズの統一 
+- 色彩・タイポグラフィの統一
+- インタラクション動作の統一
+
+## 注意事項
+
+### コンポーネント間の協調
+- Navigation は TopBar、SideNav 内で再利用可能
+- Breadcrumb は TopBar の navigation スロットで使用
+- PageTemplate のスロット設計を活用
+
+### スタイリング
+- 全てデザインシステムトークンを使用
+- ハードコードされた値の禁止
+- ダークテーマ対応必須
+
+### 実装時の考慮点
+- Lucide アイコンの適切な初期化
+- JavaScript の実行順序
+- CSS の読み込み順序

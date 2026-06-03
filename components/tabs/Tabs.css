@@ -1,0 +1,187 @@
+/* タブコンテナ */
+.ds-tabs { 
+  display: flex; 
+  flex-direction: column; 
+}
+
+/* タブリスト */
+.ds-tabs__list { 
+  display: flex; 
+  gap: var(--spacing-padding-4);
+  border-bottom: 2px solid var(--color-semantic-divider-extra-high-light);
+  padding: 0 var(--spacing-padding-16) 0;
+  align-items: flex-end;
+}
+
+/* タブボタン基本スタイル */
+.ds-tabs__tab {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-padding-8);
+  padding: var(--spacing-padding-8) var(--spacing-padding-16);
+  background: var(--color-semantic-neutral-200-light);
+  border: 2px solid var(--color-semantic-divider-extra-high-light);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  color: var(--color-semantic-text-middle-light);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-500);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+  margin-bottom: -2px;
+  position: relative;
+  min-height: 40px;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+/* サイズバリエーション */
+.ds-tabs__tab--sm {
+  padding: var(--spacing-padding-6) var(--spacing-padding-12);
+  font-size: var(--font-size-12);
+  min-height: 32px;
+}
+
+.ds-tabs__tab--sm .ds-tabs__icon {
+  width: 14px;
+  height: 14px;
+}
+
+.ds-tabs__tab--md {
+  /* デフォルトサイズ（上記で定義済み） */
+}
+
+.ds-tabs__tab--md .ds-tabs__icon {
+  width: 16px;
+  height: 16px;
+}
+
+.ds-tabs__tab--lg {
+  padding: var(--spacing-padding-12) var(--spacing-padding-20);
+  font-size: var(--font-size-16);
+  min-height: 48px;
+}
+
+.ds-tabs__tab--lg .ds-tabs__icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* アイコン */
+.ds-tabs__icon {
+  flex-shrink: 0;
+  stroke-width: 2;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* ラベル */
+.ds-tabs__label {
+  line-height: 1;
+  text-decoration: none;
+}
+
+/* ボタン内のすべての要素で下線を無効化 */
+.ds-tabs__tab * {
+  text-decoration: none;
+}
+
+/* アイコン付きタブの調整 */
+.ds-tabs__tab--with-icon {
+  padding-left: var(--spacing-padding-12);
+}
+
+.ds-tabs__tab--sm.ds-tabs__tab--with-icon {
+  padding-left: var(--spacing-padding-12);
+}
+
+.ds-tabs__tab--lg.ds-tabs__tab--with-icon {
+  padding-left: var(--spacing-padding-16);
+}
+
+/* ホバー時 */
+.ds-tabs__tab:not(.is-active):hover { 
+  background: var(--color-semantic-neutral-300-light);
+  color: var(--color-semantic-text-high-light);
+}
+
+/* アクティブタブ */
+.ds-tabs__tab.is-active { 
+  background: var(--color-semantic-neutral-100-light);
+  border-top: 2px solid var(--color-semantic-divider-extra-high-light);
+  border-left: 2px solid var(--color-semantic-divider-extra-high-light);
+  border-right: 2px solid var(--color-semantic-divider-extra-high-light);
+  border-bottom: none;
+  color: var(--color-semantic-text-high-light);
+  padding-bottom: calc(var(--spacing-padding-8) + 3px);
+  z-index: 1;
+  transition: none;
+}
+
+.ds-tabs__tab--sm.is-active {
+  padding-bottom: calc(var(--spacing-padding-6) + 3px);
+}
+
+.ds-tabs__tab--lg.is-active {
+  padding-bottom: calc(var(--spacing-padding-12) + 3px);
+}
+
+/* フォーカス時 */
+.ds-tabs__tab:focus-visible { 
+  outline: var(--spacing-padding-2) solid var(--color-semantic-primary-100-light); 
+  outline-offset: var(--spacing-padding-2); 
+}
+
+/* タブパネル */
+.ds-tabs__panel { 
+  padding: var(--spacing-padding-24) var(--spacing-padding-16) var(--spacing-padding-12); 
+}
+
+/* ダークモード */
+[data-theme="dark"] .ds-tabs__list { 
+  border-bottom-color: var(--color-semantic-divider-extra-high-dark); 
+}
+
+[data-theme="dark"] .ds-tabs__tab { 
+  background: var(--color-semantic-neutral-200-dark);
+  color: var(--color-semantic-text-middle-dark); 
+  border-color: var(--color-semantic-divider-extra-high-dark);
+}
+
+[data-theme="dark"] .ds-tabs__tab:not(.is-active):hover { 
+  background: var(--color-semantic-neutral-300-dark);
+  color: var(--color-semantic-text-high-dark); 
+}
+
+[data-theme="dark"] .ds-tabs__tab.is-active { 
+  background: var(--color-semantic-neutral-100-dark);
+  border-top: 2px solid var(--color-semantic-divider-extra-high-dark);
+  border-left: 2px solid var(--color-semantic-divider-extra-high-dark);
+  border-right: 2px solid var(--color-semantic-divider-extra-high-dark);
+  border-bottom: none;
+  color: var(--color-semantic-text-high-dark);
+  padding-bottom: calc(var(--spacing-padding-8) + 3px);
+  transition: none;
+}
+
+[data-theme="dark"] .ds-tabs__tab--sm.is-active {
+  padding-bottom: calc(var(--spacing-padding-6) + 3px);
+}
+
+[data-theme="dark"] .ds-tabs__tab--lg.is-active {
+  padding-bottom: calc(var(--spacing-padding-12) + 3px);
+}
+
+[data-theme="dark"] .ds-tabs__tab:focus-visible { 
+  outline-color: var(--color-semantic-primary-100-dark); 
+}
+
+/* 無効化状態 */
+.ds-tabs__tab:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ds-tabs__tab:disabled:hover {
+  background: var(--color-semantic-neutral-200-light);
+  color: var(--color-semantic-text-middle-light);
+}

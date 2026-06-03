@@ -1,0 +1,90 @@
+# Modal コンポーネント
+
+## 目的
+- 重要な操作や詳細入力のためのオーバーレイダイアログ
+- ユーザーの注意を一時的に画面の他の操作から切り離して、決定・確認・入力を完了させたい場面で使う
+
+## API
+```js
+Modal({
+  title: string,
+  content: string,            // HTML 文字列（任意のコンポーネントを組み合わせ可）
+  actions?: string,           // フッター（Button コンポーネントを使用）
+  open?: boolean,             // 既定: false
+  size?: 'sm'|'md'|'lg'|'xl'|'2xl'|'3xl'|'4xl'|'full' // 既定: 'md'
+})
+```
+
+## 使用例
+```js
+// 削除確認モーダル
+Modal({
+  title: '本当に削除しますか？',
+  content: `<p>この操作は取り消せません。</p>`,
+  actions: `
+    ${Button({ variant: 'outline', color: 'neutral', label: 'キャンセル' })}
+    ${Button({ variant: 'solid', color: 'negative', label: '削除する' })}
+  `,
+  open: true,
+  size: 'sm'
+})
+
+// 詳細入力モーダル
+Modal({
+  title: 'プロジェクトを作成',
+  content: `
+    ${Input({ id: 'name', label: '名前', required: true })}
+    ${TextArea({ id: 'desc', label: '説明' })}
+  `,
+  actions: `
+    ${Button({ variant: 'outline', color: 'neutral', label: 'キャンセル' })}
+    ${Button({ variant: 'solid', color: 'primary', label: '作成' })}
+  `,
+  size: 'lg'
+})
+```
+
+## デザイン仕様（トークン）
+- 背景: `var(--color-semantic-neutral-50-light/dark)`
+- 角丸: `var(--radius-lg)`
+- 影: `var(--shadow-box-shadow-lg-light/dark)`（ボーダーなし、影と余白で分離）
+- タイトル: `var(--font-size-16)` / `var(--font-line-height-24)`（見出しは強すぎないトーン）
+- 余白
+  - header: 上 `var(--spacing-padding-20)`、左右 `var(--spacing-padding-24)`、下 `var(--spacing-padding-16)`
+  - body: 上 `var(--spacing-padding-16)`、下 `var(--spacing-padding-20)`、左右 `var(--spacing-padding-24)`
+  - footer: 上 `var(--spacing-padding-16)`、下 `var(--spacing-padding-20)`、左右 `var(--spacing-padding-24)`
+- サイズ: `--layout-max-width-{sm,md,lg,xl,2xl,3xl,4xl}` に準拠（sm=320px / md=384px / lg=448px / xl=512px / 2xl=576px / 3xl=672px / 4xl=768px）。`full` は全画面
+- バックドロップ: `var(--color-semantic-overlay-neutral-50-light/dark)` 程度の半透明黒で背景を遮蔽
+
+## サイズ選択指針
+- **sm**: 削除確認 / シンプルな選択肢（はい/いいえ）
+- **md**: 標準（既定）。1〜2フィールドの入力 / 短いメッセージ
+- **lg / xl**: フォーム入力（複数フィールド）
+- **2xl / 3xl / 4xl**: テーブル / 詳細閲覧 / プレビュー
+- **full**: モバイル時の全画面表示 / 編集ワークスペース
+
+## ふるまい
+- `open` で表示。バックドロップクリックや Esc で閉じる挙動はアプリ側で実装する（コンポーネントは静的構造を返すのみ）
+- フッターのボタンは `Button` コンポーネントを使用（variant / size / color 規格に準拠）
+- `×` 閉じるアイコンは `IconButton({ ariaLabel: '閉じる' })` を使う
+
+## アクセシビリティ
+- ルートに `role="dialog"` と `aria-modal="true"` を付与する
+- `aria-labelledby` で `title` の id を参照する
+- 開いたときは Modal 内の最初のフォーカス可能要素にフォーカスを移す
+- フォーカスを Modal 内に閉じ込める（focus trap）
+- 閉じる手段（×ボタン / バックドロップクリック / Esc）を必ず1つ以上提供する
+- 背後のメイン画面は `inert` または `aria-hidden="true"` でフォーカスから外す
+
+## Modal / Drawer / Popover の使い分け
+- **Modal**: 操作の完了が必要な確認・送信フロー。ユーザーの決定が必須の場面
+- **Drawer**: 補助・設定・詳細パネル。複数の入力を含むが「閉じても作業が続く」
+- **Popover**: 1〜数要素の補助情報・選択肢のクイック表示。一時的・閉じれば消える
+
+## アンチパターン
+- タイトルの過度な強調（大きすぎるフォントサイズ、装飾過多）
+- 上下余白の取り過ぎ（規定の `20 / 16 / 16 / 20` を超えて広げない）
+- 主要アクションを `outline` にする（重要なアクションは `solid + primary` か `solid + negative`）
+- Modal の中に Modal を重ねる（フォーカスと階層が壊れる、Drawer や Popover で代替する）
+- バックドロップなしで開く（背景操作が誤って届いてしまう）
+- `full` サイズを安易に使う（広げる前にコンテンツを整理できないか検討する）

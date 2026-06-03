@@ -1,0 +1,89 @@
+# SideNav コンポーネント
+
+## 目的
+- 画面左端に常設するナビゲーションパネル（ロゴ + メニュー + フッター + 折りたたみトグル）
+- アプリ型UIで、ページ間移動が頻繁に発生する画面で使う
+- `Navigation({ variant: 'side' })` を中身に持たせる構造（ナビ自体の項目仕様は [`./navigation.mdc`](./navigation.mdc) を参照）
+
+## API
+```js
+SideNav({
+  variant: 'permanent' | 'temporary',  // 既定: 'permanent'
+  width: 'compact' | 'default' | 'wide', // 既定: 'default'（CSS 側でトークン化されたサイズ）
+  collapsed: boolean,                   // 既定: false（折りたたみの初期状態）
+  logo: { text?, icon?, href? } | string | null,
+  navigation: string,                   // Navigation({ variant: 'side', items: [...] }) の HTML
+  footer: string,                       // 任意のフッター HTML（プロフィール・ヘルプリンク等）
+  collapsible: boolean,                 // 既定: true（トグルボタンを表示）
+  overlay: boolean                      // 既定: false（モバイル時の上乗せ表示）
+})
+```
+
+返り値は `<aside class="ds-sidenav …" role="complementary">…</aside>` の HTML 文字列。
+
+## 使用例
+```js
+const navHtml = Navigation({
+  variant: 'side',
+  items: [
+    { type: 'section', title: 'メイン', items: [
+      { label: 'ダッシュボード', href: '/', current: true, leftIcon: '<i data-lucide="home"></i>' },
+      { label: 'プロジェクト', href: '/projects', leftIcon: '<i data-lucide="folder"></i>',
+        defaultOpen: true, children: [
+          { label: '一覧', href: '/projects' },
+          { label: '新規作成', href: '/projects/new' }
+        ]}
+    ]},
+    { type: 'section', title: '管理', group: 'divider', items: [
+      { label: 'チーム', href: '/team', leftIcon: '<i data-lucide="users"></i>' },
+      { label: '設定', href: '/settings', leftIcon: '<i data-lucide="settings"></i>' }
+    ]}
+  ]
+});
+
+SideNav({
+  variant: 'permanent',
+  logo: { text: 'Yomogi', icon: '<i data-lucide="leaf"></i>', href: '/' },
+  navigation: navHtml,
+  footer: `
+    <div class="ds-sidenav__user">
+      ${Avatar({ size: 'sm', fallback: 'AK' })}
+      <span>佐藤 健</span>
+    </div>
+  `
+});
+```
+
+## variant の選択
+- **permanent**: デスクトップで常に表示し続ける。コンテンツ領域を圧迫しても情報密度を優先する画面
+- **temporary**: 必要な時だけスライドインさせる。モバイル / 狭いビューポート用。`overlay: true` と併用するのが一般的
+
+## デザイン仕様（トークン）
+- 背景: `var(--color-semantic-neutral-100-light/dark)` または `var(--color-semantic-neutral-50-light/dark)`
+- 区切り線: `var(--color-semantic-divider-extra-high-light/dark)`（必要箇所のみ）
+- 横幅: width バリアントごとにトークンで管理。`compact` ≒ 折りたたみ時相当
+- 内側 padding: `var(--spacing-padding-16)` を基準。collapsed 時は左右を詰める
+- ロゴ行のフォント: `var(--font-size-16)`、ウェイト 600
+- collapsed 時はラベルを `display: none` にしてアイコンだけ残す（テキストの省略表示は使わない）
+
+## ふるまい
+- `collapsible: true` で折りたたみトグルを右端に表示。クリックで `ds-sidenav--collapsed` をトグル
+- `temporary` + `overlay` の場合、`ds-sidenav__backdrop` が描画される。閉じる挙動はアプリ側で実装
+- 折りたたみ状態は localStorage 等で永続化したい場合がある（呼び出し側で対応）
+
+## アクセシビリティ
+- ルートに `role="complementary"` と `aria-label="サイドナビゲーション"`
+- トグルボタンに `aria-label`（「メニューを折りたたむ / 展開」）が状態に応じて切り替わる
+- 折りたたみ時は、アイコンのみ表示でも各リンクに `aria-label` または可視化された Tooltip を提供する
+- temporary では Esc で閉じる、フォーカスは sidenav 内に閉じ込めることが望ましい
+
+## TopBar / Navigation との使い分け
+- **SideNav**: 縦の常設ナビ。階層メニュー・セクション分け・フッター UI を含む
+- **TopBar**: 横の常設ヘッダー。ロゴ・グローバルナビ・ユーティリティを含む
+- **Navigation**: ナビゲーション項目そのもの（top / side バリアント）。SideNav / TopBar の中身として使う
+
+## アンチパターン
+- ナビ項目を `SideNav` 内で直接 HTML 文字列で組む（`Navigation({ variant: 'side' })` を使う）
+- 折りたたみ状態でもラベルテキストを CSS で見せようとする（width バリアントで対応する）
+- temporary を常時開いたまま使う（permanent を使うべきケース）
+- フッターに長いテキストを詰める（操作項目1〜2点 + ユーザー情報程度）

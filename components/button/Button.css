@@ -1,0 +1,892 @@
+@import '../../build/css/tokens.css';
+@import './button-base.css';
+
+:root {
+  --ds-color-primary: var(--color-semantic-neutral-900-light);
+  --ds-color-primary-bg-hover: var(--color-semantic-neutral-800-light);
+  --ds-color-primary-bg-active: var(--color-semantic-neutral-700-light);
+  --ds-color-neutral-bg: var(--color-semantic-neutral-200-light);
+  --ds-color-neutral-bg-hover: var(--color-semantic-neutral-100-light);
+  --ds-color-neutral-bg-active: var(--color-semantic-neutral-200-light);
+  --ds-color-neutral-text: var(--color-semantic-neutral-900-light);
+  --ds-color-neutral-border: var(--color-semantic-neutral-300-light);
+  --ds-color-negative: var(--color-semantic-negative-400-light);
+  --ds-color-negative-bg-hover: var(--color-semantic-negative-100-light);
+  --ds-color-negative-bg-active: var(--color-semantic-negative-200-light);
+  --ds-color-text-on-color: var(--color-base-gray-50-light);
+}
+
+[data-theme="dark"] {
+  --ds-color-primary: var(--color-semantic-neutral-900-dark);
+  --ds-color-primary-bg-hover: var(--color-semantic-neutral-800-dark);
+  --ds-color-primary-bg-active: var(--color-semantic-neutral-700-dark);
+  --ds-color-neutral-bg: var(--color-semantic-neutral-200-dark);
+  --ds-color-neutral-bg-hover: var(--color-semantic-neutral-100-dark);
+  --ds-color-neutral-bg-active: var(--color-semantic-neutral-200-dark);
+  --ds-color-neutral-text: var(--color-semantic-neutral-900-dark);
+  --ds-color-neutral-border: var(--color-semantic-neutral-300-dark);
+  --ds-color-negative: var(--color-semantic-negative-500-dark);
+  --ds-color-negative-bg-hover: var(--color-semantic-overlay-negative-15-dark);
+  --ds-color-negative-bg-active: var(--color-semantic-overlay-negative-30-dark);
+  --ds-color-text-on-color: var(--color-base-gray-50-dark);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --ds-color-primary: var(--color-semantic-neutral-900-dark);
+    --ds-color-primary-bg-hover: var(--color-semantic-neutral-800-dark);
+    --ds-color-primary-bg-active: var(--color-semantic-neutral-700-dark);
+    --ds-color-neutral-bg: var(--color-semantic-neutral-200-dark);
+    --ds-color-neutral-bg-hover: var(--color-semantic-neutral-100-dark);
+    --ds-color-neutral-bg-active: var(--color-semantic-neutral-200-dark);
+    --ds-color-neutral-text: var(--color-semantic-neutral-900-dark);
+    --ds-color-neutral-border: var(--color-semantic-neutral-300-dark);
+    --ds-color-negative: var(--color-semantic-negative-500-dark);
+    --ds-color-negative-bg-hover: var(--color-semantic-overlay-negative-15-dark);
+    --ds-color-negative-bg-active: var(--color-semantic-overlay-negative-30-dark);
+    --ds-color-text-on-color: var(--color-base-gray-50-dark);
+  }
+}
+
+.ds-btn {
+  /* button-base.cssの基本スタイルを継承済み */
+  /* Button固有のスタイル */
+  font-family: var(--font-family-pro);
+  font-weight: var(--font-weight-500);
+  border-radius: var(--radius-2xl);
+  padding: var(--spacing-padding-8) var(--spacing-padding-16);
+  gap: var(--spacing-padding-8);
+  white-space: nowrap;
+  min-width: fit-content;
+}
+
+/* variant + color */
+.ds-btn--solid.ds-btn--primary {
+  background: var(--ds-color-primary);
+  color: var(--ds-color-text-on-color);
+  border: 1px solid var(--ds-color-primary);
+}
+.ds-btn--solid.ds-btn--primary:hover:not(:disabled),
+.ds-btn--solid.ds-btn--primary.ds-btn--hover:not(:disabled) {
+  background: var(--color-base-primary-500-light);
+  border-color: var(--color-base-primary-500-light);
+}
+.ds-btn--solid.ds-btn--neutral {
+  background: var(--ds-color-neutral-bg);
+  color: var(--ds-color-neutral-text);
+  border: 1px solid var(--ds-color-neutral-bg);
+}
+.ds-btn--solid.ds-btn--neutral:hover:not(:disabled),
+.ds-btn--solid.ds-btn--neutral.ds-btn--hover:not(:disabled) {
+  background: var(--ds-color-neutral-bg-hover);
+  border-color: var(--ds-color-neutral-bg-hover);
+}
+.ds-btn--solid.ds-btn--negative {
+  background: var(--ds-color-negative);
+  color: var(--ds-color-text-on-color);
+  border: 1px solid var(--ds-color-negative);
+}
+.ds-btn--solid.ds-btn--negative:hover:not(:disabled),
+.ds-btn--solid.ds-btn--negative.ds-btn--hover:not(:disabled) {
+  background: var(--color-semantic-negative-300-light);
+  border-color: var(--color-semantic-negative-300-light);
+}
+
+.ds-btn--outline { background: transparent; border: none; }
+.ds-btn--outline.ds-btn--primary {
+  border: 1px solid var(--color-semantic-neutral-400-light);
+  color: var(--color-semantic-neutral-900-light);
+}
+.ds-btn--outline.ds-btn--primary:hover:not(:disabled),
+.ds-btn--outline.ds-btn--primary.ds-btn--hover:not(:disabled) {
+  background: var(--color-semantic-overlay-primary-05-light);
+  border-color: var(--color-base-primary-400-light);
+  color: var(--color-base-primary-600-light);
+}
+.ds-btn--outline.ds-btn--neutral {
+  border: 1px solid var(--ds-color-neutral-border);
+  color: var(--ds-color-neutral-text);
+}
+.ds-btn--outline.ds-btn--neutral:hover:not(:disabled),
+.ds-btn--outline.ds-btn--neutral.ds-btn--hover:not(:disabled) {
+  background: var(--color-semantic-overlay-neutral-05-light);
+  border-color: var(--color-semantic-neutral-400-light);
+  opacity: var(--opacity-65);
+}
+.ds-btn--outline.ds-btn--negative {
+  border: 1px solid var(--color-semantic-negative-300-light);
+  color: var(--ds-color-negative);
+}
+.ds-btn--outline.ds-btn--negative:hover:not(:disabled),
+.ds-btn--outline.ds-btn--negative.ds-btn--hover:not(:disabled) {
+  background: var(--color-semantic-overlay-negative-05-light);
+  border-color: var(--color-semantic-negative-500-light);
+  color: var(--ds-color-negative);
+  opacity: var(--opacity-65);
+}
+
+.ds-btn--ghost {
+  background: transparent;
+  border: 1px solid transparent;
+}
+.ds-btn--ghost.ds-btn--primary {
+  color: var(--color-semantic-neutral-900-light);
+}
+.ds-btn--ghost.ds-btn--primary:hover:not(:disabled),
+.ds-btn--ghost.ds-btn--primary.ds-btn--hover:not(:disabled) {
+  background: var(--color-semantic-overlay-primary-05-light);
+  color: var(--color-base-primary-600-light);
+}
+.ds-btn--ghost.ds-btn--neutral {
+  color: var(--ds-color-neutral-text);
+}
+.ds-btn--ghost.ds-btn--neutral:hover:not(:disabled),
+.ds-btn--ghost.ds-btn--neutral.ds-btn--hover:not(:disabled) {
+  background: var(--color-semantic-overlay-neutral-05-light);
+}
+.ds-btn--ghost.ds-btn--negative {
+  color: var(--ds-color-negative);
+}
+.ds-btn--ghost.ds-btn--negative:hover:not(:disabled),
+.ds-btn--ghost.ds-btn--negative.ds-btn--hover:not(:disabled) {
+  background: var(--color-semantic-overlay-negative-05-light);
+}
+
+/* Outline-Solid Variant (outline with solid background) */
+.ds-btn--outline-solid {
+  background: var(--color-semantic-absolute-white-light);
+  border: 1px solid;
+}
+.ds-btn--outline-solid.ds-btn--primary {
+  border-color: var(--color-semantic-neutral-400-light);
+  color: var(--color-semantic-neutral-900-light);
+}
+.ds-btn--outline-solid.ds-btn--primary:hover:not(:disabled),
+.ds-btn--outline-solid.ds-btn--primary.ds-btn--hover:not(:disabled) {
+  background: var(--color-base-primary-100-light);
+  border-color: var(--color-base-primary-400-light);
+  color: var(--color-base-primary-600-light);
+}
+.ds-btn--outline-solid.ds-btn--neutral {
+  border-color: var(--ds-color-neutral-border);
+  color: var(--ds-color-neutral-text);
+}
+.ds-btn--outline-solid.ds-btn--neutral:hover:not(:disabled),
+.ds-btn--outline-solid.ds-btn--neutral.ds-btn--hover:not(:disabled) {
+  background: var(--color-semantic-neutral-50-light);
+  border-color: var(--color-semantic-neutral-400-light);
+  opacity: var(--opacity-65);
+}
+.ds-btn--outline-solid.ds-btn--negative {
+  border-color: var(--color-semantic-negative-300-light);
+  color: var(--ds-color-negative);
+}
+.ds-btn--outline-solid.ds-btn--negative:hover:not(:disabled),
+.ds-btn--outline-solid.ds-btn--negative.ds-btn--hover:not(:disabled) {
+  background: var(--color-semantic-neutral-50-light);
+  border-color: var(--color-semantic-negative-500-light);
+  color: var(--ds-color-negative);
+  opacity: var(--opacity-65);
+}
+
+/* Ghost-Solid Variant (ghost with solid background) */
+.ds-btn--ghost-solid {
+  background: var(--color-semantic-absolute-white-light);
+  border: 1px solid transparent;
+}
+.ds-btn--ghost-solid.ds-btn--primary {
+  color: var(--color-semantic-neutral-900-light);
+}
+.ds-btn--ghost-solid.ds-btn--primary:hover:not(:disabled),
+.ds-btn--ghost-solid.ds-btn--primary.ds-btn--hover:not(:disabled) {
+  background: var(--color-semantic-primary-100-light);
+  color: var(--color-base-primary-600-light);
+}
+.ds-btn--ghost-solid.ds-btn--neutral {
+  color: var(--ds-color-neutral-text);
+}
+.ds-btn--ghost-solid.ds-btn--neutral:hover:not(:disabled),
+.ds-btn--ghost-solid.ds-btn--neutral.ds-btn--hover:not(:disabled) {
+  background: var(--color-semantic-neutral-100-light);
+}
+.ds-btn--ghost-solid.ds-btn--negative {
+  color: var(--ds-color-negative);
+}
+.ds-btn--ghost-solid.ds-btn--negative:hover:not(:disabled),
+.ds-btn--ghost-solid.ds-btn--negative.ds-btn--hover:not(:disabled) {
+  background: var(--color-semantic-negative-100-light);
+}
+
+/* size */
+.ds-btn.ds-btn--sm {
+  font-size: var(--font-size-14);
+  min-height: var(--layout-height-input-sm);
+  padding: var(--spacing-padding-6) var(--spacing-padding-12);
+}
+.ds-btn.ds-btn--md {
+  font-size: var(--font-size-16);
+  min-height: var(--layout-height-input-md);
+  padding: var(--spacing-padding-8) var(--spacing-padding-16);
+}
+.ds-btn.ds-btn--lg {
+  font-size: var(--font-size-18);
+  min-height: var(--layout-height-input-lg);
+  padding: var(--spacing-padding-12) var(--spacing-padding-20);
+}
+
+/* state */
+.ds-btn--hover:not(:disabled):hover,
+.ds-btn--hover:not(:disabled) {
+  filter: brightness(1.15);
+}
+.ds-btn--solid.ds-btn--primary.ds-btn--hover:not(:disabled) {
+  background: var(--color-base-primary-500-light);
+  filter: none;
+}
+.ds-btn--outline.ds-btn--primary.ds-btn--hover:not(:disabled) {
+  filter: none;
+}
+.ds-btn--solid.ds-btn--neutral.ds-btn--hover:not(:disabled) {
+  filter: none;
+}
+.ds-btn--outline.ds-btn--neutral.ds-btn--hover:not(:disabled) {
+  filter: none;
+}
+.ds-btn--ghost.ds-btn--neutral.ds-btn--hover:not(:disabled) {
+  filter: none;
+}
+.ds-btn--outline.ds-btn--primary.ds-btn--active:not(:disabled) {
+  filter: none;
+}
+.ds-btn--outline.ds-btn--neutral.ds-btn--active:not(:disabled) {
+  filter: none;
+}
+.ds-btn--ghost.ds-btn--neutral.ds-btn--active:not(:disabled) {
+  filter: none;
+}
+.ds-btn--solid.ds-btn--negative.ds-btn--hover:not(:disabled) {
+  filter: none;
+}
+.ds-btn--outline.ds-btn--negative.ds-btn--hover:not(:disabled) {
+  filter: none;
+}
+.ds-btn--ghost.ds-btn--negative.ds-btn--hover:not(:disabled) {
+  filter: none;
+}
+.ds-btn--solid.ds-btn--negative.ds-btn--active:not(:disabled) {
+  filter: none;
+}
+.ds-btn--outline.ds-btn--negative.ds-btn--active:not(:disabled) {
+  filter: none;
+}
+.ds-btn--ghost.ds-btn--negative.ds-btn--active:not(:disabled) {
+  filter: none;
+}
+
+/* loadingボタンのhover効果 */
+.ds-btn[disabled].ds-btn--loading:hover {
+  cursor: default;
+}
+.ds-btn--solid.ds-btn--primary.ds-btn--loading:not(.ds-btn--hover):hover {
+  background: var(--color-base-primary-500-light);
+  border-color: var(--color-base-primary-500-light);
+}
+.ds-btn--outline.ds-btn--primary.ds-btn--loading:not(.ds-btn--hover):hover {
+  background: var(--color-base-primary-100-light);
+  border-color: var(--color-base-primary-400-light);
+  color: var(--color-base-primary-600-light);
+}
+.ds-btn--outline.ds-btn--neutral.ds-btn--loading:not(.ds-btn--hover):hover {
+  background: var(--color-semantic-overlay-neutral-05-light);
+}
+.ds-btn--outline.ds-btn--negative.ds-btn--loading:not(.ds-btn--hover):hover {
+  background: var(--color-semantic-overlay-negative-05-light);
+  color: var(--ds-color-negative);
+}
+.ds-btn--ghost.ds-btn--primary.ds-btn--loading:not(.ds-btn--hover):hover {
+  background: var(--color-semantic-overlay-primary-05-light);
+}
+.ds-btn--ghost.ds-btn--neutral.ds-btn--loading:not(.ds-btn--hover):hover {
+  background: var(--color-semantic-overlay-neutral-05-light);
+}
+.ds-btn--ghost.ds-btn--negative.ds-btn--loading:not(.ds-btn--hover):hover {
+  background: var(--color-semantic-overlay-negative-05-light);
+}
+.ds-btn--active:not(:disabled):active {
+  filter: brightness(0.95);
+}
+
+/* active状態の具体的なスタイル */
+.ds-btn--solid.ds-btn--primary:active:not(:disabled),
+.ds-btn--solid.ds-btn--primary.ds-btn--active:not(:disabled) {
+  background: var(--color-semantic-neutral-600-light);
+  border-color: var(--color-semantic-neutral-600-light);
+}
+.ds-btn--solid.ds-btn--neutral:active:not(:disabled),
+.ds-btn--solid.ds-btn--neutral.ds-btn--active:not(:disabled) {
+  background: var(--color-semantic-neutral-400-light);
+  border-color: var(--color-semantic-neutral-400-light);
+}
+.ds-btn--solid.ds-btn--negative:active:not(:disabled),
+.ds-btn--solid.ds-btn--negative.ds-btn--active:not(:disabled) {
+  background: var(--color-semantic-negative-600-light);
+  border-color: var(--color-semantic-negative-600-light);
+}
+
+.ds-btn--outline.ds-btn--primary:active:not(:disabled),
+.ds-btn--outline.ds-btn--primary.ds-btn--active:not(:disabled) {
+  background: var(--color-semantic-overlay-neutral-15-light);
+  box-shadow: inset 0 0 0 1px var(--color-semantic-neutral-400-light);
+  color: var(--color-semantic-neutral-900-light);
+}
+.ds-btn--outline.ds-btn--neutral:active:not(:disabled),
+.ds-btn--outline.ds-btn--neutral.ds-btn--active:not(:disabled) {
+  background: var(--color-semantic-overlay-neutral-15-light);
+  box-shadow: inset 0 0 0 1px var(--ds-color-neutral-border);
+  color: var(--ds-color-neutral-text);
+}
+.ds-btn--outline.ds-btn--negative:active:not(:disabled),
+.ds-btn--outline.ds-btn--negative.ds-btn--active:not(:disabled) {
+  background: var(--color-semantic-overlay-negative-15-light);
+  box-shadow: inset 0 0 0 1px var(--color-semantic-negative-300-light);
+  color: var(--ds-color-negative);
+}
+
+.ds-btn--ghost.ds-btn--primary:active:not(:disabled),
+.ds-btn--ghost.ds-btn--primary.ds-btn--active:not(:disabled) {
+  background: var(--color-semantic-overlay-primary-15-light);
+  color: var(--color-base-primary-600-light);
+}
+.ds-btn--ghost.ds-btn--neutral:active:not(:disabled),
+.ds-btn--ghost.ds-btn--neutral.ds-btn--active:not(:disabled) {
+  background: var(--color-semantic-overlay-neutral-15-light);
+}
+.ds-btn--ghost.ds-btn--negative:active:not(:disabled),
+.ds-btn--ghost.ds-btn--negative.ds-btn--active:not(:disabled) {
+  background: var(--color-semantic-overlay-negative-15-light);
+}
+
+/* ダークモード対応 */
+[data-theme="dark"] .ds-btn--solid.ds-btn--primary {
+  border-color: var(--ds-color-primary);
+}
+[data-theme="dark"] .ds-btn--solid.ds-btn--neutral {
+  border-color: var(--ds-color-neutral-bg);
+}
+[data-theme="dark"] .ds-btn--solid.ds-btn--negative {
+  border-color: var(--ds-color-negative);
+}
+[data-theme="dark"] .ds-btn--solid.ds-btn--primary:hover:not(:disabled),
+[data-theme="dark"] .ds-btn--solid.ds-btn--primary.ds-btn--hover:not(:disabled) {
+  background: var(--color-base-primary-500-dark);
+  border-color: var(--color-base-primary-500-dark);
+}
+[data-theme="dark"] .ds-btn--solid.ds-btn--neutral:hover:not(:disabled),
+[data-theme="dark"] .ds-btn--solid.ds-btn--neutral.ds-btn--hover:not(:disabled) {
+  background: var(--ds-color-neutral-bg-hover);
+  border-color: var(--ds-color-neutral-bg-hover);
+}
+[data-theme="dark"] .ds-btn--solid.ds-btn--negative:hover:not(:disabled),
+[data-theme="dark"] .ds-btn--solid.ds-btn--negative.ds-btn--hover:not(:disabled) {
+  background: var(--color-semantic-negative-400-dark);
+  border-color: var(--color-semantic-negative-400-dark);
+}
+[data-theme="dark"] .ds-btn--solid.ds-btn--primary:active:not(:disabled),
+[data-theme="dark"] .ds-btn--solid.ds-btn--primary.ds-btn--active:not(:disabled) {
+  background: var(--color-semantic-neutral-600-dark);
+  border-color: var(--color-semantic-neutral-600-dark);
+}
+[data-theme="dark"] .ds-btn--solid.ds-btn--neutral:active:not(:disabled),
+[data-theme="dark"] .ds-btn--solid.ds-btn--neutral.ds-btn--active:not(:disabled) {
+  background: var(--color-semantic-neutral-400-dark);
+  border-color: var(--color-semantic-neutral-400-dark);
+}
+[data-theme="dark"] .ds-btn--solid.ds-btn--negative:active:not(:disabled),
+[data-theme="dark"] .ds-btn--solid.ds-btn--negative.ds-btn--active:not(:disabled) {
+  background: var(--color-semantic-negative-600-dark);
+  border-color: var(--color-semantic-negative-600-dark);
+}
+
+/* ダークモード用Outlineボタンスタイル */
+[data-theme="dark"] .ds-btn--outline.ds-btn--primary {
+  border: 1px solid var(--color-semantic-neutral-400-dark);
+  color: var(--color-semantic-neutral-900-dark);
+}
+[data-theme="dark"] .ds-btn--outline.ds-btn--primary:hover:not(:disabled),
+[data-theme="dark"] .ds-btn--outline.ds-btn--primary.ds-btn--hover:not(:disabled) {
+  background: var(--color-semantic-overlay-primary-05-dark);
+  border-color: var(--color-base-primary-400-dark);
+  color: var(--color-base-primary-600-dark);
+}
+[data-theme="dark"] .ds-btn--outline.ds-btn--neutral:hover:not(:disabled),
+[data-theme="dark"] .ds-btn--outline.ds-btn--neutral.ds-btn--hover:not(:disabled) { border-color: var(--color-semantic-neutral-400-dark); }
+[data-theme="dark"] .ds-btn--outline.ds-btn--negative { border: 1px solid var(--color-semantic-negative-300-dark); }
+[data-theme="dark"] .ds-btn--outline.ds-btn--negative:hover:not(:disabled),
+[data-theme="dark"] .ds-btn--outline.ds-btn--negative.ds-btn--hover:not(:disabled) {
+  background: var(--color-semantic-overlay-negative-05-dark);
+  border-color: var(--color-semantic-negative-500-dark);
+  opacity: var(--opacity-65);
+}
+
+[data-theme="dark"] .ds-btn--outline.ds-btn--primary:active:not(:disabled),
+[data-theme="dark"] .ds-btn--outline.ds-btn--primary.ds-btn--active:not(:disabled) {
+  background: var(--color-semantic-overlay-neutral-15-dark);
+  border-color: var(--color-semantic-neutral-400-dark);
+  color: var(--color-semantic-neutral-900-dark);
+}
+[data-theme="dark"] .ds-btn--outline.ds-btn--neutral:active:not(:disabled),
+[data-theme="dark"] .ds-btn--outline.ds-btn--neutral.ds-btn--active:not(:disabled) {
+  background: var(--color-semantic-overlay-neutral-15-dark);
+  border-color: var(--ds-color-neutral-border);
+  color: var(--ds-color-neutral-text);
+}
+[data-theme="dark"] .ds-btn--outline.ds-btn--negative:active:not(:disabled),
+[data-theme="dark"] .ds-btn--outline.ds-btn--negative.ds-btn--active:not(:disabled) {
+  background: var(--color-semantic-overlay-negative-15-dark);
+  border-color: var(--color-semantic-negative-300-dark);
+  color: var(--ds-color-negative);
+}
+
+[data-theme="dark"] .ds-btn--ghost.ds-btn--neutral:active:not(:disabled),
+[data-theme="dark"] .ds-btn--ghost.ds-btn--neutral.ds-btn--active:not(:disabled) {
+  background: var(--color-semantic-overlay-neutral-15-dark);
+}
+[data-theme="dark"] .ds-btn--ghost.ds-btn--negative:active:not(:disabled),
+[data-theme="dark"] .ds-btn--ghost.ds-btn--negative.ds-btn--active:not(:disabled) {
+  background: var(--color-semantic-overlay-negative-15-dark);
+}
+
+/* ダーク: neutral ghost/outline の hover 背景は overlay-05 に */
+[data-theme="dark"] .ds-btn--outline.ds-btn--neutral:hover:not(:disabled),
+[data-theme="dark"] .ds-btn--outline.ds-btn--neutral.ds-btn--hover:not(:disabled) {
+  background: var(--color-semantic-overlay-neutral-05-dark);
+  opacity: var(--opacity-65);
+}
+[data-theme="dark"] .ds-btn--ghost.ds-btn--neutral:hover:not(:disabled),
+[data-theme="dark"] .ds-btn--ghost.ds-btn--neutral.ds-btn--hover:not(:disabled) {
+  background: var(--color-semantic-overlay-neutral-05-dark);
+}
+[data-theme="dark"] .ds-btn--ghost.ds-btn--primary {
+  color: var(--color-semantic-neutral-900-dark);
+}
+[data-theme="dark"] .ds-btn--ghost.ds-btn--primary:hover:not(:disabled),
+[data-theme="dark"] .ds-btn--ghost.ds-btn--primary.ds-btn--hover:not(:disabled) {
+  background: var(--color-semantic-overlay-primary-05-dark);
+  color: var(--color-base-primary-600-dark);
+}
+[data-theme="dark"] .ds-btn--ghost.ds-btn--primary:active:not(:disabled),
+[data-theme="dark"] .ds-btn--ghost.ds-btn--primary.ds-btn--active:not(:disabled) {
+  background: var(--color-semantic-overlay-primary-15-dark);
+  color: var(--color-base-primary-600-dark);
+}
+
+.ds-btn--disabled,
+.ds-btn[disabled] {
+  opacity: var(--opacity-50);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* フォーカス状態はbutton-base.cssで定義済み */
+
+/* アイコン */
+.ds-btn__icon {
+  display: inline-flex;
+  align-items: center;
+}
+.ds-btn__icon--left { margin-right: var(--spacing-padding-4); }
+.ds-btn__icon--right { margin-left: var(--spacing-padding-4); }
+
+/* ローディングスピナー */
+.ds-btn__spinner {
+  display: inline-block;
+  width: var(--spacing-padding-16);
+  height: var(--spacing-padding-16);
+  min-width: var(--spacing-padding-16);
+  min-height: var(--spacing-padding-16);
+  border: var(--spacing-padding-2) solid var(--ds-color-text-on-color);
+  border-top: var(--spacing-padding-2) solid var(--ds-color-primary);
+  border-radius: 50%;
+  animation: ds-btn-spin 1s linear infinite;
+  margin-left: var(--spacing-padding-8);
+  flex-shrink: 0;
+}
+
+/* solid用スピナー色 */
+.ds-btn--solid.ds-btn--neutral .ds-btn__spinner {
+  border: 2px solid var(--ds-color-text-on-color);
+  border-top: 2px solid var(--color-semantic-neutral-400-light);
+}
+.ds-btn--solid.ds-btn--negative .ds-btn__spinner {
+  border: 2px solid var(--ds-color-text-on-color);
+  border-top: 2px solid var(--color-semantic-negative-400-light);
+}
+
+/* outline/ghost用スピナー色 */
+.ds-btn--outline.ds-btn--primary .ds-btn__spinner,
+.ds-btn--ghost.ds-btn--primary .ds-btn__spinner {
+  border: 2px solid var(--color-semantic-neutral-100-light);
+  border-top: 2px solid var(--color-semantic-neutral-700-light);
+}
+
+.ds-btn--outline.ds-btn--neutral .ds-btn__spinner,
+.ds-btn--ghost.ds-btn--neutral .ds-btn__spinner {
+  border: 2px solid var(--color-semantic-neutral-100-light);
+  border-top: 2px solid var(--color-semantic-neutral-400-light);
+}
+
+.ds-btn--outline.ds-btn--negative .ds-btn__spinner,
+.ds-btn--ghost.ds-btn--negative .ds-btn__spinner {
+  border: 2px solid var(--color-semantic-negative-100-light);
+  border-top: 2px solid var(--color-semantic-negative-400-light);
+}
+
+/* ダークモード対応 */
+[data-theme="dark"] .ds-btn--solid.ds-btn--neutral .ds-btn__spinner {
+  border: 2px solid var(--ds-color-text-on-color);
+  border-top: 2px solid var(--color-semantic-neutral-400-dark);
+}
+[data-theme="dark"] .ds-btn--solid.ds-btn--negative .ds-btn__spinner {
+  border: 2px solid var(--ds-color-text-on-color);
+  border-top: 2px solid var(--color-semantic-negative-400-dark);
+}
+
+[data-theme="dark"] .ds-btn--outline.ds-btn--primary .ds-btn__spinner,
+[data-theme="dark"] .ds-btn--ghost.ds-btn--primary .ds-btn__spinner {
+  border: 2px solid var(--color-semantic-neutral-400-dark);
+  border-top: 2px solid var(--color-semantic-neutral-700-dark);
+}
+
+[data-theme="dark"] .ds-btn--outline.ds-btn--neutral .ds-btn__spinner,
+[data-theme="dark"] .ds-btn--ghost.ds-btn--neutral .ds-btn__spinner {
+  border: 2px solid var(--color-semantic-neutral-400-dark);
+  border-top: 2px solid var(--color-semantic-neutral-600-dark);
+}
+
+[data-theme="dark"] .ds-btn--outline.ds-btn--negative .ds-btn__spinner,
+[data-theme="dark"] .ds-btn--ghost.ds-btn--negative .ds-btn__spinner {
+  border: 2px solid var(--color-semantic-neutral-400-dark);
+  border-top: 2px solid var(--color-semantic-negative-400-dark);
+}
+
+/* solid/primary スピナー */
+[data-theme="dark"] .ds-btn--solid.ds-btn--primary .ds-btn__spinner {
+  border: 2px solid var(--color-semantic-neutral-400-dark);
+  border-top: 2px solid var(--color-semantic-neutral-900-dark);
+}
+
+/* outline-solid スピナー */
+[data-theme="dark"] .ds-btn--outline-solid.ds-btn--primary .ds-btn__spinner,
+[data-theme="dark"] .ds-btn--outline-solid.ds-btn--neutral .ds-btn__spinner {
+  border: 2px solid var(--color-semantic-neutral-400-dark);
+  border-top: 2px solid var(--color-semantic-neutral-700-dark);
+}
+[data-theme="dark"] .ds-btn--outline-solid.ds-btn--negative .ds-btn__spinner {
+  border: 2px solid var(--color-semantic-neutral-400-dark);
+  border-top: 2px solid var(--color-semantic-negative-400-dark);
+}
+
+/* ghost-solid スピナー */
+[data-theme="dark"] .ds-btn--ghost-solid.ds-btn--primary .ds-btn__spinner,
+[data-theme="dark"] .ds-btn--ghost-solid.ds-btn--neutral .ds-btn__spinner {
+  border: 2px solid var(--color-semantic-neutral-400-dark);
+  border-top: 2px solid var(--color-semantic-neutral-700-dark);
+}
+[data-theme="dark"] .ds-btn--ghost-solid.ds-btn--negative .ds-btn__spinner {
+  border: 2px solid var(--color-semantic-neutral-400-dark);
+  border-top: 2px solid var(--color-semantic-negative-400-dark);
+}
+
+/* absolute-white スピナー */
+[data-theme="dark"] .ds-btn--outline.ds-btn--absolute-white .ds-btn__spinner,
+[data-theme="dark"] .ds-btn--ghost.ds-btn--absolute-white .ds-btn__spinner,
+[data-theme="dark"] .ds-btn--outline-solid.ds-btn--absolute-white .ds-btn__spinner,
+[data-theme="dark"] .ds-btn--ghost-solid.ds-btn--absolute-white .ds-btn__spinner {
+  border: 2px solid var(--color-semantic-neutral-300-light);
+  border-top: 2px solid var(--color-semantic-neutral-700-light);
+}
+
+/* ダークモード用 Outline-Solid バリアント */
+[data-theme="dark"] .ds-btn--outline-solid {
+  background: var(--color-semantic-neutral-100-dark);
+}
+[data-theme="dark"] .ds-btn--outline-solid.ds-btn--primary {
+  border-color: var(--color-semantic-neutral-400-dark);
+  color: var(--color-semantic-neutral-900-dark);
+}
+[data-theme="dark"] .ds-btn--outline-solid.ds-btn--primary:hover:not(:disabled),
+[data-theme="dark"] .ds-btn--outline-solid.ds-btn--primary.ds-btn--hover:not(:disabled) {
+  background: var(--color-base-primary-100-dark);
+  border-color: var(--color-base-primary-400-dark);
+  color: var(--color-base-primary-600-dark);
+}
+[data-theme="dark"] .ds-btn--outline-solid.ds-btn--neutral:hover:not(:disabled),
+[data-theme="dark"] .ds-btn--outline-solid.ds-btn--neutral.ds-btn--hover:not(:disabled) {
+  background: var(--color-semantic-neutral-50-dark);
+  border-color: var(--color-semantic-neutral-400-dark);
+}
+[data-theme="dark"] .ds-btn--outline-solid.ds-btn--negative {
+  border-color: var(--color-semantic-negative-300-dark);
+}
+[data-theme="dark"] .ds-btn--outline-solid.ds-btn--negative:hover:not(:disabled),
+[data-theme="dark"] .ds-btn--outline-solid.ds-btn--negative.ds-btn--hover:not(:disabled) {
+  background: var(--color-semantic-neutral-50-dark);
+  border-color: var(--color-semantic-negative-500-dark);
+}
+
+/* ダークモード用 Ghost-Solid バリアント */
+[data-theme="dark"] .ds-btn--ghost-solid {
+  background: var(--color-semantic-neutral-100-dark);
+}
+[data-theme="dark"] .ds-btn--ghost-solid.ds-btn--primary {
+  color: var(--color-semantic-neutral-900-dark);
+}
+[data-theme="dark"] .ds-btn--ghost-solid.ds-btn--primary:hover:not(:disabled),
+[data-theme="dark"] .ds-btn--ghost-solid.ds-btn--primary.ds-btn--hover:not(:disabled) {
+  background: var(--color-semantic-primary-100-dark);
+  color: var(--color-base-primary-600-dark);
+}
+[data-theme="dark"] .ds-btn--ghost-solid.ds-btn--neutral:hover:not(:disabled),
+[data-theme="dark"] .ds-btn--ghost-solid.ds-btn--neutral.ds-btn--hover:not(:disabled) {
+  background: var(--color-semantic-neutral-100-dark);
+}
+[data-theme="dark"] .ds-btn--ghost-solid.ds-btn--negative:hover:not(:disabled),
+[data-theme="dark"] .ds-btn--ghost-solid.ds-btn--negative.ds-btn--hover:not(:disabled) {
+  background: var(--color-semantic-negative-100-dark);
+}
+
+/* ダークモード用 Absolute-White: 背景白・テキスト黒を維持 */
+[data-theme="dark"] .ds-btn--outline-solid.ds-btn--absolute-white {
+  background: var(--color-semantic-absolute-white-light);
+  border-color: var(--color-semantic-neutral-300-dark);
+  color: var(--color-semantic-absolute-black-light);
+}
+[data-theme="dark"] .ds-btn--ghost-solid.ds-btn--absolute-white {
+  background: var(--color-semantic-absolute-white-light);
+  color: var(--color-semantic-absolute-black-light);
+}
+
+/* prefers-color-scheme: dark 用のスタイル（data-theme属性がない場合） */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .ds-btn--solid.ds-btn--primary {
+    border-color: var(--ds-color-primary);
+  }
+  :root:not([data-theme]) .ds-btn--solid.ds-btn--neutral {
+    border-color: var(--ds-color-neutral-bg);
+  }
+  :root:not([data-theme]) .ds-btn--solid.ds-btn--negative {
+    border-color: var(--ds-color-negative);
+  }
+  :root:not([data-theme]) .ds-btn--solid.ds-btn--primary:hover:not(:disabled),
+  :root:not([data-theme]) .ds-btn--solid.ds-btn--primary.ds-btn--hover:not(:disabled) {
+    background: var(--color-base-primary-500-dark);
+    border-color: var(--color-base-primary-500-dark);
+  }
+  :root:not([data-theme]) .ds-btn--solid.ds-btn--neutral:hover:not(:disabled),
+  :root:not([data-theme]) .ds-btn--solid.ds-btn--neutral.ds-btn--hover:not(:disabled) {
+    background: var(--ds-color-neutral-bg-hover);
+    border-color: var(--ds-color-neutral-bg-hover);
+  }
+  :root:not([data-theme]) .ds-btn--solid.ds-btn--negative:hover:not(:disabled),
+  :root:not([data-theme]) .ds-btn--solid.ds-btn--negative.ds-btn--hover:not(:disabled) {
+    background: var(--color-semantic-negative-400-dark);
+    border-color: var(--color-semantic-negative-400-dark);
+  }
+  :root:not([data-theme]) .ds-btn--solid.ds-btn--primary:active:not(:disabled),
+  :root:not([data-theme]) .ds-btn--solid.ds-btn--primary.ds-btn--active:not(:disabled) {
+    background: var(--color-semantic-neutral-600-dark);
+    border-color: var(--color-semantic-neutral-600-dark);
+  }
+  :root:not([data-theme]) .ds-btn--solid.ds-btn--neutral:active:not(:disabled),
+  :root:not([data-theme]) .ds-btn--solid.ds-btn--neutral.ds-btn--active:not(:disabled) {
+    background: var(--color-semantic-neutral-400-dark);
+    border-color: var(--color-semantic-neutral-400-dark);
+  }
+  :root:not([data-theme]) .ds-btn--solid.ds-btn--negative:active:not(:disabled),
+  :root:not([data-theme]) .ds-btn--solid.ds-btn--negative.ds-btn--active:not(:disabled) {
+    background: var(--color-semantic-negative-600-dark);
+    border-color: var(--color-semantic-negative-600-dark);
+  }
+}
+
+/* prefers-color-scheme: dark 用の Outline/Ghost スタイル */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .ds-btn--outline.ds-btn--primary {
+    border: 1px solid var(--color-semantic-neutral-400-dark);
+    color: var(--color-semantic-neutral-900-dark);
+  }
+  :root:not([data-theme]) .ds-btn--outline.ds-btn--primary:hover:not(:disabled),
+  :root:not([data-theme]) .ds-btn--outline.ds-btn--primary.ds-btn--hover:not(:disabled) {
+    background: var(--color-semantic-overlay-primary-05-dark);
+    border-color: var(--color-base-primary-400-dark);
+    color: var(--color-base-primary-600-dark);
+  }
+  :root:not([data-theme]) .ds-btn--outline.ds-btn--neutral {
+    border-color: var(--color-semantic-neutral-300-dark);
+    color: var(--color-semantic-neutral-900-dark);
+  }
+  :root:not([data-theme]) .ds-btn--outline.ds-btn--neutral:hover:not(:disabled),
+  :root:not([data-theme]) .ds-btn--outline.ds-btn--neutral.ds-btn--hover:not(:disabled) {
+    background: var(--color-semantic-overlay-neutral-05-dark);
+    border-color: var(--color-semantic-neutral-400-dark);
+  }
+  :root:not([data-theme]) .ds-btn--outline.ds-btn--negative {
+    border: 1px solid var(--color-semantic-negative-300-dark);
+    color: var(--color-semantic-negative-500-dark);
+  }
+  :root:not([data-theme]) .ds-btn--outline.ds-btn--negative:hover:not(:disabled),
+  :root:not([data-theme]) .ds-btn--outline.ds-btn--negative.ds-btn--hover:not(:disabled) {
+    background: var(--color-semantic-overlay-negative-05-dark);
+    border-color: var(--color-semantic-negative-500-dark);
+  }
+
+  :root:not([data-theme]) .ds-btn--ghost.ds-btn--primary {
+    color: var(--color-semantic-neutral-900-dark);
+  }
+  :root:not([data-theme]) .ds-btn--ghost.ds-btn--primary:hover:not(:disabled),
+  :root:not([data-theme]) .ds-btn--ghost.ds-btn--primary.ds-btn--hover:not(:disabled) {
+    background: var(--color-semantic-overlay-primary-05-dark);
+    color: var(--color-base-primary-600-dark);
+  }
+  :root:not([data-theme]) .ds-btn--ghost.ds-btn--neutral {
+    color: var(--color-semantic-neutral-900-dark);
+  }
+  :root:not([data-theme]) .ds-btn--ghost.ds-btn--neutral:hover:not(:disabled),
+  :root:not([data-theme]) .ds-btn--ghost.ds-btn--neutral.ds-btn--hover:not(:disabled) {
+    background: var(--color-semantic-overlay-neutral-05-dark);
+  }
+  :root:not([data-theme]) .ds-btn--ghost.ds-btn--negative {
+    color: var(--color-semantic-negative-500-dark);
+  }
+  :root:not([data-theme]) .ds-btn--ghost.ds-btn--negative:hover:not(:disabled),
+  :root:not([data-theme]) .ds-btn--ghost.ds-btn--negative.ds-btn--hover:not(:disabled) {
+    background: var(--color-semantic-overlay-negative-05-dark);
+  }
+
+  /* Outline-Solid */
+  :root:not([data-theme]) .ds-btn--outline-solid {
+    background: var(--color-semantic-neutral-100-dark);
+  }
+  :root:not([data-theme]) .ds-btn--outline-solid.ds-btn--primary {
+    border-color: var(--color-semantic-neutral-400-dark);
+    color: var(--color-semantic-neutral-900-dark);
+  }
+  :root:not([data-theme]) .ds-btn--outline-solid.ds-btn--neutral {
+    border-color: var(--color-semantic-neutral-300-dark);
+    color: var(--color-semantic-neutral-900-dark);
+  }
+
+  /* Ghost-Solid */
+  :root:not([data-theme]) .ds-btn--ghost-solid {
+    background: var(--color-semantic-neutral-100-dark);
+    color: var(--color-semantic-neutral-900-dark);
+  }
+  :root:not([data-theme]) .ds-btn--ghost-solid.ds-btn--primary {
+    color: var(--color-semantic-neutral-900-dark);
+  }
+
+  /* Absolute-White: ダークモードではテキスト色を黒系に（背景白なので） */
+  :root:not([data-theme]) .ds-btn--outline-solid.ds-btn--absolute-white {
+    background: var(--color-semantic-absolute-white-light);
+    border-color: var(--color-semantic-neutral-300-dark);
+    color: var(--color-semantic-absolute-black-light);
+  }
+  :root:not([data-theme]) .ds-btn--ghost-solid.ds-btn--absolute-white {
+    background: var(--color-semantic-absolute-white-light);
+    color: var(--color-semantic-absolute-black-light);
+  }
+}
+
+/* absolute-white / absolute-black (テーマ無関係で常に同じ色) */
+
+/* absolute-white - solid */
+.ds-btn--solid.ds-btn--absolute-white {
+  background: var(--color-semantic-absolute-white-light);
+  color: var(--color-semantic-absolute-black-light);
+  border: 1px solid var(--color-semantic-absolute-white-light);
+}
+.ds-btn--solid.ds-btn--absolute-white:hover:not(:disabled),
+.ds-btn--solid.ds-btn--absolute-white.ds-btn--hover:not(:disabled) {
+  background: var(--color-semantic-neutral-100-light);
+  border-color: var(--color-semantic-neutral-100-light);
+}
+.ds-btn--solid.ds-btn--absolute-white:active:not(:disabled),
+.ds-btn--solid.ds-btn--absolute-white.ds-btn--active:not(:disabled) {
+  background: var(--color-semantic-neutral-200-light);
+  border-color: var(--color-semantic-neutral-200-light);
+}
+
+/* absolute-white - outline */
+.ds-btn--outline.ds-btn--absolute-white {
+  border: 1px solid var(--color-semantic-absolute-white-light);
+  color: var(--color-semantic-absolute-white-light);
+}
+.ds-btn--outline.ds-btn--absolute-white:hover:not(:disabled),
+.ds-btn--outline.ds-btn--absolute-white.ds-btn--hover:not(:disabled) {
+  background: var(--color-semantic-overlay-neutral-05-dark);
+}
+.ds-btn--outline.ds-btn--absolute-white:active:not(:disabled),
+.ds-btn--outline.ds-btn--absolute-white.ds-btn--active:not(:disabled) {
+  background: var(--color-semantic-overlay-neutral-15-dark);
+}
+
+/* absolute-white - ghost */
+.ds-btn--ghost.ds-btn--absolute-white {
+  color: var(--color-semantic-absolute-white-light);
+}
+.ds-btn--ghost.ds-btn--absolute-white:hover:not(:disabled),
+.ds-btn--ghost.ds-btn--absolute-white.ds-btn--hover:not(:disabled) {
+  background: var(--color-semantic-overlay-neutral-05-dark);
+}
+.ds-btn--ghost.ds-btn--absolute-white:active:not(:disabled),
+.ds-btn--ghost.ds-btn--absolute-white.ds-btn--active:not(:disabled) {
+  background: var(--color-semantic-overlay-neutral-15-dark);
+}
+
+/* absolute-black - solid */
+.ds-btn--solid.ds-btn--absolute-black {
+  background: var(--color-semantic-absolute-black-light);
+  color: var(--color-semantic-absolute-white-light);
+  border: 1px solid var(--color-semantic-absolute-black-light);
+}
+.ds-btn--solid.ds-btn--absolute-black:hover:not(:disabled),
+.ds-btn--solid.ds-btn--absolute-black.ds-btn--hover:not(:disabled) {
+  background: var(--color-semantic-neutral-800-light);
+  border-color: var(--color-semantic-neutral-800-light);
+}
+.ds-btn--solid.ds-btn--absolute-black:active:not(:disabled),
+.ds-btn--solid.ds-btn--absolute-black.ds-btn--active:not(:disabled) {
+  background: var(--color-semantic-neutral-700-light);
+  border-color: var(--color-semantic-neutral-700-light);
+}
+
+/* absolute-black - outline */
+.ds-btn--outline.ds-btn--absolute-black {
+  border: 1px solid var(--color-semantic-absolute-black-light);
+  color: var(--color-semantic-absolute-black-light);
+}
+.ds-btn--outline.ds-btn--absolute-black:hover:not(:disabled),
+.ds-btn--outline.ds-btn--absolute-black.ds-btn--hover:not(:disabled) {
+  background: var(--color-semantic-overlay-neutral-05-light);
+}
+.ds-btn--outline.ds-btn--absolute-black:active:not(:disabled),
+.ds-btn--outline.ds-btn--absolute-black.ds-btn--active:not(:disabled) {
+  background: var(--color-semantic-overlay-neutral-15-light);
+}
+
+/* absolute-black - ghost */
+.ds-btn--ghost.ds-btn--absolute-black {
+  color: var(--color-semantic-absolute-black-light);
+}
+.ds-btn--ghost.ds-btn--absolute-black:hover:not(:disabled),
+.ds-btn--ghost.ds-btn--absolute-black.ds-btn--hover:not(:disabled) {
+  background: var(--color-semantic-overlay-neutral-05-light);
+}
+.ds-btn--ghost.ds-btn--absolute-black:active:not(:disabled),
+.ds-btn--ghost.ds-btn--absolute-black.ds-btn--active:not(:disabled) {
+  background: var(--color-semantic-overlay-neutral-15-light);
+}
+
+@keyframes ds-btn-spin {
+  100% { transform: rotate(360deg); }
+}

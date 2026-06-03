@@ -1,0 +1,85 @@
+---
+description: Tagコンポーネント設計・利用ガイド
+globs: "components/tag/**/*"
+---
+## 概要
+カテゴリ、ラベル、ステータス、数値など様々な情報を表示する汎用コンポーネント。
+従来のBadge用途（数値表示、ステータス表示）とTag用途（カテゴリ、ラベル）を統合。
+
+## API
+### Props
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| size | 'sm' \| 'md' \| 'lg' | 'md' | タグのサイズ |
+| variant | 'filled' \| 'subtle' \| 'outline' \| 'emphasis' | 'filled' | スタイル（強調順: emphasis > filled > subtle。outlineは枠のみ） |
+| color | 'neutral' \| 'primary' \| 'info' \| 'success' \| 'warning' \| 'negative' | 'neutral' | タグの色 |
+| label | string | '' | タグのテキスト |
+| removable | boolean | false | 削除ボタンの表示 |
+
+## 使用用途と例
+
+### カテゴリ・ラベル（従来のTag用途）
+```javascript
+// 記事のカテゴリ
+${Tag({ label: 'JavaScript', size: 'md' })}
+${Tag({ label: 'デザイン', size: 'md' })}
+
+// フィルタ可能なタグ（削除可能）
+${Tag({ label: 'TypeScript', removable: true })}
+${Tag({ label: 'React', removable: true })}
+```
+
+### ステータス・状態表示（従来のBadge用途）
+```javascript
+// ステータス表示
+${Tag({ label: '新着', size: 'sm' })}
+${Tag({ label: '承認済み', size: 'sm' })}
+${Tag({ label: '下書き', size: 'sm' })}
+
+// 優先度・重要度
+${Tag({ label: '重要', size: 'sm' })}
+${Tag({ label: '緊急', size: 'sm' })}
+```
+
+### 数値・カウント表示（従来のBadge用途）
+```javascript
+// 通知数
+${Tag({ label: '3', size: 'sm' })}
+${Tag({ label: '99+', size: 'sm' })}
+
+// バージョン情報
+${Tag({ label: 'v2.0', size: 'sm' })}
+${Tag({ label: 'Beta', size: 'sm' })}
+```
+
+## 使い分けの指針
+
+### サイズ選択
+- **sm**: 数値、短いステータス、補助的な情報
+- **md**: 一般的なカテゴリ、ラベル（デフォルト）
+- **lg**: 強調したいタグ、タッチ操作重視
+
+### removable機能
+- フィルタUIで使用（選択したフィルタを削除可能に）
+- ユーザーが追加・削除できるタグリスト
+- 固定的な情報（ステータス、数値）では使用しない
+
+### ビジュアルヒエラルキー（重要）
+- **強調（emphasis）**: 最も目立たせたいタグ。濃色の塗り＋文字は可読色。重要なお知らせ、主要フィルタの強調など。
+- **塗り（filled）**: 通常の強調度。一般的なラベルやカテゴリ。
+- **薄塗り（subtle）**: 控えめに見せたい補助情報。
+- **枠（outline）**: 枠のみ。背景と馴染ませつつ区別したい用途。
+
+## デザイン原則
+- テキストは短く簡潔に（理想は1-2単語）
+- 数値表示の場合は3桁まで（それ以上は「99+」など）
+- 色やスタイルの拡張は慎重に（情報の意味と一致させる）
+
+## アクセシビリティ
+- 削除ボタンには適切なaria-label設定
+- スクリーンリーダーでの読み上げを考慮したlabel設定
+- キーボード操作でremovableボタンにアクセス可能
+
+## 今後の拡張予定
+- アイコン対応（leftIcon, rightIcon）
+- インタラクティブ機能（クリック可能なタグ）

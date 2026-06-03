@@ -1,0 +1,78 @@
+# PageTemplate コンポーネント（components/layout）
+
+> ページ全体の余白階層・レイアウト規格は [`../layout.mdc`](../layout.mdc) を参照。本ファイルは `components/layout/PageTemplate.js` の API と使い方を扱う。
+
+## 目的
+- ヘッダー・サブヘッダー・ツールバー・メイン・サイド（最大2本）・フッターから成る、Yomogi 標準のページ骨格を提供する
+- 余白・最大幅・カラム数・スティッキー挙動を props で制御し、ページごとに直書きしないで済むようにする
+
+## API
+```js
+PageTemplate({
+  columns: 'one-col' | 'two-col' | 'three-col',  // 既定: 'two-col'
+  stickyAside: boolean,                          // 既定: false（サイドを固定するか）
+  density: 'compact' | 'default' | 'comfortable',// 既定: 'default'
+  container: 'constrained' | 'full',             // 既定: 'constrained'
+  maxWidth: 'md' | 'xl' | '5xl' | '7xl',         // 既定: '7xl'（layout-max-width-* に準拠）
+  columnOrder: ['main' | 'aside' | 'aside2'],    // カラム表示順を上書き（任意）
+  slots: {
+    header?: string,
+    subheader?: string,
+    toolbar?: string,
+    main?: string,
+    aside?: string,
+    aside2?: string,
+    footer?: string
+  }
+})
+```
+
+返り値は `<div class="ds-page …">…</div>` の HTML 文字列。各スロットに渡すのはコンポーネントの返り値（HTML 文字列）。
+
+## 使用例
+```js
+PageTemplate({
+  columns: 'two-col',
+  stickyAside: true,
+  maxWidth: '5xl',
+  slots: {
+    header: Header({ ... }),
+    toolbar: Breadcrumb({ ... }),
+    main: `
+      <h1>ダッシュボード</h1>
+      ${Card({ ... })}
+    `,
+    aside: List({ variant: 'nav', items: [...] }),
+    footer: '<p>© 2026 Yomogi</p>'
+  }
+})
+```
+
+## デザイン仕様（トークン）
+- 既定の余白: outer = `var(--spacing-padding-32)`、row-gap = `var(--spacing-padding-24)`、column-gap = `var(--spacing-padding-32)`
+- 最大幅: `var(--layout-max-width-md | xl | 5xl | 7xl)`
+- 密度バリアント
+  - `compact`: 余白とフォントサイズを1段詰める
+  - `default`: 既定
+  - `comfortable`: 余白を1段広げる
+- フォントは body から継承（`var(--font-family-pro)` / `line-height: 1.5`）。PageTemplate 内で再指定しない
+
+## カラム構成の選び指針
+- **one-col**: ランディング・記事・縦長フォーム・モバイル前提
+- **two-col**: ダッシュボード・設定画面・一般的な業務UI
+- **three-col**: 監視ダッシュボード・チャット型UI（メイン中央 + 左右に補助）。情報密度が高い場合のみ
+
+## アクセシビリティ
+- `header` / `main` / `aside` / `footer` のランドマークが自動で付く（`role="main"` 等）
+- スティッキーサイドはスクロール体験を壊さないよう、`max-height: 100vh` 内で内部スクロール可能にする
+- `aside` には `aria-label="Aside"` / `aria-label="Aside 2"` が付与される。プロジェクト固有の文言にしたい場合は呼び出し側で再ラップする
+
+## アンチパターン
+- スロット内で再度 `<main>` / `<header>` を書く（二重ランドマーク）
+- ページごとに `style="margin: ..."` で余白を直書きする（density / maxWidth / container を使う）
+- 3カラムで全カラムを密にして可読性を犠牲にする（content の幅は 5xl までに収める）
+- columnOrder で `main` を端に追いやる（メインは視覚的に中心または冒頭が原則）
+
+## 関連
+- 余白階層 L1〜L4: [`../layout.mdc`](../layout.mdc)
+- 上位構造（Header / Navigation 等）: 各コンポーネント mdc を参照

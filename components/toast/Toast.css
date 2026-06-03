@@ -1,0 +1,376 @@
+/* Toast Container - オーバーレイ表示用 */
+.ds-toast {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-padding-8);
+  min-width: min(640px, calc(100vw - 48px));
+  max-width: min(640px, calc(100vw - 48px));
+  padding: var(--spacing-padding-12) var(--spacing-padding-16);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-semantic-neutral-900-light);
+  box-shadow: var(--shadow-drop-shadow-translucent-xl-light);
+  z-index: 1000;
+  color: var(--color-semantic-absolute-white-light);
+}
+
+/* 位置指定 - 上部 */
+.ds-toast--top-left {
+  top: var(--spacing-padding-24);
+  left: var(--spacing-padding-24);
+  bottom: auto;
+  right: auto;
+}
+
+.ds-toast--top-center {
+  top: var(--spacing-padding-24);
+  left: 50%;
+  bottom: auto;
+  right: auto;
+  transform: translateX(-50%);
+}
+
+.ds-toast--top-right {
+  top: var(--spacing-padding-24);
+  right: var(--spacing-padding-24);
+  bottom: auto;
+  left: auto;
+}
+
+/* 位置指定 - 下部 */
+.ds-toast--bottom-left {
+  bottom: var(--spacing-padding-24);
+  left: var(--spacing-padding-24);
+  top: auto;
+  right: auto;
+}
+
+.ds-toast--bottom-center {
+  bottom: var(--spacing-padding-24);
+  left: 50%;
+  top: auto;
+  right: auto;
+  transform: translateX(-50%);
+}
+
+.ds-toast--bottom-right {
+  bottom: var(--spacing-padding-24);
+  right: var(--spacing-padding-24);
+  top: auto;
+  left: auto;
+}
+
+/* マトリックス表示用（見た目確認用） */
+.ds-matrix .ds-toast {
+  position: static;
+  top: auto;
+  bottom: auto;
+  left: auto;
+  right: auto;
+  transform: none;
+  min-width: auto;
+  max-width: none;
+  z-index: auto;
+  animation: none;
+}
+
+/* アニメーション - 上部位置（上からスライドイン） */
+@keyframes ds-toast-slide-in-top {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes ds-toast-slide-in-top-center {
+  from {
+    transform: translate(-50%, -100%);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+}
+
+/* アニメーション - 下部位置（下からスライドイン） */
+@keyframes ds-toast-slide-in-bottom {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes ds-toast-slide-in-bottom-center {
+  from {
+    transform: translate(-50%, 100%);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+}
+
+/* 位置別アニメーション適用 */
+.ds-toast--top-left {
+  animation: ds-toast-slide-in-top 0.3s ease-out;
+}
+
+.ds-toast--top-center {
+  animation: ds-toast-slide-in-top-center 0.3s ease-out;
+}
+
+.ds-toast--top-right {
+  animation: ds-toast-slide-in-top 0.3s ease-out;
+}
+
+.ds-toast--bottom-left {
+  animation: ds-toast-slide-in-bottom 0.3s ease-out;
+}
+
+.ds-toast--bottom-center {
+  animation: ds-toast-slide-in-bottom-center 0.3s ease-out;
+}
+
+.ds-toast--bottom-right {
+  animation: ds-toast-slide-in-bottom 0.3s ease-out;
+}
+
+/* 削除アニメーション */
+.ds-toast--removing.ds-toast--top-left,
+.ds-toast--removing.ds-toast--top-right {
+  animation: ds-toast-slide-out-top 0.2s ease-in forwards;
+}
+
+.ds-toast--removing.ds-toast--top-center {
+  animation: ds-toast-slide-out-top-center 0.2s ease-in forwards;
+}
+
+.ds-toast--removing.ds-toast--bottom-left,
+.ds-toast--removing.ds-toast--bottom-right {
+  animation: ds-toast-slide-out-bottom 0.2s ease-in forwards;
+}
+
+.ds-toast--removing.ds-toast--bottom-center {
+  animation: ds-toast-slide-out-bottom-center 0.2s ease-in forwards;
+}
+
+@keyframes ds-toast-slide-out-top {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+}
+
+@keyframes ds-toast-slide-out-top-center {
+  from {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+  to {
+    transform: translate(-50%, -100%);
+    opacity: 0;
+  }
+}
+
+@keyframes ds-toast-slide-out-bottom {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes ds-toast-slide-out-bottom-center {
+  from {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+  to {
+    transform: translate(-50%, 100%);
+    opacity: 0;
+  }
+}
+
+/* アイコンコンテナ */
+.ds-toast__icon-container {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--layout-height-input-sm);
+  height: var(--layout-height-input-sm);
+  margin-top: 0;
+}
+
+.ds-toast__icon { width: var(--spacing-padding-20); height: var(--spacing-padding-20); display: block; }
+
+/* コンテンツ領域 */
+.ds-toast__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.ds-toast__message {
+  margin: 0;
+  font-size: var(--font-size-14);
+  line-height: var(--font-line-height-20);
+  font-weight: var(--font-weight-700);
+}
+
+.ds-toast__description {
+  margin: var(--spacing-padding-4) 0 0 0;
+  font-size: var(--font-size-12);
+  line-height: var(--font-line-height-16);
+  font-weight: var(--font-weight-500);
+}
+
+/* アクションボタン */
+.ds-toast__action-wrapper {
+  margin-top: var(--spacing-padding-8);
+}
+
+/* 閉じるボタン */
+.ds-toast__close {
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: var(--spacing-padding-4);
+  border-radius: var(--radius-sm);
+  line-height: 1;
+  width: var(--layout-height-input-sm);
+  height: var(--layout-height-input-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+}
+
+.ds-toast__close:hover { background: var(--color-semantic-overlay-neutral-15-dark); }
+
+.ds-toast__close:focus {
+  outline: 2px solid var(--color-semantic-absolute-white-light);
+  outline-offset: 2px;
+}
+
+/* ステータス別スタイル */
+/* 閉じるアイコンサイズ（ヒットエリアは既定のまま） */
+.ds-toast__close .ds-btn__icon { width: var(--spacing-padding-20); height: var(--spacing-padding-20); }
+
+.ds-toast.ds-toast--info {
+  background: var(--color-semantic-info-500-light);
+}
+
+.ds-toast.ds-toast--info .ds-toast__close.ds-btn.ds-btn--ghost.ds-btn--neutral { color: var(--color-semantic-absolute-white-light); }
+.ds-toast--info .ds-toast__icon,
+.ds-toast--info .ds-toast__close:focus {
+  color: var(--color-semantic-absolute-white-light);
+  outline-color: var(--color-semantic-absolute-white-light);
+}
+
+.ds-toast.ds-toast--success {
+  background: var(--color-semantic-success-500-light);
+}
+
+.ds-toast.ds-toast--success .ds-toast__close.ds-btn.ds-btn--ghost.ds-btn--neutral { color: var(--color-semantic-absolute-white-light); }
+.ds-toast--success .ds-toast__icon,
+.ds-toast--success .ds-toast__close:focus {
+  color: var(--color-semantic-absolute-white-light);
+  outline-color: var(--color-semantic-absolute-white-light);
+}
+
+.ds-toast.ds-toast--warning {
+  background: var(--color-semantic-warning-500-light);
+  color: var(--color-semantic-text-high-light);
+}
+
+.ds-toast.ds-toast--warning .ds-toast__close.ds-btn.ds-btn--ghost.ds-btn--neutral { color: var(--color-semantic-text-high-light); }
+.ds-toast--warning .ds-toast__icon,
+.ds-toast--warning .ds-toast__close:focus {
+  color: var(--color-semantic-text-high-light);
+  outline-color: var(--color-semantic-text-high-light);
+}
+
+.ds-toast.ds-toast--negative {
+  background: var(--color-semantic-negative-500-light);
+  color: var(--color-semantic-text-high-light);
+}
+
+.ds-toast.ds-toast--negative .ds-toast__close.ds-btn.ds-btn--ghost.ds-btn--neutral { color: var(--color-semantic-text-high-light); }
+.ds-toast--negative .ds-toast__icon,
+.ds-toast--negative .ds-toast__close:focus {
+  color: var(--color-semantic-text-high-light);
+  outline-color: var(--color-semantic-text-high-light);
+}
+
+/* ダークモード対応 */
+[data-theme="dark"] .ds-toast {
+  border-color: var(--color-semantic-neutral-900-dark);
+  box-shadow: var(--shadow-drop-shadow-translucent-xl-dark);
+  color: var(--color-semantic-absolute-white-dark);
+}
+
+[data-theme="dark"] .ds-toast__close:hover { background: var(--color-semantic-overlay-neutral-15-dark); }
+
+[data-theme="dark"] .ds-toast.ds-toast--info {
+  background: var(--color-semantic-info-500-dark);
+}
+
+[data-theme="dark"] .ds-toast.ds-toast--info .ds-toast__close.ds-btn.ds-btn--ghost.ds-btn--neutral { color: var(--color-semantic-absolute-white-dark); }
+[data-theme="dark"] .ds-toast--info .ds-toast__icon,
+[data-theme="dark"] .ds-toast--info .ds-toast__close:focus {
+  color: var(--color-semantic-absolute-white-dark);
+  outline-color: var(--color-semantic-absolute-white-dark);
+}
+
+[data-theme="dark"] .ds-toast.ds-toast--success {
+  background: var(--color-semantic-success-500-dark);
+}
+
+[data-theme="dark"] .ds-toast.ds-toast--success .ds-toast__close.ds-btn.ds-btn--ghost.ds-btn--neutral { color: var(--color-semantic-absolute-white-dark); }
+[data-theme="dark"] .ds-toast--success .ds-toast__icon,
+[data-theme="dark"] .ds-toast--success .ds-toast__close:focus {
+  color: var(--color-semantic-absolute-white-dark);
+  outline-color: var(--color-semantic-absolute-white-dark);
+}
+
+[data-theme="dark"] .ds-toast.ds-toast--warning {
+  background: var(--color-semantic-warning-500-dark);
+  color: var(--color-semantic-text-high-dark);
+}
+
+[data-theme="dark"] .ds-toast.ds-toast--warning .ds-toast__close.ds-btn.ds-btn--ghost.ds-btn--neutral { color: var(--color-semantic-text-high-dark); }
+[data-theme="dark"] .ds-toast--warning .ds-toast__icon,
+[data-theme="dark"] .ds-toast--warning .ds-toast__close:focus {
+  color: var(--color-semantic-text-high-dark);
+  outline-color: var(--color-semantic-text-high-dark);
+}
+
+[data-theme="dark"] .ds-toast.ds-toast--negative {
+  background: var(--color-semantic-negative-500-dark);
+  color: var(--color-semantic-text-high-dark);
+}
+
+[data-theme="dark"] .ds-toast.ds-toast--negative .ds-toast__close.ds-btn.ds-btn--ghost.ds-btn--neutral { color: var(--color-semantic-text-high-dark); }
+[data-theme="dark"] .ds-toast--negative .ds-toast__icon,
+[data-theme="dark"] .ds-toast--negative .ds-toast__close:focus {
+  color: var(--color-semantic-text-high-dark);
+  outline-color: var(--color-semantic-text-high-dark);
+}

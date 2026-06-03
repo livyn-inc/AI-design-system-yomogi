@@ -1,0 +1,54 @@
+---
+description: レイアウトテンプレート（スロット化・オプション拡張）運用ルール
+globs: "components/layout/**/*"
+---
+
+# レイアウトテンプレート運用
+
+## 目的
+- スロット化したページ骨格を少数精鋭で提供し、テンプレ外ニーズは「オプション拡張」で吸収する。
+
+## 実装形態（2系統）
+
+- グローバル版（pages/_templates/components.js）
+  - 目的: ビルド不要でHTMLから即利用（pages/generated向け）
+  - 読み込み: `<script src="../_templates/components.js"></script>`
+  - API: モジュール版と同等（columnOrder対応）
+  - 推奨用途: 試作・ページサンプル・ノンエンジニア利用
+
+- モジュール版（components/layout/PageTemplate.js）
+  - 目的: 設計元ソース。保守・拡張の基点（Storybook/実装向け）
+  - 読み込み: `import { PageTemplate } from 'components/layout/PageTemplate.js'`
+  - API: グローバル版と同等（columnOrder対応）
+  - 推奨用途: 機能追加・保守・実装
+
+- 運用ルール
+  - 仕様の基準はモジュール版。差異が生じた場合、本ドキュメントに明記しグローバル版へ追従する
+  - three-colの既定: 並び=「aside → main → aside2」、幅=「md 1fr sm」（位置依存）
+  - columnOrderで並び替え可能（幅は位置に応じて適用）
+
+## 提供スロット
+- header / subheader / toolbar / main / aside / aside2 / footer
+
+## バリアント
+- columns: one-col | two-col | three-col
+- density: default | compact | comfortable
+- stickyAside: true/false（aside/aside2に適用）
+- maxWidth: md | xl | 5xl | 7xl（`--layout-max-width-*`）
+- columnOrder: ['main', 'aside', 'aside2']（カラムの表示順序をカスタマイズ）
+
+### three-col のデフォルトと幅
+- 既定の並び順: `aside → main → aside2`
+- 既定の列幅: 左 `md` / 中央 `1fr` / 右 `sm`
+- 幅は「位置」によって適用（1列目=md、2列目=1fr、3列目=sm）
+
+### columnOrder の運用
+- グローバル版・モジュール版ともに `columnOrder` が利用可能
+- `columnOrder` で並びを変更すると、各列はその「位置」の既定幅を引き継ぐ
+  - 例: `['main','aside','aside2']` → mainが1列目（md幅）になります
+
+## 実装ルール
+- スタイル値はすべてトークン（`var(--...)`）のみ使用（px/rgba直書き禁止）。
+- 余白/色/角丸/ボーダーは既存トークンを使用（使用前に`build/css/tokens.css`で存在確認）。
+- Storybookは Overview / Variations / CompleteMatrix で可視化し、`_matrix.js` を利用。
+

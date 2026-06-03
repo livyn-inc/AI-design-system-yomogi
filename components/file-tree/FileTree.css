@@ -1,0 +1,830 @@
+/**
+ * FileTreeコンポーネントのスタイル
+ * ADS準拠 - デザイントークンのみ使用
+ */
+
+/* ファイルツリーコンテナ */
+.rs-file-tree {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0;
+    position: relative; /* コンテキストメニューの基準点 */
+    height: 100%;
+    overflow: hidden;
+    width: 100%;
+}
+
+/* スクロール可能なファイルエリア */
+.rs-file-tree__scrollable {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0; /* flexboxでスクロール有効化 */
+    position: relative;
+    transition: background-color 0.15s ease;
+}
+
+/* ドラッグオーバー時のハイライト */
+.rs-file-tree__scrollable--drag-over {
+    background-color: var(--color-semantic-overlay-primary-15-light);
+}
+
+[data-theme="dark"] .rs-file-tree__scrollable--drag-over {
+    background-color: var(--color-semantic-overlay-primary-15-dark);
+}
+
+@media (prefers-color-scheme: dark) {
+    .rs-file-tree__scrollable--drag-over {
+        background-color: var(--color-semantic-overlay-primary-15-dark);
+    }
+}
+
+/* 下部固定エリア（ピン留め・最近・ゴミ箱） */
+.rs-file-tree__fixed-bottom {
+    flex-shrink: 0;
+    overflow: hidden; /* 内部でスクロールさせるため */
+    min-height: 139px; /* 最小高さ：3セクションヘッダー(115px) + スクロールインジケーター(24px) */
+    max-height: 60%; /* 最大高さ */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 下部固定エリアの上罫線（点線） */
+.rs-file-tree__fixed-bottom::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, var(--color-semantic-text-high-light) 40%, transparent 40%);
+    background-size: 6px 1px;
+    background-repeat: repeat-x;
+    z-index: 10;
+}
+
+/* 下部固定エリアの下罫線（点線） */
+.rs-file-tree__fixed-bottom::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, var(--color-semantic-text-high-light) 40%, transparent 40%);
+    background-size: 6px 1px;
+    background-repeat: repeat-x;
+    z-index: 10;
+}
+
+/* 下部固定エリアの内部（スクロール領域） */
+.rs-file-tree__fixed-bottom-inner {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-top: var(--spacing-padding-8);
+    padding-bottom: 1px; /* 下罫線との重なり防止 */
+}
+
+[data-theme="dark"] .rs-file-tree__fixed-bottom::before,
+[data-theme="dark"] .rs-file-tree__fixed-bottom::after {
+    background-image: linear-gradient(to right, var(--color-semantic-divider-extra-high-dark) 40%, transparent 40%);
+}
+
+@media (prefers-color-scheme: dark) {
+    .rs-file-tree__fixed-bottom::before,
+    .rs-file-tree__fixed-bottom::after {
+        background-image: linear-gradient(to right, var(--color-semantic-divider-extra-high-dark) 40%, transparent 40%);
+    }
+}
+
+/* ゴミ箱セクションの下に余白（▼がない時用） */
+.rs-tree-section--trash {
+    padding-bottom: var(--spacing-padding-8);
+}
+
+/* スクロールインジケーター（▼） */
+.rs-file-tree__scroll-indicator {
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 24px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-semantic-neutral-100-light);
+    color: var(--color-semantic-text-low-light);
+    font-size: var(--font-size-12);
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-top: calc(-1 * var(--spacing-padding-8)); /* ゴミ箱の余白を相殺 */
+}
+
+.rs-file-tree__scroll-indicator.is-visible {
+    display: flex;
+}
+
+.rs-file-tree__scroll-indicator:hover {
+    color: var(--color-semantic-text-middle-light);
+}
+
+[data-theme="dark"] .rs-file-tree__scroll-indicator {
+    background-color: var(--color-semantic-neutral-100-dark);
+    color: var(--color-semantic-text-low-dark);
+}
+
+[data-theme="dark"] .rs-file-tree__scroll-indicator:hover {
+    color: var(--color-semantic-text-middle-dark);
+}
+
+@media (prefers-color-scheme: dark) {
+    .rs-file-tree__scroll-indicator {
+        background-color: var(--color-semantic-neutral-100-dark);
+        color: var(--color-semantic-text-low-dark);
+    }
+    .rs-file-tree__scroll-indicator:hover {
+        color: var(--color-semantic-text-middle-dark);
+    }
+}
+
+/* リサイズハンドル */
+.rs-file-tree__resize-handle {
+    height: 4px;
+    cursor: ns-resize;
+    background-color: transparent;
+    transition: background-color 0.2s;
+    flex-shrink: 0;
+    margin-top: var(--spacing-padding-8);
+    border-radius: var(--radius-full);
+}
+
+.rs-file-tree__resize-handle:hover {
+    background-color: var(--color-base-primary-600-light);
+}
+
+[data-theme="dark"] .rs-file-tree__resize-handle:hover {
+    background-color: var(--color-base-primary-600-dark);
+}
+
+@media (prefers-color-scheme: dark) {
+    .rs-file-tree__resize-handle:hover {
+        background-color: var(--color-base-primary-600-dark);
+    }
+}
+
+/* ドラッグ中のスタイル */
+.rs-file-tree__resize-handle.is-dragging {
+    background-color: var(--color-base-primary-600-light);
+}
+
+[data-theme="dark"] .rs-file-tree__resize-handle.is-dragging {
+    background-color: var(--color-base-primary-600-dark);
+}
+
+/* ツリーアイテム */
+.rs-tree-item {
+    display: flex;
+    flex-direction: column;
+}
+
+/* ツリーアイテムのコンテンツ部分（共通） */
+.rs-tree-item-content {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-padding-8);
+    padding: var(--spacing-padding-4) var(--spacing-padding-12) var(--spacing-padding-4) 0;
+    border-radius: var(--radius-full); /* 全丸 */
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+    user-select: none;
+    text-decoration: none;
+    color: inherit;
+    width: 100%;
+    text-align: left;
+    border: 1px solid transparent; /* フォーカス時のサイズ変化防止 */
+    background: none;
+    font-family: inherit;
+    font-size: inherit;
+}
+
+/* ファイルアイテム（シェブロンの幅 + gap分だけ左にスペース） */
+.rs-tree-item--file .rs-tree-item-content {
+    padding-left: 22px;  /* 22px = chevron width (14px) + gap (8px) */
+}
+
+/* ホバー背景は .rs-tree-item-row に移動 */
+.rs-tree-item-content:hover {
+    background-color: transparent;
+}
+
+[data-theme="dark"] .rs-tree-item-content:hover {
+    background-color: transparent;
+}
+
+.rs-tree-item-content:active {
+    background-color: var(--color-semantic-overlay-neutral-15-light);
+}
+
+[data-theme="dark"] .rs-tree-item-content:active {
+    background-color: var(--color-semantic-overlay-neutral-15-dark);
+}
+
+.rs-tree-item-content:focus {
+    outline: none;
+}
+
+.rs-tree-item-content:focus-visible {
+    border: 1px solid var(--color-semantic-divider-extra-high-light);
+}
+
+[data-theme="dark"] .rs-tree-item-content:focus-visible {
+    border-color: var(--color-semantic-divider-extra-high-dark);
+}
+
+/* 選択状態 */
+.rs-tree-item-content.selected {
+    background-color: var(--color-semantic-overlay-neutral-15-light);
+}
+
+[data-theme="dark"] .rs-tree-item-content.selected {
+    background-color: var(--color-semantic-overlay-neutral-15-dark);
+}
+
+/* シェブロン（フォルダ用） */
+.rs-tree-chevron {
+    width: 14px;   /* Lucide icon small size */
+    height: 14px;  /* Lucide icon small size */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--color-semantic-text-low-light);
+}
+
+[data-theme="dark"] .rs-tree-chevron {
+    color: var(--color-semantic-text-low-dark);
+}
+
+/* アイコン */
+.rs-tree-icon {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+}
+
+/* ラベル */
+.rs-tree-label {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: var(--font-size-14);
+    line-height: 1.5;
+    color: var(--color-semantic-text-high-light);
+}
+
+[data-theme="dark"] .rs-tree-label {
+    color: var(--color-semantic-text-high-dark);
+}
+
+/* バッジ（Lucideアイコン） */
+.rs-tree-badge {
+    flex-shrink: 0;
+    margin-left: var(--spacing-padding-8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rs-tree-badge--modified {
+    color: var(--color-semantic-primary-500-light);
+}
+
+.rs-tree-badge--conflict {
+    color: var(--color-semantic-warning-500-light);
+}
+
+.rs-tree-badge--readonly {
+    color: var(--color-semantic-text-low-light);
+}
+
+.rs-tree-badge--pinned {
+    color: var(--color-semantic-primary-500-light);
+}
+
+[data-theme="dark"] .rs-tree-badge--modified {
+    color: var(--color-semantic-primary-400-dark);
+}
+
+[data-theme="dark"] .rs-tree-badge--conflict {
+    color: var(--color-semantic-warning-400-dark);
+}
+
+[data-theme="dark"] .rs-tree-badge--readonly {
+    color: var(--color-semantic-text-low-dark);
+}
+
+[data-theme="dark"] .rs-tree-badge--pinned {
+    color: var(--color-semantic-primary-400-dark);
+}
+
+/* 子要素コンテナ */
+.rs-tree-children {
+    padding-left: var(--spacing-padding-16);
+    margin-top: var(--spacing-padding-4);
+}
+
+.rs-tree-children .rs-tree-item {
+    margin-top: var(--spacing-padding-4);
+}
+
+/* 子要素内のファイルにもシェブロン分のスペースを確保 */
+.rs-tree-children .rs-tree-item--file .rs-tree-item-content {
+    padding-left: 22px;  /* 22px = chevron width (14px) + gap (8px) */
+}
+
+/* ファイルタイプ別のアイコン色（ダブルトーン） */
+.rs-tree-item--folder .rs-tree-icon {
+    color: var(--color-semantic-text-middle-light);
+    fill: var(--color-base-yellow-100-light);
+}
+
+[data-theme="dark"] .rs-tree-item--folder .rs-tree-icon {
+    color: var(--color-semantic-text-middle-dark);
+    fill: var(--color-base-yellow-100-dark);
+}
+
+.rs-tree-item--file .rs-tree-icon {
+    color: var(--color-semantic-text-middle-light);
+    fill: var(--color-base-blue-100-light);
+}
+
+[data-theme="dark"] .rs-tree-item--file .rs-tree-icon {
+    color: var(--color-semantic-text-middle-dark);
+    fill: var(--color-base-blue-100-dark);
+}
+
+/* ファイルアイテムの行ラッパー（aとbuttonを横並び） */
+.rs-tree-item-row {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    border-radius: var(--radius-md);
+}
+
+/* 行全体にホバー背景を適用（⋮ボタン含む） */
+.rs-tree-item-row:hover {
+    background-color: var(--color-semantic-overlay-neutral-05-light);
+}
+
+[data-theme="dark"] .rs-tree-item-row:hover {
+    background-color: var(--color-semantic-overlay-neutral-05-dark);
+}
+
+.rs-tree-item-row .rs-tree-item-content {
+    flex: 1;
+    min-width: 0; /* 省略表示のため */
+}
+
+/* ⋮メニューボタン（ホバー時のみ表示） */
+.rs-tree-menu-btn {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    margin-right: var(--spacing-padding-4);
+    border: none;
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--color-semantic-text-middle-light);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.15s ease, background-color 0.15s ease;
+}
+
+/* 行ホバー時にメニューボタン表示 */
+.rs-tree-item-row:hover .rs-tree-menu-btn {
+    opacity: 1;
+}
+
+.rs-tree-menu-btn:hover {
+    background-color: var(--color-semantic-overlay-neutral-15-light);
+    color: var(--color-semantic-text-high-light);
+}
+
+.rs-tree-menu-btn:active {
+    background-color: var(--color-semantic-overlay-neutral-15-light);
+}
+
+[data-theme="dark"] .rs-tree-menu-btn {
+    color: var(--color-semantic-text-low-dark);
+}
+
+[data-theme="dark"] .rs-tree-menu-btn:hover {
+    background-color: var(--color-semantic-overlay-neutral-15-dark);
+    color: var(--color-semantic-text-high-dark);
+}
+
+[data-theme="dark"] .rs-tree-menu-btn:active {
+    background-color: var(--color-semantic-overlay-neutral-15-dark);
+}
+
+/* コンテキストメニュー（Dropdownスタイルに準拠） */
+.rs-tree-context-menu {
+    position: absolute;
+    display: none;
+    flex-direction: column;
+    min-width: var(--layout-max-width-2xs);
+    width: max-content;
+    max-width: var(--layout-max-width-md);
+    padding: var(--spacing-padding-12) 0;
+    background: var(--color-semantic-neutral-50-light);
+    border: var(--border-width-thin-light) solid var(--color-semantic-divider-extra-high-light);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-drop-shadow-translucent-lg-light);
+    z-index: 1000;
+}
+
+.rs-tree-context-menu--open {
+    display: flex;
+}
+
+[data-theme="dark"] .rs-tree-context-menu {
+    background: var(--color-semantic-neutral-50-dark);
+    border: var(--border-width-thin-dark) solid var(--color-semantic-divider-extra-high-dark);
+    box-shadow: var(--shadow-drop-shadow-translucent-lg-dark);
+}
+
+/* メニュー項目（Dropdownスタイルに準拠） */
+.rs-tree-context-menu-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-padding-8);
+    width: 100%;
+    padding: var(--spacing-padding-8) var(--spacing-padding-24);
+    border: none;
+    background: transparent;
+    color: var(--color-semantic-text-high-light);
+    font-size: var(--font-size-16);
+    line-height: var(--font-line-height-24);
+    text-align: left;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.rs-tree-context-menu-item:hover {
+    background: var(--color-semantic-neutral-100-light);
+}
+
+[data-theme="dark"] .rs-tree-context-menu-item {
+    color: var(--color-semantic-text-high-dark);
+}
+
+[data-theme="dark"] .rs-tree-context-menu-item:hover {
+    background: var(--color-semantic-neutral-100-dark);
+}
+
+/* 危険なアクション（削除など） */
+.rs-tree-context-menu-item--danger {
+    color: var(--color-semantic-negative-600-light);
+}
+
+[data-theme="dark"] .rs-tree-context-menu-item--danger {
+    color: var(--color-semantic-negative-600-dark);
+}
+
+/* 区切り線（Dropdownスタイルに準拠） */
+.rs-tree-context-menu-divider {
+    height: 0;
+    margin: var(--spacing-padding-8) 0;
+    border-top: var(--border-width-thin-light) solid var(--color-semantic-divider-extra-high-light);
+}
+
+[data-theme="dark"] .rs-tree-context-menu-divider {
+    border-top: var(--border-width-thin-dark) solid var(--color-semantic-divider-extra-high-dark);
+}
+
+/* ============================================
+   セクション（ピン留め、最近、ゴミ箱）
+   ============================================ */
+
+.rs-tree-section {
+    display: flex;
+    flex-direction: column;
+}
+
+/* メインセクション（通常ツリー）は区切り線なし */
+.rs-tree-section--main {
+    flex: 1;
+}
+
+/* ピン留め・最近・ゴミ箱セクションの区切り */
+.rs-tree-section--pinned,
+.rs-tree-section--recent,
+.rs-tree-section--trash {
+    position: relative;
+}
+
+/* ピン留めセクション（固定エリアの最初、区切り線なし） */
+.rs-tree-section--pinned {
+    padding-top: 0;
+    margin-top: 0;
+}
+
+/* 最近・ゴミ箱セクション（上に余白のみ、固定エリア内なので点線不要） */
+.rs-tree-section--recent,
+.rs-tree-section--trash {
+    padding-top: var(--spacing-padding-4);
+    margin-top: var(--spacing-padding-4);
+}
+
+/* セクションヘッダー */
+.rs-tree-section-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-padding-8);
+    padding: var(--spacing-padding-4) var(--spacing-padding-12) var(--spacing-padding-4) 0;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    font-family: inherit;
+    transition: background-color 0.15s ease;
+}
+
+.rs-tree-section-header:hover {
+    background-color: var(--color-semantic-overlay-neutral-05-light);
+}
+
+[data-theme="dark"] .rs-tree-section-header:hover {
+    background-color: var(--color-semantic-overlay-neutral-05-dark);
+}
+
+/* セクションヘッダー（info アイコン付きバージョン） */
+.rs-tree-section-header--with-info {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 0;
+    border: none;
+    background: none;
+}
+
+.rs-tree-section-header--with-info .rs-tree-section-header-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-padding-8);
+    padding: var(--spacing-padding-4) 0 var(--spacing-padding-4) 0;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    background: none;
+    border: none;
+    flex: 1;
+    text-align: left;
+    font-family: inherit;
+    transition: background-color 0.15s ease;
+}
+
+.rs-tree-section-header--with-info .rs-tree-section-header-btn:hover {
+    background-color: var(--color-semantic-overlay-neutral-05-light);
+}
+
+[data-theme="dark"] .rs-tree-section-header--with-info .rs-tree-section-header-btn:hover {
+    background-color: var(--color-semantic-overlay-neutral-05-dark);
+}
+
+/* セクション info ツールチップ */
+.rs-tree-section-info-tooltip {
+    margin-left: auto;
+    padding: var(--spacing-padding-4) var(--spacing-padding-8);
+    display: flex;
+    align-items: center;
+}
+
+/* Confluence用ツールチップの位置調整 */
+.rs-tree-section-info-tooltip .ds-tooltip__bubble {
+    max-width: 180px;
+    right: 0;
+    left: auto;
+    top: 100%;
+    transform: none;
+    margin-top: var(--spacing-padding-8);
+    margin-right: 0;
+}
+
+.rs-tree-section-info-icon {
+    width: 14px;
+    height: 14px;
+    color: var(--color-semantic-text-low-light);
+    cursor: help;
+    transition: color 0.15s ease;
+}
+
+.rs-tree-section-info-icon:hover {
+    color: var(--color-semantic-text-middle-light);
+}
+
+[data-theme="dark"] .rs-tree-section-info-icon {
+    color: var(--color-semantic-text-low-dark);
+}
+
+[data-theme="dark"] .rs-tree-section-info-icon:hover {
+    color: var(--color-semantic-text-middle-dark);
+}
+
+/* セクションシェブロン */
+.rs-tree-section-chevron {
+    width: 14px;
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--color-semantic-text-low-light);
+}
+
+[data-theme="dark"] .rs-tree-section-chevron {
+    color: var(--color-semantic-text-low-dark);
+}
+
+/* セクションアイコン（基本はニュートラル、ダブルトーンは個別指定） */
+.rs-tree-section-icon {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    color: var(--color-semantic-text-middle-light);
+}
+
+[data-theme="dark"] .rs-tree-section-icon {
+    color: var(--color-semantic-text-middle-dark);
+}
+
+/* 最近セクションのアイコン（アウトラインのみ） */
+
+/* ゴミ箱セクションのアイコン（ダブルトーン） */
+.rs-tree-section--trash .rs-tree-section-icon {
+    color: var(--color-semantic-text-middle-light);
+    fill: var(--color-semantic-negative-100-light);
+}
+
+[data-theme="dark"] .rs-tree-section--trash .rs-tree-section-icon {
+    color: var(--color-semantic-text-middle-dark);
+    fill: var(--color-semantic-negative-900-dark);
+}
+
+/* ピン留めセクションのアイコン色（グリーン系） */
+.rs-tree-section--pinned .rs-tree-section-icon {
+    color: var(--color-semantic-text-middle-light);
+    fill: var(--color-base-green-100-light);
+}
+
+[data-theme="dark"] .rs-tree-section--pinned .rs-tree-section-icon {
+    color: var(--color-semantic-text-middle-dark);
+    fill: var(--color-base-green-900-dark);
+}
+
+/* ゴミ箱セクションのアイコン色（赤系、アウトラインのみ） */
+.rs-tree-section--trash .rs-tree-section-icon {
+    color: var(--color-semantic-negative-500-light);
+}
+
+[data-theme="dark"] .rs-tree-section--trash .rs-tree-section-icon {
+    color: var(--color-semantic-negative-400-dark);
+}
+
+@media (prefers-color-scheme: dark) {
+    .rs-tree-item--folder .rs-tree-icon {
+        color: var(--color-semantic-text-middle-dark);
+        fill: var(--color-base-yellow-100-dark);
+    }
+
+    .rs-tree-item--file .rs-tree-icon {
+        color: var(--color-semantic-text-middle-dark);
+        fill: var(--color-base-blue-100-dark);
+    }
+
+    .rs-tree-section--pinned .rs-tree-section-icon {
+        color: var(--color-semantic-text-middle-dark);
+        fill: var(--color-base-green-900-dark);
+    }
+
+    .rs-tree-section--trash .rs-tree-section-icon {
+        color: var(--color-semantic-text-middle-dark);
+        fill: var(--color-semantic-negative-900-dark);
+    }
+}
+
+/* セクションラベル */
+.rs-tree-section-label {
+    flex: 1;
+    font-size: var(--font-size-12);
+    font-weight: var(--font-weight-600);
+    color: var(--color-semantic-text-middle-light);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+[data-theme="dark"] .rs-tree-section-label {
+    color: var(--color-semantic-text-middle-dark);
+}
+
+/* セクションカウント */
+.rs-tree-section-count {
+    font-size: var(--font-size-12);
+    color: var(--color-semantic-text-low-light);
+    background-color: var(--color-semantic-neutral-200-light);
+    padding: var(--spacing-padding-2) var(--spacing-padding-6);
+    border-radius: var(--radius-full);
+    min-width: 20px;
+    text-align: center;
+}
+
+[data-theme="dark"] .rs-tree-section-count {
+    color: var(--color-semantic-text-low-dark);
+    background-color: var(--color-semantic-neutral-200-dark);
+}
+
+/* セクションコンテンツ */
+.rs-tree-section-content {
+    padding-left: var(--spacing-padding-4);
+}
+
+/* 折りたたみ時 */
+.rs-tree-section--collapsed .rs-tree-section-content {
+    display: none;
+}
+
+/* 空状態メッセージ */
+.rs-tree-section-empty {
+    padding: var(--spacing-padding-12) var(--spacing-padding-16);
+    padding-left: 22px; /* chevron(14px) + gap(8px) = ツリーアイテムと揃える */
+    font-size: var(--font-size-14);
+    color: var(--color-semantic-text-low-light);
+    text-align: left;
+}
+
+[data-theme="dark"] .rs-tree-section-empty {
+    color: var(--color-semantic-text-low-dark);
+}
+
+/* セクション内補助テキスト（ゴミ箱の自動削除案内等） */
+.rs-tree-section-note {
+    margin: 0;
+    padding: var(--spacing-padding-8) var(--spacing-padding-12);
+    padding-left: 22px; /* ツリーアイテムと揃える */
+    font-size: var(--font-size-12);
+    color: var(--color-semantic-text-low-light);
+    line-height: 1.5;
+}
+
+[data-theme="dark"] .rs-tree-section-note {
+    color: var(--color-semantic-text-low-dark);
+}
+
+@media (prefers-color-scheme: dark) {
+    .rs-tree-section-note {
+        color: var(--color-semantic-text-low-dark);
+    }
+}
+
+/* セクション内リンク（すべてのゴミ箱を見る等） */
+.rs-tree-section-link {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-padding-4);
+    padding: var(--spacing-padding-8) var(--spacing-padding-12);
+    padding-left: 22px; /* ツリーアイテムと揃える */
+    font-size: var(--font-size-12);
+    color: var(--color-semantic-text-low-light);
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.rs-tree-section-link:hover {
+    color: var(--color-semantic-primary-600-light);
+}
+
+[data-theme="dark"] .rs-tree-section-link {
+    color: var(--color-semantic-text-low-dark);
+}
+
+[data-theme="dark"] .rs-tree-section-link:hover {
+    color: var(--color-semantic-primary-600-dark);
+}
+
+@media (prefers-color-scheme: dark) {
+    .rs-tree-section-link {
+        color: var(--color-semantic-text-low-dark);
+    }
+    .rs-tree-section-link:hover {
+        color: var(--color-semantic-primary-600-dark);
+    }
+}

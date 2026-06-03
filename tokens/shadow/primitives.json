@@ -1,0 +1,24 @@
+{
+  "shadow": {
+    "boxShadow-none": { "light": { "value": "0 0 0 0 rgba(24, 25, 26, 0)" }, "dark": { "value": "0 0 0 0 rgba(24, 25, 26, 0)" } },
+    "boxShadow-2xs": { "light": { "value": "0 1px 0 0 rgba(24, 25, 26, 0.05)" }, "dark": { "value": "0 1px 0 0 rgba(24, 25, 26, 0.15)" } },
+    "boxShadow-xs": { "light": { "value": "0 1px 2px 0 rgba(24, 25, 26, 0.05)" }, "dark": { "value": "0 1px 2px 0 rgba(24, 25, 26, 0.15)" } },
+    "boxShadow-sm": { "light": { "value": "0 1px 3px 0 rgba(24, 25, 26, 0.10), 0 1px 2px -1px rgba(24, 25, 26, 0.10)" }, "dark": { "value": "0 1px 3px 0 rgba(24, 25, 26, 0.20), 0 1px 2px -1px rgba(24, 25, 26, 0.20)" } },
+    "boxShadow-md": { "light": { "value": "0 4px 6px -1px rgba(24, 25, 26, 0.10), 0 2px 4px -2px rgba(24, 25, 26, 0.10)" }, "dark": { "value": "0 4px 6px -1px rgba(24, 25, 26, 0.20), 0 2px 4px -2px rgba(24, 25, 26, 0.20)" } },
+    "boxShadow-lg": { "light": { "value": "0 10px 15px -3px rgba(24, 25, 26, 0.10), 0 4px 6px -4px rgba(24, 25, 26, 0.10)" }, "dark": { "value": "0 10px 15px -3px rgba(24, 25, 26, 0.25), 0 4px 6px -4px rgba(24, 25, 26, 0.25)" } },
+    "dropShadow-xs": { "light": { "value": "1px 1px 0 0" }, "dark": { "value": "1px 1px 0 0" } },
+    "dropShadow-2xs": { "light": { "value": "2px 2px 0 0" }, "dark": { "value": "2px 2px 0 0" } },
+    "dropShadow-sm": { "light": { "value": "3px 3px 0 0" }, "dark": { "value": "3px 3px 0 0" } },
+    "dropShadow-md": { "light": { "value": "6px 6px 0 0" }, "dark": { "value": "6px 6px 0 0" } },
+    "dropShadow-lg": { "light": { "value": "8px 8px 0 0" }, "dark": { "value": "8px 8px 0 0" } },
+    "dropShadow-xl": { "light": { "value": "16px 16px 0 0" }, "dark": { "value": "16px 16px 0 0" } },
+    "dropShadow-translucent-xs": { "light": { "value": "1px 1px 0 0 rgba(24, 25, 26, 0.08)" }, "dark": { "value": "1px 1px 0 0 rgba(24, 25, 26, 0.15)" } },
+    "dropShadow-translucent-2xs": { "light": { "value": "2px 2px 0 0 rgba(24, 25, 26, 0.08)" }, "dark": { "value": "2px 2px 0 0 rgba(24, 25, 26, 0.15)" } },
+    "dropShadow-translucent-sm": { "light": { "value": "3px 3px 0 0 rgba(24, 25, 26, 0.08)" }, "dark": { "value": "3px 3px 0 0 rgba(24, 25, 26, 0.15)" } },
+    "dropShadow-translucent-md": { "light": { "value": "6px 6px 0 0 rgba(24, 25, 26, 0.10)" }, "dark": { "value": "6px 6px 0 0 rgba(24, 25, 26, 0.20)" } },
+    "dropShadow-translucent-lg": { "light": { "value": "8px 8px 0 0 rgba(24, 25, 26, 0.12)" }, "dark": { "value": "8px 8px 0 0 rgba(24, 25, 26, 0.50)" } },
+    "dropShadow-translucent-xl": { "light": { "value": "16px 16px 0 0 rgba(24, 25, 26, 0.12)" }, "dark": { "value": "16px 16px 0 0 rgba(24, 25, 26, 0.20)" } },
+    "insetBorder": { "light": { "value": "inset 0 0 0 1px rgba(0, 0, 0, 0.08)" }, "dark": { "value": "inset 0 0 0 1px rgba(255, 255, 255, 0.08)" } },
+    "insetBorderInverse": { "light": { "value": "inset 0 0 0 1px rgba(255, 255, 255, 0.1)" }, "dark": { "value": "inset 0 0 0 1px rgba(0, 0, 0, 0.1)" } }
+  }
+}

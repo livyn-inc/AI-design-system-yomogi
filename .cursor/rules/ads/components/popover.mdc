@@ -1,0 +1,66 @@
+# Popover コンポーネント
+
+## 目的
+- トリガー要素の近くに、軽量な補助 UI（フィルタ・選択肢・追加情報・操作メニュー）を浮かべる
+- Tooltip より情報量が多く、Modal / Drawer より小さい中間ゾーンを担う
+
+## API
+```js
+Popover({
+  triggerHtml: string,                              // トリガー要素のHTML（既定: 標準ボタン）
+  content: string,                                  // パネル内HTML
+  placement: 'top' | 'right' | 'bottom' | 'left'    // 既定: 'bottom'
+})
+```
+
+返り値は `<span class="ds-popover ds-popover--{placement}">…</span>` の HTML 文字列。本実装は静的構造を返すのみで、開閉ロジックは CSS hover / focus-within か、アプリ側のスクリプトに委ねる。
+
+## 使用例
+```js
+Popover({
+  triggerHtml: IconButton({ icon: '<i data-lucide="filter"></i>', ariaLabel: '絞り込み' }),
+  content: `
+    <div class="ds-popover__body">
+      ${Checkbox({ id: 'p1', label: 'アクティブのみ' })}
+      ${Checkbox({ id: 'p2', label: 'アーカイブ' })}
+      <div class="ds-popover__actions">
+        ${Button({ variant: 'ghost', color: 'neutral', label: 'リセット', size: 'sm' })}
+        ${Button({ variant: 'solid', color: 'primary', label: '適用', size: 'sm' })}
+      </div>
+    </div>
+  `,
+  placement: 'bottom'
+})
+```
+
+## デザイン仕様（トークン）
+- パネル背景: `var(--color-semantic-neutral-50-light/dark)`
+- 角丸: `var(--radius-md)` 〜 `var(--radius-lg)`
+- 影: `var(--shadow-box-shadow-md-light/dark)`（Modal より弱め）
+- 内側 padding: `var(--spacing-padding-16)` 既定。アクション領域があれば `var(--spacing-padding-12)`
+- placement とトリガーの隙間: `var(--spacing-padding-8)`
+- 矢印（任意）は CSS で生成。色はパネル背景と同じトークンを参照
+
+## Tooltip / Popover / Drawer / Modal の使い分け
+- **Tooltip**: 1〜数語の補助テキストのみ。テキスト以外を入れない
+- **Popover**: 複数要素OK（トグル数個、リンク、簡単なフォーム）。一時的・閉じれば消える
+- **Drawer**: 複数の入力やセクションを含む。閉じても作業が続く補助パネル
+- **Modal**: 操作の完了が必要な確認・送信フロー
+
+## ふるまい
+- 表示制御は CSS `:hover` / `:focus-within`、または JS でのトグルが想定
+- 外側クリック・Esc で閉じる挙動はアプリ側で実装する
+- `content` 内に `<button>` がある場合、フォーカスは Popover 内をループさせる（focus trap は必須ではないが、Modal 風に閉じ込める設計は避ける）
+
+## アクセシビリティ
+- パネルに `role="dialog"` を自動付与済み（必要に応じ `aria-label` を呼び出し側で追加）
+- トリガーに `aria-haspopup="dialog"` と `aria-expanded` をアプリ側で更新する
+- Popover 内に重要操作を入れた場合、最初のフォーカス可能要素にフォーカスを移す
+- ホバー専用にしない（キーボード/タッチで開けるように `:focus-within` も使う）
+
+## アンチパターン
+- 文章だけを入れて Tooltip 代わりにする（Tooltip を使う）
+- 複数の Popover を入れ子にする
+- 複雑な複数ステップフォームを詰める（Modal / Drawer に変える）
+- ホバーだけで開く（タッチデバイスで操作不能になる）
+- 画面端で placement が固定になり、はみ出す（呼び出し側で位置補正する想定）

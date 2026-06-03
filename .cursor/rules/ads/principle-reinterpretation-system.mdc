@@ -1,0 +1,278 @@
+---
+description: デザイン原則の再解釈システム - 全体ロジック説明
+globs: "**/*"
+---
+
+# デザイン原則の再解釈システム
+
+## 🎯 システム概要
+
+デザイン原則は普遍的価値観ですが、ユーザーの具体的要望と衝突する場合があります。  
+この再解釈システムは**原則の核心を保持しながら、ユーザー要望を叶える表現に調整**する機能です。
+
+### 基本アプローチ
+```
+原則 + ユーザー要望 → 感情軸の調整 → 視覚要素の変更
+```
+
+## 📋 全体システム構造
+
+### 1. 入力系統
+- **原則**: `.cursor/rules/ads/principles.mdc`（固定・普遍的）
+- **要望**: 利用プロジェクト側のヒアリング内容
+
+### 2. 処理系統
+- **再解釈ロジック**: 要望を原則に沿う形で読み替え
+- **感情軸調整**: ブランド感情軸の微調整
+- **トークン変換**: 感情軸からデザイントークンへ変換
+
+### 3. 出力系統
+- **評価影響**: CX（原則準拠度）、AE（感情軸適合度）
+- **視覚要素**: color, spacing, radius, typography tokens
+
+---
+
+## 🔄 再解釈ロジックの詳細
+
+### 再解釈パターン例
+
+#### パターンA: 「ごちゃごちゃな雰囲気」要望
+```
+ユーザー要望: 「あえてごちゃごちゃな雰囲気がいい」
+↓
+原則「シンプルで分かりやすい構造」との衝突検出
+↓
+再解釈: 「豊かな情報表現」「多様性のあるデザイン」
+↓
+感情軸調整:
+- 「豊かさ」「多様性」「活気」を追加
+- 「シンプル」は「分かりやすい構造」として保持
+↓
+視覚要素変更:
+- 色数増加（3色→5色、三角配置調和を採用）
+- フォントサイズバリエーション拡大
+- 角丸パターン複数利用
+- セクション区切り強調
+```
+
+#### パターンB: 「派手で目立つ」要望
+```
+ユーザー要望: 「派手で目立つデザインにしたい」
+↓  
+原則「ニュートラルなデザイン」との衝突検出
+↓
+再解釈: 「エネルギッシュな表現」「印象に残るデザイン」
+↓
+感情軸調整:
+- 「活力」「印象的」「ダイナミック」を追加
+- 「ニュートラル」は「汎用性のある構造」として保持
+↓
+視覚要素変更:
+- コントラスト強化（高彩度色の採用）
+- 補色調和パターンの活用
+- フォントウェイト強化（600-700使用）
+- アクセント色の積極活用
+```
+
+#### パターンC: 「操作を複雑に」要望  
+```
+ユーザー要望: 「多機能で操作が複雑でもいい」
+↓
+原則「ユーザーの操作負担を最小限」との衝突検出
+↓
+再解釈: 「機能の豊富さを表現」「上級者向け効率化」
+↓
+感情軸調整:
+- 「高機能」「効率性」「プロ仕様」を追加
+- 「操作負担最小」は「学習後の効率最大」として保持
+↓
+視覚要素変更:
+- 情報密度向上（余白縮小、フォントサイズ最適化）
+- 階層表現強化（複数の視覚区分）
+- 機能別アイコン活用
+- セクションネスト表現
+```
+
+---
+
+## 🎨 感情軸→視覚要素変換システム
+
+### 変換マトリクス
+
+#### A. 色彩変換
+```javascript
+const emotionToColorMapping = {
+  '活力・エネルギッシュ': {
+    harmonyType: 'complementary',
+    saturation: 'high',
+    contrast: 'strong',
+    primaryHue: ['orange', 'red', 'yellow']
+  },
+  '豊かさ・多様性': {
+    harmonyType: 'triadic',
+    saturation: 'medium',
+    colorCount: 5,
+    primaryHue: ['balanced']
+  },
+  '親しみやすさ・柔らかさ': {
+    harmonyType: 'analogous',
+    saturation: 'medium-low',
+    warmth: 'warm',
+    primaryHue: ['orange', 'yellow', 'pink']
+  },
+  '洗練・高級': {
+    harmonyType: 'monochromatic',
+    saturation: 'low',
+    contrast: 'subtle',
+    primaryHue: ['blue', 'gray', 'purple']
+  }
+};
+```
+
+#### B. 余白変換
+```javascript
+const emotionToSpacingMapping = {
+  'ゆとり・親しみやすさ': {
+    multiplier: 1.4,
+    minSectionGap: 72,
+    innerPadding: 'generous'
+  },
+  '効率・コンパクト': {
+    multiplier: 0.8,
+    minSectionGap: 32,
+    innerPadding: 'tight'
+  },
+  '高級・洗練': {
+    multiplier: 1.2,
+    minSectionGap: 64,
+    innerPadding: 'luxurious'
+  },
+  '高機能・プロ仕様': {
+    multiplier: 0.9,
+    minSectionGap: 40,
+    innerPadding: 'efficient'
+  }
+};
+```
+
+#### C. 角丸変換
+```javascript
+const emotionToRadiusMapping = {
+  '親しみやすさ・柔らかさ': {
+    baseRadius: 8,
+    usage: 'frequent',
+    variation: [8, 12, 16]
+  },
+  'シャープ・力強さ': {
+    baseRadius: 2,
+    usage: 'minimal',
+    variation: [0, 2, 4]
+  },
+  '洗練・上品': {
+    baseRadius: 6,
+    usage: 'selective',
+    variation: [4, 6, 8]
+  },
+  '多様性・豊かさ': {
+    baseRadius: 6,
+    usage: 'varied',
+    variation: [4, 8, 12, 16]
+  }
+};
+```
+
+#### D. タイポグラフィ変換
+```javascript
+const emotionToTypographyMapping = {
+  '親しみやすさ': {
+    weight: 500,
+    lineHeight: 1.7,
+    sizeVariation: 'generous'
+  },
+  '力強さ・エネルギッシュ': {
+    weight: 600,
+    lineHeight: 1.4,
+    sizeVariation: 'dramatic'
+  },
+  '洗練・高級': {
+    weight: 300,
+    lineHeight: 1.5,
+    sizeVariation: 'subtle'
+  },
+  '高機能・効率': {
+    weight: 400,
+    lineHeight: 1.4,
+    sizeVariation: 'functional'
+  }
+};
+```
+
+---
+
+## 📊 評価システムへの統合
+
+### 1. CX（コンテキスト評価）への原則準拠度追加
+```javascript
+const calculateContextualFit = (design, context, principleCompliance) => {
+  // 既存のCX評価
+  const baseScore = evaluateBasicContextFit(design, context);
+  
+  // 原則準拠度を組み込み（20%ウェイト）
+  const principleWeight = 0.2;
+  const contextWeight = 0.8;
+  
+  return (baseScore * contextWeight) + (principleCompliance * principleWeight);
+};
+
+// 原則準拠度の算出
+const calculatePrincipleCompliance = (design, principleSettings) => {
+  const compliance = principleSettings.map(principle => {
+    return evaluatePrincipleAlignment(design, principle);
+  });
+  
+  // 最小値重視（1つでも大きく外れていたら低評価）
+  return Math.min(...compliance);
+};
+```
+
+### 2. AE（美的表現）へのブランド適合度調整
+```javascript
+const calculateBrandCompatibility = (design, originalBrandAxis, adjustedBrandAxis) => {
+  // 調整された感情軸での評価
+  const adjustedScore = evaluateEmotionAxisAlignment(design, adjustedBrandAxis);
+  
+  // 原則保持度の確認
+  const principlePreservation = checkPrinciplePreservation(
+    originalBrandAxis, adjustedBrandAxis
+  );
+  
+  // 総合評価（調整された軸での適合度 × 原則保持度）
+  return adjustedScore * principlePreservation;
+};
+```
+
+---
+
+## 実装メモ
+
+### 1. ヒアリング拡張
+1. **ヒアリング結果データ**のスキーマ設計
+   - `conflicting_requirements`: 原則と衝突する要望
+   - `reinterpretation`: 再解釈された感情軸
+   - `principle_adjustments`: 原則の調整記録
+   - 保存形式や自動生成の仕組みは今後の設計対象
+
+### 2. 変換ロジック
+1. **init-flow.mdc** の4.2セクション拡張
+   - 衝突検出ロジック
+   - 再解釈提案アルゴリズム
+   - 感情軸→トークン変換
+
+### 3. 評価統合
+1. **CX評価**: 原則準拠度20%追加
+2. **AE評価**: 調整済み感情軸での判定
+
+### 4. 文書化
+1. 実装済みの範囲だけを公開ドキュメントに反映
+2. 未実装の評価や自動変換は、将来構想として断定しない
+

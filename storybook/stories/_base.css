@@ -1,0 +1,15 @@
+/* Storybook Base Styles (Reset + Typography). Tokens are imported by _matrix.css */
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; }
+
+body {
+  font-family: var(--font-family-pro);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button, input, textarea, select { font: inherit; }
+
+

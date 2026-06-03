@@ -1,0 +1,153 @@
+---
+description: 角丸（Border Radius）トークン利用ガイド・API仕様
+globs: "tokens/radius/**/*"
+---
+## 概要
+角丸の一貫性を保つためのborder-radiusトークン。コンポーネントに統一された角丸スタイルを提供。
+
+## API
+### Border Radius Tokens
+| Token | CSS Variable | Value | 用途・場面 |
+|-------|-------------|-------|-----------|
+| radius-none | --radius-none | 0px | 角丸なし（直角） |
+| radius-xs | --radius-xs | 2px | 極小角丸（小アイコン、小ボタン） |
+| radius-sm | --radius-sm | 4px | 小角丸（タグ、バッジ） |
+| radius-md | --radius-md | 8px | 標準角丸（ボタン、入力フィールド） |
+| radius-lg | --radius-lg | 12px | 大角丸（カード、パネル） |
+| radius-xl | --radius-xl | 16px | 特大角丸（大きなカード） |
+| radius-2xl | --radius-2xl | 24px | 超大角丸（モーダル、大パネル） |
+| radius-3xl | --radius-3xl | 32px | 巨大角丸（ヒーローセクション） |
+| radius-4xl | --radius-4xl | 48px | 最大角丸（特殊デザイン） |
+| radius-5xl | --radius-5xl | 64px | 超巨大角丸（特殊デザイン） |
+| radius-full | --radius-full | 9999px | 完全円形（アバター、円ボタン） |
+
+## 使用例
+### CSS
+```css
+/* ボタン */
+.button {
+  border-radius: var(--radius-md);
+}
+
+.button-small {
+  border-radius: var(--radius-sm);
+}
+
+/* カード */
+.card {
+  border-radius: var(--radius-lg);
+}
+
+/* 入力フィールド */
+.input {
+  border-radius: var(--radius-md);
+}
+
+/* モーダル */
+.modal {
+  border-radius: var(--radius-2xl);
+}
+
+/* アバター（円形） */
+.avatar {
+  border-radius: var(--radius-full);
+}
+
+/* タグ・バッジ */
+.tag {
+  border-radius: var(--radius-sm);
+}
+
+/* 角丸なし */
+.table {
+  border-radius: var(--radius-none);
+}
+```
+
+### JavaScript（コンポーネント内）
+```javascript
+// Storybook等でのインラインスタイル
+style="border-radius: var(--radius-md);"
+
+// 条件付き角丸
+const radiusValue = isRounded ? 'var(--radius-lg)' : 'var(--radius-none)';
+style=`border-radius: ${radiusValue};`
+```
+
+## 命名規則
+- **radius-{サイズ}**: サイズベース命名（none, xs, sm, md, lg, xl, 2xl, 3xl, 4xl, 5xl, full）
+- **段階的拡張**: xs → sm → md → lg → xl → 2xl...の順で大きくなる
+
+## 注意事項・ベストプラクティス
+### 🚨 絶対禁止
+- **直接px指定**: `border-radius: 8px` ❌
+- **任意の角丸値**: `border-radius: 6px` ❌（定義外の値）
+
+### ✅ 必須実装方法
+- **トークン使用**: `border-radius: var(--radius-md)` ✅
+- **定義済み値のみ**: 0, 2, 4, 8, 12, 16, 24, 32, 48, 64, 9999pxのみ使用 ✅
+
+### 使い分けガイド
+#### radius-none (0px)
+- テーブル、データ表示
+- フォーマルなUI
+- 角丸が不要な要素
+
+#### radius-xs (2px)
+- 小さなアイコンボタン
+- 極小UI要素
+- 微細な角丸が必要な場合
+
+#### radius-sm (4px)
+- タグ、バッジ
+- 小ボタン
+- リスト項目
+
+#### radius-md (8px) ⭐ 最も汎用的
+- 標準ボタン
+- 入力フィールド
+- 一般的なコンポーネント
+
+#### radius-lg (12px)
+- カード
+- パネル
+- セクション
+
+#### radius-xl〜5xl (16px〜64px)
+- 大きなカード
+- モーダル
+- ヒーローセクション
+- 特殊デザイン
+
+#### radius-full (9999px)
+- アバター画像
+- 円形ボタン
+- 円形インジケーター
+
+### コンポーネント別推奨値
+```css
+/* 基本コンポーネント */
+.button { border-radius: var(--radius-md); }
+.input { border-radius: var(--radius-md); }
+.select { border-radius: var(--radius-md); }
+.textarea { border-radius: var(--radius-md); }
+
+/* レイアウトコンポーネント */
+.card { border-radius: var(--radius-lg); }
+.modal { border-radius: var(--radius-2xl); }
+.panel { border-radius: var(--radius-lg); }
+
+/* 小要素 */
+.tag { border-radius: var(--radius-sm); }
+.badge { border-radius: var(--radius-sm); }
+.tooltip { border-radius: var(--radius-sm); }
+
+/* 特殊形状 */
+.avatar { border-radius: var(--radius-full); }
+.icon-button { border-radius: var(--radius-full); }
+```
+
+### デザイン統一性
+- **同じ階層の要素**: 同じradius値を使用
+- **親子関係**: 子要素は親要素より小さいradius
+- **ブランド統一**: プロジェクト全体で一貫したradius使用

@@ -1,0 +1,8 @@
+{
+  "border": {
+    "width-thin": { "light": { "value": "1px" }, "dark": { "value": "1px" } },
+    "width-base": { "light": { "value": "2px" }, "dark": { "value": "2px" } },
+    "width-thick": { "light": { "value": "4px" }, "dark": { "value": "4px" } }
+  }
+}
+

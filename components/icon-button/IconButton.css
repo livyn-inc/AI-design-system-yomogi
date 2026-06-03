@@ -1,0 +1,38 @@
+@import '../../build/css/tokens.css';
+@import '../button/button-base.css';
+
+/* IconButtonはButtonのサイズ/variant/色設計に完全追従する */
+.ds-btn.ds-btn--icon {
+  /* button-base.cssの基本スタイルを継承済み */
+  /* IconButton固有のスタイル */
+  line-height: 1;
+  padding: var(--spacing-padding-8) var(--spacing-padding-8);
+}
+
+.ds-btn.ds-btn--icon.ds-btn--sm {
+  font-size: var(--font-size-14);
+  padding: var(--spacing-padding-4) var(--spacing-padding-4);
+  min-height: var(--layout-height-input-sm);
+}
+.ds-btn.ds-btn--icon.ds-btn--md {
+  font-size: var(--font-size-16);
+  padding: var(--spacing-padding-8) var(--spacing-padding-8);
+  min-height: var(--layout-height-input-md);
+}
+.ds-btn.ds-btn--icon.ds-btn--lg {
+  font-size: var(--font-size-18);
+  padding: var(--spacing-padding-12) var(--spacing-padding-12);
+  min-height: var(--layout-height-input-lg);
+}
+
+/* アイコンのサイズと整列 */
+.ds-btn.ds-btn--icon .ds-btn__icon {
+  width: 1em;
+  height: 1em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* フォーカス状態はbutton-base.cssで定義済み */
+

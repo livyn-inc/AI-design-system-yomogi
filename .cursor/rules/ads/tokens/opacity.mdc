@@ -1,0 +1,157 @@
+---
+description: 透明度（Opacity）トークン利用ガイド・API仕様
+globs: "tokens/opacity/**/*"
+---
+## 概要
+透明度の一貫性を保つためのopacityトークン。要素全体の無効化表現などで使用する。背景レイヤーには、原則として `tokens/color.mdc` の overlay トークンを使う。
+
+## API
+### Opacity Tokens
+| Token | CSS Variable | Value | 用途・場面 |
+|-------|-------------|-------|-----------|
+| opacity-0 | --opacity-0 | 0 | 完全透明（要素を非表示にする） |
+| opacity-5 | --opacity-5 | 0.05 | 微細なホバー効果、軽いシャドウ |
+| opacity-15 | --opacity-15 | 0.15 | 軽いホバー状態、選択状態の背景 |
+| opacity-30 | --opacity-30 | 0.30 | 無効化テキスト、プレースホルダー |
+| opacity-50 | --opacity-50 | 0.50 | 無効化要素、モーダル背景オーバーレイ |
+| opacity-65 | --opacity-65 | 0.65 | ローディングオーバーレイ、強調無効化 |
+| opacity-80 | --opacity-80 | 0.80 | 無効化コンポーネント、軽い無効化状態 |
+| opacity-100 | --opacity-100 | 1 | 完全不透明（デフォルト状態） |
+
+## 使用例
+### CSS
+```css
+/* 無効化状態 */
+.button:disabled {
+  opacity: var(--opacity-50);
+}
+
+.input:disabled {
+  opacity: var(--opacity-30);
+}
+
+/* ホバー効果 */
+.card:hover::before {
+  opacity: var(--opacity-5);
+}
+
+.button:hover {
+  opacity: var(--opacity-15);
+}
+
+/* モーダルオーバーレイ */
+.modal-backdrop {
+  background: var(--color-semantic-overlay-neutral-50-light);
+}
+
+/* ローディング状態 */
+.loading-overlay {
+  background: var(--color-semantic-overlay-neutral-70-light);
+}
+
+/* プレースホルダー */
+.placeholder {
+  opacity: var(--opacity-30);
+}
+```
+
+### JavaScript（コンポーネント内）
+```javascript
+// Storybook等でのインラインスタイル
+style="opacity: var(--opacity-50);"
+
+// 背景オーバーレイ
+style="background: var(--color-semantic-overlay-neutral-50-light);"
+
+// 条件付き透明度
+const opacityValue = disabled ? 'var(--opacity-30)' : 'var(--opacity-100)';
+style=`opacity: ${opacityValue};`
+```
+
+## 命名規則
+- **opacity-{数値}**: パーセンテージベース（0, 5, 15, 30, 50, 65, 80, 100）
+- **8段階**: 十分な選択肢と適度な制約のバランス
+
+## 注意事項・ベストプラクティス
+### 🚨 絶対禁止
+- **直接数値指定**: `opacity: 0.5` ❌
+- **任意の透明度**: `opacity: 0.3` ❌（30は使用可能）
+
+### ✅ 必須実装方法
+- **トークン使用**: `opacity: var(--opacity-50)` ✅
+- **背景レイヤー**: `background: var(--color-semantic-overlay-neutral-50-light)` ✅
+
+### 使い分けガイド
+#### opacity-0 (0%)
+- 要素の完全非表示
+- アニメーション開始/終了状態
+- 条件付き表示の初期状態
+
+#### opacity-5 (5%)
+- 極めて微細なホバー効果
+- 軽いドロップシャドウ
+- 微妙な背景色変化
+
+#### opacity-15 (15%)
+- 軽いホバー状態
+- 選択状態の背景
+- アクティブでない要素の強調
+
+#### opacity-30 (30%)
+- プレースホルダーテキスト
+- 無効化されたテキスト
+- 補助的な情報表示
+
+#### opacity-50 (50%)
+- 無効化された要素（ボタン、入力欄等）
+- モーダル背景オーバーレイ
+- 半透明の区切り線
+
+#### opacity-65 (65%)
+- ローディングオーバーレイ
+- 強調された無効化状態
+- 重要でない背景要素
+
+#### opacity-80 (80%)
+- コンポーネントの無効化状態
+- 軽い無効化表現
+- 操作可能だが非推奨の要素
+
+#### opacity-100 (100%)
+- 通常状態（デフォルト）
+- 完全に表示される要素
+- アニメーション終了状態
+
+### 状態別使用例
+```css
+/* ボタンの状態変化 */
+.button {
+  opacity: var(--opacity-100); /* 通常 */
+}
+
+.button:hover {
+  opacity: var(--opacity-15); /* ホバー時の背景 */
+}
+
+.button:disabled {
+  opacity: var(--opacity-80); /* 無効化 */
+}
+
+/* テキストの重要度 */
+.text-primary {
+  opacity: var(--opacity-100); /* メインテキスト */
+}
+
+.text-secondary {
+  opacity: var(--opacity-65); /* サブテキスト */
+}
+
+.text-placeholder {
+  opacity: var(--opacity-30); /* プレースホルダー */
+}
+```
+
+### アクセシビリティ考慮
+- **最小コントラスト**: opacity-30未満は文字に使用禁止
+- **操作可能要素**: opacity-50以上で操作性を保つ
+- **状態の明確化**: 透明度のみに依存しない状態表現

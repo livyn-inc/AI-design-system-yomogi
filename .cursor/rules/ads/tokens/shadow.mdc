@@ -1,0 +1,177 @@
+---
+description: シャドウ（Box Shadow）トークン利用ガイド・API仕様
+globs: "tokens/shadow/**/*"
+---
+## 概要
+ボックスシャドウの一貫性を保つためのbox-shadowトークン。階層感と奥行きを表現し、ライト/ダークテーマに対応。
+
+## API
+### Box Shadow Tokens
+| Token | CSS Variable | 用途・場面 | Light値例 | Dark値例 |
+|-------|-------------|-----------|----------|----------|
+| box-shadow-none | --shadow-box-shadow-none-light/dark | シャドウなし | なし | なし |
+| box-shadow-2xs | --shadow-box-shadow-2xs-light/dark | 極微細シャドウ（境界線代替） | build/css/tokens.cssを参照 | build/css/tokens.cssを参照 |
+| box-shadow-xs | --shadow-box-shadow-xs-light/dark | 微細シャドウ（ホバー効果） | build/css/tokens.cssを参照 | build/css/tokens.cssを参照 |
+| box-shadow-sm | --shadow-box-shadow-sm-light/dark | 小シャドウ（カード、ボタン） | build/css/tokens.cssを参照 | build/css/tokens.cssを参照 |
+| box-shadow-md | --shadow-box-shadow-md-light/dark | 標準シャドウ（パネル、メニュー） | build/css/tokens.cssを参照 | build/css/tokens.cssを参照 |
+| box-shadow-lg | --shadow-box-shadow-lg-light/dark | 大シャドウ（モーダル、ドロップダウン） | build/css/tokens.cssを参照 | build/css/tokens.cssを参照 |
+
+## 使用例
+### CSS
+```css
+/* カード */
+.card {
+  box-shadow: var(--shadow-box-shadow-sm-light);
+}
+
+/* ホバー効果 */
+.card:hover {
+  box-shadow: var(--shadow-box-shadow-md-light);
+}
+
+/* ボタン */
+.button {
+  box-shadow: var(--shadow-box-shadow-xs-light);
+}
+
+.button:active {
+  box-shadow: var(--shadow-box-shadow-none-light);
+}
+
+/* モーダル */
+.modal {
+  box-shadow: var(--shadow-box-shadow-lg-light);
+}
+
+/* ドロップダウンメニュー */
+.dropdown {
+  box-shadow: var(--shadow-box-shadow-md-light);
+}
+
+/* ダークテーマ対応 */
+[data-theme="dark"] .card {
+  box-shadow: var(--shadow-box-shadow-sm-dark);
+}
+
+[data-theme="dark"] .modal {
+  box-shadow: var(--shadow-box-shadow-lg-dark);
+}
+```
+
+### JavaScript（コンポーネント内）
+```javascript
+// Storybook等でのインラインスタイル
+style="box-shadow: var(--shadow-box-shadow-sm-light);"
+
+// テーマに応じたシャドウ
+const shadowForTheme = isDark
+  ? 'var(--shadow-box-shadow-md-dark)'
+  : 'var(--shadow-box-shadow-md-light)';
+style=`box-shadow: ${shadowForTheme};`
+
+// 状態に応じたシャドウ
+const shadowForState = isHovered
+  ? 'var(--shadow-box-shadow-md-light)'
+  : 'var(--shadow-box-shadow-sm-light)';
+style=`box-shadow: ${shadowForState};`
+```
+
+## 命名規則
+- **shadow-box-shadow-{サイズ}-{テーマ}**: サイズとテーマの組み合わせ
+- **段階的サイズ**: none → 2xs → xs → sm → md → lg の順で強くなる
+- **テーマサフィックス**: light/dark で自動切り替え
+
+## 注意事項・ベストプラクティス
+### 🚨 絶対禁止
+- **直接shadow指定**: `box-shadow: 0 2px 4px rgba(0,0,0,0.1)` ❌
+- **任意のshadow値**: 定義外のシャドウ使用禁止 ❌
+
+### ✅ 必須実装方法
+- **トークン使用**: `box-shadow: var(--shadow-box-shadow-sm-light)` ✅
+- **テーマ対応**: light/darkサフィックスで切り替え ✅
+
+### 使い分けガイド
+#### box-shadow-none
+- フラットデザイン
+- シャドウ除去
+- アクティブ状態（押下時）
+
+#### box-shadow-2xs
+- 極微細な境界線代替
+- 微細なレイヤー分離
+- 軽いホバー効果
+
+#### box-shadow-xs
+- 軽いホバー効果
+- 小ボタンのシャドウ
+- 微細な立体感
+
+#### box-shadow-sm ⭐ 最も汎用的
+- カードの基本シャドウ
+- パネルの境界
+- 一般的なコンポーネント
+
+#### box-shadow-md
+- メニュー、ドロップダウン
+- パネルの強調
+- 中程度の階層感
+
+#### box-shadow-lg
+- モーダルダイアログ
+- 大きなポップアップ
+- 最前面の要素
+
+### 階層と用途の対応
+```css
+/* 階層1: 基本レイヤー */
+.content { box-shadow: var(--shadow-box-shadow-none-light); }
+
+/* 階層2: カード・パネル */
+.card { box-shadow: var(--shadow-box-shadow-sm-light); }
+
+/* 階層3: ナビゲーション・固定要素 */
+.navbar { box-shadow: var(--shadow-box-shadow-md-light); }
+
+/* 階層4: ドロップダウン・ツールチップ */
+.dropdown { box-shadow: var(--shadow-box-shadow-md-light); }
+
+/* 階層5: モーダル・オーバーレイ */
+.modal { box-shadow: var(--shadow-box-shadow-lg-light); }
+```
+
+### 状態変化の表現
+```css
+/* 通常→ホバー→アクティブ */
+.interactive-card {
+  box-shadow: var(--shadow-box-shadow-sm-light);
+  transition: box-shadow 0.2s ease;
+}
+
+.interactive-card:hover {
+  box-shadow: var(--shadow-box-shadow-md-light);
+}
+
+.interactive-card:active {
+  box-shadow: var(--shadow-box-shadow-xs-light);
+}
+```
+
+### テーマ切り替え実装
+```css
+/* ライトテーマ（デフォルト） */
+.element {
+  box-shadow: var(--shadow-box-shadow-sm-light);
+}
+
+/* ダークテーマ */
+[data-theme="dark"] .element {
+  box-shadow: var(--shadow-box-shadow-sm-dark);
+}
+
+/* 動的に切り替える場合も、候補は実在トークンから選ぶ */
+```
+
+### パフォーマンス考慮
+- **アニメーション**: box-shadowの変化にはtransitionを使用
+- **複数シャドウ**: 必要最小限に留める
+- **重ね合わせ**: z-indexとの適切な組み合わせ

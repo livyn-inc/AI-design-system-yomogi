@@ -1,0 +1,76 @@
+@import url('./tokens.css');
+
+/* Reset */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; }
+
+/* Base Typography */
+body {
+  font-family: var(--font-family-pro);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button, input, textarea, select { font: inherit; }
+
+/* ============================================
+   カスタムスクロールバー（A案：細めのモダンスタイル）
+   削除する場合: この行から下の「カスタムスクロールバー ここまで」までを削除
+   ============================================ */
+
+/* スクロールバー全体 */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+/* トラック（背景） */
+::-webkit-scrollbar-track {
+    background: var(--color-semantic-neutral-50-light);
+    border-radius: var(--radius-full);
+}
+
+/* サム（つまみ） */
+::-webkit-scrollbar-thumb {
+    background: var(--color-semantic-divider-extra-high-light);
+    border-radius: var(--radius-full);
+    transition: background 0.2s ease;
+}
+
+/* サムのホバー */
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-semantic-text-middle-light);
+}
+
+/* ダークモード */
+@media (prefers-color-scheme: dark) {
+    ::-webkit-scrollbar-track {
+        background: var(--color-semantic-neutral-50-dark);
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: var(--color-semantic-divider-extra-high-dark);
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--color-semantic-text-middle-dark);
+    }
+}
+
+/* Firefox対応 */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-semantic-divider-extra-high-light) var(--color-semantic-neutral-50-light);
+}
+
+@media (prefers-color-scheme: dark) {
+    * {
+        scrollbar-color: var(--color-semantic-divider-extra-high-dark) var(--color-semantic-neutral-50-dark);
+    }
+}
+
+/* ============================================
+   カスタムスクロールバー ここまで
+   ============================================ */
+

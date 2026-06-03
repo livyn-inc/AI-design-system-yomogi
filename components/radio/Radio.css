@@ -1,0 +1,194 @@
+/* Radio Component Styles */
+
+.ds-radio {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-padding-8);
+  cursor: pointer;
+}
+
+.ds-radio--disabled {
+  cursor: not-allowed;
+  opacity: var(--opacity-65);
+}
+
+.ds-radio__control {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ds-radio__input {
+  position: absolute;
+  opacity: var(--opacity-0);
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  cursor: inherit;
+}
+
+.ds-radio__input:disabled {
+  cursor: not-allowed;
+}
+
+.ds-radio__indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--color-semantic-divider-high-light);
+  border-radius: 50%;
+  background-color: transparent;
+  transition: all 0.2s ease-in-out;
+}
+
+.ds-radio__indicator--sm {
+  width: 16px;
+  height: 16px;
+}
+
+.ds-radio__indicator--md {
+  width: 20px;
+  height: 20px;
+}
+
+.ds-radio__indicator--lg {
+  width: 24px;
+  height: 24px;
+}
+
+.ds-radio__dot {
+  border-radius: 50%;
+  background-color: var(--color-semantic-primary-500-light);
+  transform: scale(0);
+  transition: transform 0.2s ease-in-out;
+}
+
+.ds-radio__dot--sm {
+  width: 6px;
+  height: 6px;
+}
+
+.ds-radio__dot--md {
+  width: 8px;
+  height: 8px;
+}
+
+.ds-radio__dot--lg {
+  width: 10px;
+  height: 10px;
+}
+
+/* States */
+.ds-radio__input:hover:not(:disabled) + .ds-radio__indicator {
+  border-color: var(--color-semantic-divider-high-light);
+}
+
+.ds-radio__input:focus:not(:disabled) + .ds-radio__indicator {
+  border-color: var(--color-semantic-primary-500-light);
+  box-shadow: 0 0 0 3px var(--color-semantic-primary-100-light);
+}
+
+.ds-radio--checked .ds-radio__indicator {
+  border-color: var(--color-semantic-primary-500-light);
+}
+
+.ds-radio--checked .ds-radio__dot {
+  transform: scale(1);
+}
+
+.ds-radio__input:disabled + .ds-radio__indicator {
+  background-color: var(--color-semantic-neutral-50-light);
+  border-color: var(--color-semantic-divider-high-light);
+}
+
+.ds-radio--checked.ds-radio--disabled .ds-radio__indicator {
+  border-color: var(--color-semantic-neutral-300-light);
+}
+
+.ds-radio--checked.ds-radio--disabled .ds-radio__dot {
+  background-color: var(--color-semantic-neutral-300-light);
+}
+
+/* Label */
+.ds-radio__label {
+  font-weight: var(--font-weight-400);
+  color: var(--color-semantic-text-high-light);
+  cursor: inherit;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-padding-4);
+}
+
+.ds-radio__label--sm {
+  font-size: var(--font-size-14);
+  line-height: 20px;
+}
+
+.ds-radio__label--md {
+  font-size: var(--font-size-14);
+  line-height: 20px;
+}
+
+.ds-radio__label--lg {
+  font-size: var(--font-size-16);
+  line-height: 24px;
+}
+
+.ds-radio__required {
+  color: var(--color-semantic-negative-500-light);
+}
+
+.ds-radio--disabled .ds-radio__label {
+  color: var(--color-semantic-text-disabled-light);
+}
+
+/* Manual dark mode support */
+[data-theme="dark"] .ds-radio__indicator {
+  border-color: var(--color-semantic-divider-high-dark);
+}
+
+[data-theme="dark"] .ds-radio__input:hover:not(:disabled) + .ds-radio__indicator {
+  border-color: var(--color-semantic-divider-high-dark);
+}
+
+[data-theme="dark"] .ds-radio__input:focus:not(:disabled) + .ds-radio__indicator {
+  border-color: var(--color-semantic-primary-500-dark);
+  box-shadow: 0 0 0 3px var(--color-semantic-primary-100-dark);
+}
+
+[data-theme="dark"] .ds-radio--checked .ds-radio__indicator {
+  border-color: var(--color-semantic-primary-500-dark);
+}
+
+[data-theme="dark"] .ds-radio__dot {
+  background-color: var(--color-semantic-primary-500-dark);
+}
+
+[data-theme="dark"] .ds-radio__input:disabled + .ds-radio__indicator {
+  background-color: var(--color-semantic-neutral-50-dark);
+  border-color: var(--color-semantic-divider-high-dark);
+}
+
+[data-theme="dark"] .ds-radio--checked.ds-radio--disabled .ds-radio__indicator {
+  border-color: var(--color-semantic-neutral-300-dark);
+}
+
+[data-theme="dark"] .ds-radio--checked.ds-radio--disabled .ds-radio__dot {
+  background-color: var(--color-semantic-neutral-300-dark);
+}
+
+[data-theme="dark"] .ds-radio__label {
+  color: var(--color-semantic-text-high-dark);
+}
+
+[data-theme="dark"] .ds-radio__required {
+  color: var(--color-semantic-negative-500-dark);
+}
+
+[data-theme="dark"] .ds-radio--disabled .ds-radio__label {
+  color: var(--color-semantic-text-disabled-dark);
+}
+

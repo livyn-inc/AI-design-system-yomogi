@@ -1,0 +1,279 @@
+# AIのためのナビゲーションパターン学習ガイド
+
+## 基本原則
+
+### 1. レイアウトとコンポーネントの分離
+```
+PageTemplate（レイアウト層）
+├── header スロット → TopBar（コンポーネント層）
+├── aside スロット → SideNav（コンポーネント層）
+└── main スロット → コンテンツ
+```
+
+**重要**: PageTemplate がレイアウトの枠組みを提供し、TopBar/SideNav が具体的なナビゲーションを実装する。
+
+### 2. コンポーネント命名規則
+- ~~Header~~ → **TopBar** (上部グローバルナビゲーション専用)
+- **SideNav** (左側グローバルナビゲーション専用)
+- **Navigation** (汎用メニューコンポーネント)
+- **PageTemplate** (レイアウト構造)
+- **Breadcrumb** (パンくずナビゲーション)
+
+## パターン認識ガイド
+
+### ユーザーリクエストの解析
+
+**「ヘッダーを作りたい」**
+→ 実際は TopBar を指している可能性が高い
+→ 質問: 「上部のグローバルナビゲーション（TopBar）でしょうか？」
+
+**「サイドバーナビを作りたい」**
+→ SideNav を指している
+→ バリエーション確認: permanent/temporary/overlay
+
+**「グローバルナビを作りたい」**
+→ パターン確認が必要:
+- TopBar のみ？
+- SideNav のみ？  
+- 両方？
+
+**「レイアウトを作りたい」**
+→ PageTemplate + 適切なナビゲーションコンポーネントの組み合わせ
+
+## 実装パターンテンプレート
+
+### パターン1: シンプルサイト（TopBar のみ）
+```js
+// ユースケース: 企業サイト、ブログ、ランディングページ
+PageTemplate({
+  columns: 'one-col',
+  slots: {
+    header: TopBar({
+      variant: 'primary',
+      logo: { text: 'サイト名', href: '/' },
+      navigation: Navigation({
+        variant: 'top',
+        items: [
+          { label: 'ホーム', href: '/', current: true },
+          { label: 'サービス', href: '/services' },
+          { label: '会社情報', href: '/about' },
+          { label: 'お問い合わせ', href: '/contact' }
+        ]
+      }),
+      actions: [
+        { type: 'button', content: 'お問い合わせ' }
+      ]
+    }),
+    main: 'ページコンテンツ'
+  }
+})
+```
+
+### パターン2: アプリ型（SideNav のみ）
+```js
+// ユースケース: Slack風、Discord風、開発ツール
+PageTemplate({
+  columns: 'two-col',
+  slots: {
+    aside: SideNav({
+      variant: 'permanent',
+      logo: { text: 'アプリ名', icon: '<i data-lucide="layers"></i>' },
+      navigation: Navigation({
+        variant: 'side',
+        items: [
+          { label: 'ダッシュボード', href: '/dashboard', leftIcon: '<i data-lucide="home"></i>' },
+          { label: 'プロジェクト', href: '/projects', leftIcon: '<i data-lucide="folder"></i>' },
+          { 
+            type: 'section', 
+            title: 'チーム',
+            items: [
+              { label: 'メンバー', href: '/members' },
+              { label: '権限', href: '/permissions' }
+            ]
+          }
+        ]
+      }),
+      collapsible: true
+    }),
+    main: 'アプリコンテンツ'
+  }
+})
+```
+
+### パターン3: 管理画面型（TopBar + SideNav）
+```js
+// ユースケース: 管理画面、CRM、ERP
+PageTemplate({
+  columns: 'two-col',
+  slots: {
+    header: TopBar({
+      variant: 'primary',
+      logo: { text: '管理画面' },
+      actions: [
+        { type: 'text', content: 'ユーザー名' },
+        { type: 'icon', icon: '<i data-lucide="bell"></i>', ariaLabel: '通知' },
+        { type: 'icon', icon: '<i data-lucide="user"></i>', ariaLabel: 'プロフィール' }
+      ]
+    }),
+    aside: SideNav({
+      variant: 'permanent',
+      navigation: Navigation({
+        variant: 'side',
+        items: [
+          { label: 'ダッシュボード', href: '/dashboard' },
+          { label: 'ユーザー管理', href: '/users' },
+          { label: 'コンテンツ管理', href: '/content' },
+          { label: 'システム設定', href: '/settings' }
+        ]
+      })
+    }),
+    main: '管理画面コンテンツ'
+  }
+})
+```
+
+### パターン4: ドキュメントサイト型（TopBar + Breadcrumb）
+```js
+// ユースケース: ドキュメントサイト、ヘルプページ
+PageTemplate({
+  columns: 'one-col',
+  slots: {
+    header: TopBar({
+      variant: 'primary',
+      logo: { text: 'ドキュメント' },
+      navigation: Breadcrumb({
+        items: [
+          { label: 'ホーム', href: '/' },
+          { label: 'ガイド', href: '/guide' },
+          { label: '現在のページ' }
+        ],
+        size: 'lg'
+      }),
+      actions: [
+        { type: 'icon', icon: '<i data-lucide="search"></i>', ariaLabel: '検索' }
+      ]
+    }),
+    main: 'ドキュメントコンテンツ'
+  }
+})
+```
+
+## 判断フローチャート
+
+```
+ユーザーリクエスト
+│
+├─「シンプルなサイト」「企業サイト」「ブログ」
+│  → パターン1: TopBar のみ
+│
+├─「アプリ」「ダッシュボード」「ツール」「チャット風」
+│  → パターン2 or 3 を検討
+│  │
+│  ├─「左側にメニュー」「サイドバー重視」
+│  │  → パターン2: SideNav のみ
+│  │
+│  └─「上部にも情報が必要」「ユーザー情報」「通知」
+│     → パターン3: TopBar + SideNav
+│
+└─「ドキュメント」「ヘルプ」「階層構造」
+   → パターン4: TopBar + Breadcrumb
+```
+
+## よくある間違いと修正
+
+### ❌ 間違い: Header コンポーネントを使う
+```js
+// 古い書き方
+Header({ ... })
+```
+
+### ✅ 正解: TopBar コンポーネントを使う
+```js
+// 新しい書き方
+TopBar({ ... })
+```
+
+### ❌ 間違い: Navigation の使用場所を限定
+```js
+// 「Navigation は TopBar でしか使えない」と考える
+```
+
+### ✅ 正解: Navigation は汎用コンポーネント
+```js
+// TopBar 内で使用
+TopBar({
+  navigation: Navigation({ variant: 'top', items: [...] })
+})
+
+// SideNav 内で使用
+SideNav({
+  navigation: Navigation({ variant: 'side', items: [...] })
+})
+
+// ページ内で直接使用も可能
+Navigation({ variant: 'side', items: [...] })
+```
+
+### ❌ 間違い: AppShell を新規作成
+```js
+// 不要な新しいコンポーネント
+AppShell({ ... })
+```
+
+### ✅ 正解: PageTemplate を活用
+```js
+// 既存のコンポーネントを活用
+PageTemplate({
+  slots: {
+    header: TopBar({ ... }),
+    aside: SideNav({ ... })
+  }
+})
+```
+
+## AIの実装ステップ
+
+### 1. 要件分析
+- ユーザーの要求を理解
+- 適切なパターンを特定
+- 必要なコンポーネントを決定
+
+### 2. コンポーネント選択
+- PageTemplate（必須）
+- TopBar（上部ナビが必要な場合）
+- SideNav（左側ナビが必要な場合）
+- Navigation（メニュー実装）
+- Breadcrumb（階層表示が必要な場合）
+
+### 3. 実装順序
+1. PageTemplate の基本構造
+2. 各スロット用のコンポーネント
+3. Navigation の設定
+4. レスポンシブ対応
+5. アクセシビリティ確認
+
+### 4. 検証項目
+- [ ] デザインシステムトークンを使用
+- [ ] ハードコードされた値なし
+- [ ] 適切なARIAラベル
+- [ ] レスポンシブ対応
+- [ ] ダークテーマ対応
+
+## トラブルシューティング
+
+### 「ナビゲーションが表示されない」
+1. components.js が読み込まれているか確認
+2. Lucide アイコンの初期化順序確認
+3. CSS の読み込み確認
+
+### 「レスポンシブが効かない」
+1. PageTemplate の columns 設定確認
+2. CSS の @media クエリ確認
+3. モバイル対応のクラス名確認
+
+### 「スタイルが適用されない」
+1. bundle.css に新しいコンポーネントのCSSが含まれているか確認
+2. クラス名の prefix (ds-) が正しいか確認
+3. CSS の詳細度を確認
+
+この学習ガイドに従うことで、AIは適切なナビゲーション構成を判断し、実装できるようになります。

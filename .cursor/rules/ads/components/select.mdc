@@ -1,0 +1,137 @@
+---
+description: Selectコンポーネント設計・利用ガイド
+globs: "components/select/**/*"
+---
+## 概要
+汎用的なドロップダウン選択コンポーネント。多数の選択肢から1つを選択する場合に使用。検索やカスタムオプションにも対応。
+
+## API
+### Props
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| size | 'sm' \| 'md' \| 'lg' | 'md' | 選択フィールドのサイズ |
+| status | 'default' \| 'error' \| 'success' | 'default' | 選択フィールドの状態 |
+| placeholder | string | '選択してください' | プレースホルダーテキスト |
+| value | string | '' | 選択された値 |
+| label | string | '' | ラベルテキスト |
+| helperText | string | '' | 補助テキスト |
+| errorText | string | '' | エラーテキスト（status="error"時に表示） |
+| disabled | boolean | false | 無効化状態 |
+| required | boolean | false | 必須項目 |
+| id | string | '' | select要素のID |
+| name | string | '' | select要素のname属性 |
+| options | array | [] | 選択肢の配列 |
+| ariaLabel | string | '' | アクセシビリティ用ラベル |
+| ariaDescribedby | string | '' | アクセシビリティ用説明ID |
+| prefix | string | '' | 選択時の表示プレフィックス（選択時のみ表示、ドロップダウンには表示されない） |
+
+## 使用例
+```javascript
+// 基本的な使用
+Select({ 
+  label: '都道府県',
+  options: [
+    { value: 'tokyo', label: '東京都' },
+    { value: 'osaka', label: '大阪府' },
+    { value: 'kyoto', label: '京都府' }
+  ],
+  placeholder: '都道府県を選択'
+})
+
+// エラー状態
+Select({
+  label: '職業',
+  status: 'error',
+  errorText: '職業を選択してください',
+  required: true,
+  options: [
+    { value: 'engineer', label: 'エンジニア' },
+    { value: 'designer', label: 'デザイナー' },
+    { value: 'manager', label: 'マネージャー' }
+  ]
+})
+
+// フォーム内での使用
+Select({
+  label: '優先度',
+  name: 'priority',
+  required: true,
+  helperText: 'タスクの優先度を選択してください',
+  options: [
+    { value: 'high', label: '高' },
+    { value: 'medium', label: '中' },
+    { value: 'low', label: '低' }
+  ]
+})
+
+// prefix機能の使用（選択時とドロップダウンで異なる表示）
+Select({
+  id: 'typeFilter',
+  prefix: 'タイプ：',
+  size: 'sm',
+  value: 'all',
+  options: [
+    { value: 'all', label: 'すべて' },
+    { value: 'normal', label: '通常' },
+    { value: 'secret', label: 'シークレット' }
+  ]
+})
+// 選択時: 「タイプ：すべて」「タイプ：通常」
+// ドロップダウン: 「すべて」「通常」「シークレット」
+```
+
+## デザイン判断ガイド
+### サイズの選択指針
+- **sm**: 限られたスペースや補助的な選択用（32px高）
+- **md**: 一般的な用途（デフォルト、40px高）
+- **lg**: モバイルやタッチデバイス向け（48px高）
+
+### 状態の使い分け
+- **default**: 通常の選択状態
+- **error**: バリデーションエラーや必須項目未選択
+- **success**: 選択完了や検証成功の明示
+
+### ラジオボタンとの使い分け
+- **Select**: 5個以上の選択肢、スペース効率重視
+  - 都道府県、国、職業、カテゴリなど
+- **ラジオボタン**: 2〜4個の選択肢、一覧性重視
+  - 性別、支払い方法、優先度など
+
+### 選択肢の整理方法
+- アルファベット順・あいうえお順での並び替え
+- 使用頻度順での並び替え
+- カテゴリ別グループ化（optgroup使用）
+- 検索機能の追加（多数の選択肢がある場合）
+
+## アクセシビリティ
+- labelまたはaria-labelで必ず選択フィールドの目的を明示
+- エラー時はaria-invalid="true"とaria-describedbyで詳細を提供
+- 必須項目はaria-required="true"で明示
+- キーボードナビゲーション完全対応（矢印キー、Enter、Escape）
+- スクリーンリーダー対応（選択肢の読み上げ）
+- 色だけに頼らない状態表示（アイコンやテキストも併用）
+
+## レイアウト・余白原則
+- 選択フィールドの内側余白はlayout.mdcの原則に従う
+  - sm: padding 6px 12px
+  - md: padding 8px 16px
+  - lg: padding 12px 20px
+- ラベルと選択フィールドの間隔は4px
+- ヘルパー/エラーテキストとの間隔は4px
+- ドロップダウンメニューの項目間隔は適切に設定
+
+## 技術的詳細
+- CSS変数でテーマ対応（ライト/ダークモード）
+- トークンベースの色・余白・サイズ管理
+- フォーカス時の視覚的フィードバック（青いアウトライン）
+- エラー時の視覚的フィードバック（赤いボーダーとテキスト）
+- 成功時の視覚的フィードバック（緑のボーダー）
+- ドロップダウンアニメーション
+- 自動IDジェネレーション（アクセシビリティ対応）
+
+## 実装注意点
+- optionsは配列形式で渡し、value/label構造を統一
+- 必ずlabel要素またはaria-labelでラベルを提供
+- name属性を設定してフォームデータに含める
+- デフォルト選択値を適切に設定
+- 大量のオプションがある場合は仮想スクロールを検討

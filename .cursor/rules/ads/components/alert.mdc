@@ -1,0 +1,149 @@
+---
+description: Alertコンポーネント設計・利用ガイド
+globs: "components/alert/**/*"
+---
+## 概要
+インライン表示される通知コンポーネント。ページ内のコンテンツ領域に表示され、ユーザーの手動操作で消去される。
+重要な情報、警告、エラーメッセージなど、ユーザーが確認すべき内容を表示する。
+
+## API
+### Props
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| type | 'info' \| 'success' \| 'warning' \| 'critical' | 'info' | アラートの種類 |
+| title | string | '' | アラートのタイトル（省略可） |
+| message | string | '' | アラートのメッセージ本文 |
+| dismissible | boolean | true | 閉じるボタンの表示 |
+| actionPrimary | string | '' | プライマリアクションボタン（HTML） |
+| actionSecondary | string | '' | セカンダリアクションボタン（HTML） |
+
+## レイアウト構造（Orbit Alert準拠）
+```
+[アイコン] [タイトル + メッセージ]        [×ボタン]
+         [プライマリボタン] [セカンダリボタン]
+```
+
+### 3カラム構造
+- **左**: 状態を示すアイコン
+- **中央**: タイトル・メッセージ・アクションボタン
+- **右**: 閉じるボタン
+
+## 使用用途と例
+
+### 基本的な通知
+```javascript
+// 情報通知
+${Alert({ 
+  type: 'info', 
+  title: 'お知らせ',
+  message: 'システムメンテナンスを実施します。' 
+})}
+
+// 成功通知
+${Alert({ 
+  type: 'success', 
+  message: 'データが正常に保存されました。' 
+})}
+```
+
+### エラー・警告表示
+```javascript
+// 警告
+${Alert({ 
+  type: 'warning', 
+  title: '注意',
+  message: 'この操作は元に戻せません。' 
+})}
+
+// 重大なエラー
+${Alert({ 
+  type: 'critical', 
+  title: 'エラー',
+  message: '接続に失敗しました。ネットワークを確認してください。' 
+})}
+```
+
+### アクションボタン付き
+```javascript
+// プライマリアクションのみ
+${Alert({ 
+  type: 'warning',
+  title: 'アップデートが利用可能',
+  message: '新しいバージョンがリリースされました。',
+  actionPrimary: '<button class="ds-btn ds-btn--solid ds-btn--primary">今すぐ更新</button>'
+})}
+
+// プライマリ + セカンダリアクション
+${Alert({ 
+  type: 'critical',
+  title: '未保存の変更があります',
+  message: 'ページを離れると変更が失われます。',
+  actionPrimary: '<button class="ds-btn ds-btn--solid ds-btn--primary">保存</button>',
+  actionSecondary: '<button class="ds-btn ds-btn--outline ds-btn--neutral">破棄</button>'
+})}
+```
+
+## タイプ別の特徴
+
+### info（情報）
+- **用途**: 一般的な情報提供
+- **色**: 青系
+- **アイコン**: 情報アイコン（i）
+- **例**: お知らせ、ヒント、説明
+
+### success（成功）
+- **用途**: 操作の成功を伝える
+- **色**: 緑系
+- **アイコン**: チェックマーク
+- **例**: 保存完了、送信成功
+
+### warning（警告）
+- **用途**: 注意が必要な状況
+- **色**: 黄系
+- **アイコン**: 注意アイコン（!）
+- **例**: 確認要求、制限事項の通知
+
+### critical（重大）
+- **用途**: エラーや重要な問題
+- **色**: 赤系
+- **アイコン**: エラーアイコン（×）
+- **例**: エラーメッセージ、失敗通知
+
+## 配置ガイドライン
+
+### フォーム内での使用
+- フォームの上部に配置（全体に関わるエラー）
+- 該当フィールドの直下に配置（個別エラー）
+
+### ページレベルでの使用
+- メインコンテンツの上部
+- セクションの先頭
+
+### 複数アラートの扱い
+- 重要度順に並べる（critical → warning → info → success）
+- 同時表示は最大3つまで推奨
+
+## アクセシビリティ
+- role="alert"で重要な通知であることを明示
+- アイコンだけでなくテキストでも状態を伝える
+- 十分な色コントラストを確保
+- キーボード操作で閉じるボタンにアクセス可能
+- タイトルと本文の階層を明確にする
+
+## 使い分け指針（Toast との比較）
+- **Alert**: ページ内に表示、手動で閉じる、重要な情報
+- **Toast**: 画面端にオーバーレイ、自動消去可能、軽い通知
+
+## アクションボタンの色・強度の指針
+- **基本**: アラートの主役は面（背景）であり、ボタンは従。色数を抑え中立基調で整える。
+- **既定**: outline neutral（主） + ghost neutral（副）
+- **少し強めたい**: solid neutral（主は1つまで） + ghost neutral（副）
+- **破壊的操作**: solid negative（主） + ghost neutral（副）
+- **ブランド色の露出**: 原則避ける。必要時のみ outline primary を選択（solid primaryの常用は禁止）。
+- **overlay適用**: ボタン仕様（Buttonのoverlayルール）に準拠。Alert固有の上書きは持たない。
+
+## 閉じるボタン（×）の共通ルール
+- コンポーネント: `IconButton` を使用（variant: ghost, color: neutral, size: sm）
+- 色の同化: ルート`.ds-alert--{type}`で `var(--color-semantic-info-600-light)` など実在トークンを指定し、`currentColor`で追従させる
+- 角丸: IconButton（button-base）準拠（hoverも同値）。個別上書きしない
+- アイコンサイズ: 20（ヒットエリアはボタン既定のまま）

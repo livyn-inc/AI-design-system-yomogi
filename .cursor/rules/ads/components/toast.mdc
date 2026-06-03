@@ -1,0 +1,205 @@
+---
+description: Toastコンポーネント設計・利用ガイド
+globs: "components/toast/**/*"
+---
+## 概要
+オーバーレイ表示される通知コンポーネント。画面の端（右下等）に浮いて表示され、自動消去または手動消去が可能。
+軽い通知、操作完了の確認、一時的な情報提供に使用する。
+
+## API
+### Props
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| status | 'info' \| 'success' \| 'warning' \| 'negative' | 'info' | トーストの種類 |
+| message | string | '' | トーストのメッセージ本文 |
+| autoDismiss | boolean | false | 自動消去の有効/無効 |
+| duration | number | 3 | 自動消去までの時間（秒） |
+| actionButton | string | '' | カスタムアクションボタン（HTML） |
+
+## 3つの基本パターン
+
+### 1. 自動消去あり + ×ボタン
+```javascript
+// 一般的なToast（3秒で自動消去）
+${Toast({ 
+  message: '保存しました', 
+  status: 'success',
+  autoDismiss: true, 
+  duration: 3 
+})}
+
+// 短時間通知（1秒で自動消去）
+${Toast({ 
+  message: 'コピーしました', 
+  status: 'info',
+  autoDismiss: true, 
+  duration: 1 
+})}
+```
+
+### 2. 手動消去のみ（×ボタンのみ）
+```javascript
+// 重要なエラー（自動消去しない）
+${Toast({ 
+  message: 'ネットワークエラーが発生しました', 
+  status: 'negative'
+})}
+
+// 持続的な警告
+${Toast({ 
+  message: 'アップデートが利用可能です', 
+  status: 'warning'
+})}
+```
+
+### 3. カスタムアクション + ×ボタン
+```javascript
+// 元に戻す機能付き
+${Toast({ 
+  message: 'ファイルが削除されました',
+  status: 'info',
+  actionButton: '<button class="ds-btn ds-btn--ghost ds-btn--primary ds-btn--sm">元に戻す</button>'
+})}
+
+// 詳細表示機能付き
+${Toast({ 
+  message: 'エラーが発生しました',
+  status: 'negative',
+  actionButton: '<button class="ds-btn ds-btn--ghost ds-btn--neutral ds-btn--sm">詳細を見る</button>'
+})}
+```
+
+## レイアウト構造
+```
+[アイコン] [メッセージ] [アクションボタン] [×ボタン]
+```
+
+### 横並び構造
+- **左**: 状態を示すアイコン（小）
+- **中央**: メッセージテキスト
+- **右**: カスタムアクション + 閉じるボタン
+
+## 用途別の使用例
+
+### 操作完了の通知
+```javascript
+// 保存完了
+${Toast({ message: '設定を保存しました', status: 'success', autoDismiss: true, duration: 2 })}
+
+// アップロード完了
+${Toast({ message: 'ファイルをアップロードしました', status: 'success', autoDismiss: true, duration: 3 })}
+
+// コピー完了
+${Toast({ message: 'クリップボードにコピーしました', status: 'info', autoDismiss: true, duration: 1 })}
+```
+
+### エラー・警告通知
+```javascript
+// 一時的なエラー（自動消去）
+${Toast({ message: '一時的な問題が発生しました', status: 'warning', autoDismiss: true, duration: 5 })}
+
+// 重大なエラー（手動消去のみ）
+${Toast({ message: 'ログインセッションが無効です', status: 'negative' })}
+
+// 制限に関する警告
+${Toast({ message: 'ストレージ容量が不足しています', status: 'warning' })}
+```
+
+### アクション付き通知
+```javascript
+// 削除の取り消し
+${Toast({ 
+  message: '3件のアイテムを削除しました',
+  status: 'info',
+  actionButton: '<button class="ds-toast__action">元に戻す</button>'
+})}
+
+// アップデート通知
+${Toast({ 
+  message: '新しいバージョンが利用可能です',
+  status: 'info',
+  actionButton: '<button class="ds-toast__action">今すぐ更新</button>'
+})}
+
+// 詳細確認
+${Toast({ 
+  message: 'バックアップが完了しました',
+  status: 'success',
+  actionButton: '<button class="ds-toast__action">詳細</button>'
+})}
+```
+
+## ステータス別の特徴
+
+### info（情報）
+- **用途**: 一般的な情報提供、操作完了
+- **色**: 青系
+- **例**: コピー完了、設定変更、お知らせ
+
+### success（成功）
+- **用途**: 操作の成功を伝える
+- **色**: 緑系
+- **例**: 保存完了、送信成功、アップロード完了
+
+### warning（警告）
+- **用途**: 注意が必要だが即座の対応は不要
+- **色**: 黄系
+- **例**: 容量不足、期限切れ近し、非推奨機能
+
+### negative（エラー）
+- **用途**: エラーや問題の発生
+- **色**: 赤系
+- **例**: 保存失敗、ネットワークエラー、権限不足
+
+## 表示位置とタイミング
+
+### 表示位置
+- **推奨**: 画面右下（固定位置）
+- **代替**: 画面右上、左下（プロダクト要件による）
+
+### 表示タイミング
+- ユーザーアクション直後（0.1-0.2秒以内）
+- 非同期処理完了時
+- システムイベント発生時
+
+### 複数表示時の挙動
+- 新しいトーストは下に追加
+- 最大表示数: 5個（それ以上は古いものから削除）
+- 同じメッセージの重複を防ぐ
+
+## 自動消去の指針
+
+### 短時間（1-2秒）
+- コピー、ダウンロード開始など軽い操作
+- ユーザーが即座に確認できる内容
+
+### 標準時間（3-4秒）
+- 保存、送信など一般的な操作
+- 成功メッセージ全般
+
+### 長時間（5-7秒）
+- 警告メッセージ
+- 重要な情報（読み時間を考慮）
+
+### 自動消去なし
+- エラーメッセージ
+- 重要な警告
+- アクションが必要な通知
+
+## アクセシビリティ
+- role="status" または role="alert"（重要度による）
+- aria-live="polite"（通常）または"assertive"（緊急時）
+- 十分な表示時間の確保
+- キーボード操作で閉じるボタンにアクセス可能
+- スクリーンリーダーでの読み上げを考慮
+
+## 使い分け指針（Alert との比較）
+- **Toast**: 画面端にオーバーレイ、自動/手動消去、軽い通知
+- **Alert**: ページ内に表示、手動消去のみ、重要な情報
+
+## 技術的な実装要件
+- position: fixed でオーバーレイ表示
+- z-index: 高い値で他要素の上に表示
+- アニメーション: フェードイン/アウト、スライドイン
+- タイマー管理: setTimeout/clearTimeout
+- 複数表示時のスタック管理

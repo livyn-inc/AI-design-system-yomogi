@@ -1,0 +1,99 @@
+@import '../../build/css/tokens.css';
+@import './_base.css';
+
+.ds-matrix {
+  color: var(--color-semantic-text-high-light);
+}
+
+.ds-matrix h4 {
+  margin: 0 0 var(--spacing-padding-16) 0;
+  font-size: var(--font-size-18);
+  font-weight: var(--font-weight-600);
+}
+
+.ds-matrix table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  border-radius: var(--radius-lg);
+  overflow: visible;
+  border: 1px solid var(--color-semantic-divider-high-light);
+}
+
+.ds-matrix th,
+.ds-matrix td {
+  border: 0;
+  color: inherit;
+}
+
+/* セルの縦揃え: ヘッダは中央、本文は上 */
+.ds-matrix thead th { vertical-align: middle; }
+.ds-matrix td { vertical-align: top; }
+.ds-matrix td > .ds-dropdown { display: inline-block; position: relative; overflow: visible; }
+.ds-matrix td { overflow: visible; }
+
+.ds-matrix th {
+  padding: var(--spacing-padding-8) var(--spacing-padding-16);
+  font-size: var(--font-size-14);
+  text-align: center;
+  background: var(--color-semantic-neutral-50-light);
+}
+
+.ds-matrix td {
+  padding: var(--spacing-padding-12);
+}
+
+.ds-matrix td[data-cell="label"] {
+  padding: var(--spacing-padding-6) var(--spacing-padding-12);
+  font-size: var(--font-size-14);
+  opacity: 0.7;
+  white-space: nowrap;
+  text-align: center;
+  vertical-align: middle !important;
+}
+
+[data-theme="dark"] .ds-matrix,
+[data-theme="dark"] .ds-matrix h4:not(.ds-alert__title) {
+  color: var(--color-semantic-text-high-dark) !important;
+}
+
+[data-theme="dark"] .ds-matrix th,
+[data-theme="dark"] .ds-matrix td {
+  color: var(--color-semantic-text-high-dark) !important;
+}
+[data-theme="dark"] .ds-matrix table {
+  border-color: var(--color-semantic-divider-high-dark);
+}
+
+/* 内部ボーダー（重複排除のため片側のみ描画） */
+.ds-matrix thead th + th { border-left: 1px solid var(--color-semantic-divider-high-light); }
+.ds-matrix tbody td { border-top: 1px solid var(--color-semantic-divider-high-light); }
+.ds-matrix tbody td + td { border-left: 1px solid var(--color-semantic-divider-high-light); }
+
+[data-theme="dark"] .ds-matrix thead th + th { border-left-color: var(--color-semantic-divider-high-dark); }
+[data-theme="dark"] .ds-matrix tbody td { border-top-color: var(--color-semantic-divider-high-dark); }
+[data-theme="dark"] .ds-matrix tbody td + td { border-left-color: var(--color-semantic-divider-high-dark); }
+
+/* 角丸とヘッダ背景のにじみ防止（見た目の一致） */
+.ds-matrix thead tr:first-child > th:first-child { border-top-left-radius: var(--radius-lg); }
+.ds-matrix thead tr:first-child > th:last-child { border-top-right-radius: var(--radius-lg); }
+
+[data-theme="dark"] .ds-matrix th {
+  background: var(--color-semantic-neutral-100-dark) !important;
+}
+
+/* 密度スイッチ（ゆったり） */
+.ds-matrix.ds-matrix--comfortable td {
+  padding: var(--spacing-padding-16);
+}
+
+/* 左端列の幅（ラベル列） */
+.ds-matrix thead th:first-child,
+.ds-matrix td[data-cell="label"] {
+  width: var(--layout-max-width-2xs);
+}
+
+/* 左端列ヘッダの縦中央（明示） */
+.ds-matrix thead th:first-child { vertical-align: middle !important; }
+
+

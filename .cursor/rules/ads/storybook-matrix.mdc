@@ -1,0 +1,72 @@
+---
+description: Storybook Matrix Table 規格（State × Size）と実装ルール。新規/既存コンポーネントのCompleteMatrixは必ず本規格に従うこと。
+globs: "storybook/stories/**/*.js"
+alwaysApply: true
+---
+
+# Storybook Matrix（State × Size）規格
+
+このドキュメントは、stories の CompleteMatrix 章で使用する表（State × Size）の統一規格と実装手順です。以後、対象storiesの追加・修正時は必ず従ってください。
+
+## 目的
+- すべてのコンポーネントで、同一の見た目・骨格・ダーク対応・余白・外枠/内部ボーダーを保つ
+- レビュー観点・回帰テスト観点を固定化し、漏れを防ぐ
+
+## 章立ての原則
+1. Overview: サイズのみ（sm / md / lg）
+2. Variations: 固有パターン（アイコン、グループ、プレースホルダー等）。網羅はしない
+3. CompleteMatrix: 本規格のテーブルで「State × Size」を網羅
+
+## 実装ルール（必須）
+- CSS/HTMLは共通モジュールを使用すること（直書き禁止）
+  - CSS: `storybook/stories/_matrix.css`
+  - HTMLレンダラ: `storybook/stories/_matrix.js` の `renderMatrix`
+- 行ラベル列は自動生成されるため、手書きしない（`data-cell="label"`は `renderMatrix` が付与）
+- 色/余白/角丸/ボーダー/ダーク対応はすべてトークン（`var(--XXX)`）のみ。px/rgba直書きは禁止
+- 外枠はtable 1px、内部ボーダーは片側のみ（重複禁止）…実装は `_matrix.css` が担保
+- 左端列（State列）は幅 `var(--layout-max-width-2xs)`、縦中央揃え
+- ダークモード時の`th`背景は `neutral-100-dark`（既定）
+
+## 使い方（雛形）
+```js
+import './_matrix.css';
+import { renderMatrix } from './_matrix.js';
+
+export const CompleteMatrix = () => {
+  const sizes = ['sm', 'md', 'lg'];
+  const states = [
+    { key: 'default',   label: 'Default',  props: {/* component props */} },
+    { key: 'error',     label: 'Error',    props: {/* ... */} },
+    { key: 'success',   label: 'Success',  props: {/* ... */} },
+    { key: 'disabled',  label: 'Disabled', props: {/* ... */} },
+    { key: 'readonly',  label: 'Readonly', props: {/* ... */} }
+  ];
+
+  return renderMatrix({
+    title: 'Complete Matrix (State × Size)',
+    sizes,
+    states,
+    // 必要なら rowHeaderLabel: 'State', comfortable: true
+    renderCell: (size, stateKey) => {
+      const st = states.find(s => s.key === stateKey);
+      return Component({ size, id: `comp-${stateKey}-${size}`, ...st.props });
+    }
+  });
+};
+```
+
+## オプション
+- `rowHeaderLabel`: 左端列見出しの文言（既定: `State`）
+- `comfortable: true`: セルの余白を+αに（`.ds-matrix--comfortable`）
+- 入力系でセル幅が必要な場合、`renderCell`内のラッパにトークン幅を付与（例: `style="width: var(--layout-max-width-md)"`）
+
+## PRチェックリスト
+- [ ] `CompleteMatrix` は `renderMatrix` と `_matrix.css` を使用している
+- [ ] インラインのpx/rgba/独自CSSを記述していない（トークンのみ）
+- [ ] 行ラベル（左端）は自動生成であり、手書きしていない
+- [ ] Overview / Variations / CompleteMatrix の順に章立てられている
+
+## 注意
+- 既存storiesで旧実装が残っている場合は、差分最小で `renderMatrix` へ置換する
+- 表の見た目崩れが出た場合は `_matrix.css` を修正し、stories側では独自styleを追加しない
+
